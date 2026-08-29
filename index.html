@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive tutorials for health economics and outcomes research (HEOR), including survival modelling, cost-effectiveness analysis, and HTA methods.">
+  <title>HEOR Interactive Labs</title>
+  <style>
+    :root{--bg:#f7f9fc;--panel:#fff;--text:#152033;--muted:#64748b;--line:#dbe3ef;--accent:#2457d6;--accent2:#0f766e;--soft:#eef4ff;--radius:18px;--shadow:0 10px 35px rgba(15,23,42,.08)}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+    a{color:inherit}.wrap{max-width:1120px;margin:auto;padding:0 22px}.hero{padding:72px 0 46px;background:linear-gradient(135deg,#edf3ff 0%,#f7fbff 45%,#ecf8f6 100%);border-bottom:1px solid var(--line)}
+    .eyebrow{display:inline-block;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}.hero h1{font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.03;margin:0 0 20px;letter-spacing:-.04em}.hero p{max-width:760px;font-size:1.15rem;color:#475569;margin:0}.hero-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.pill{background:rgba(255,255,255,.75);border:1px solid var(--line);padding:8px 12px;border-radius:999px;font-size:.88rem;color:#475569}
+    main{padding:52px 0 80px}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:22px}.section-head h2{font-size:1.7rem;margin:0;letter-spacing:-.02em}.section-head p{color:var(--muted);margin:0;max-width:600px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:280px}.tag{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent2)}.card h3{font-size:1.35rem;margin:10px 0 10px}.card p{color:var(--muted);margin:0 0 18px}.features{padding-left:18px;color:#475569;margin:0 0 24px}.features li{margin:5px 0}.launch{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:var(--accent);color:white;font-weight:750;padding:11px 16px;border-radius:11px;transition:.2s}.launch:hover{transform:translateY(-1px);filter:brightness(.96)}
+    .placeholder{box-shadow:none;border-style:dashed;background:transparent}.placeholder .tag{color:#94a3b8}.placeholder h3{color:#64748b}.placeholder p{color:#94a3b8}.footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.9rem}
+    @media(max-width:650px){.hero{padding-top:52px}.section-head{display:block}.section-head p{margin-top:8px}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <span class="eyebrow">Health Economics & Outcomes Research</span>
+      <h1>HEOR Interactive Labs</h1>
+      <p>Interactive, method-focused tutorials that connect the statistical mechanism to the decisions made in health economic modelling and HTA.</p>
+      <div class="hero-meta">
+        <span class="pill">Survival extrapolation</span><span class="pill">Cost-effectiveness modelling</span><span class="pill">HTA methods</span><span class="pill">Hands-on simulations</span>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="section-head">
+      <div><span class="eyebrow">Available labs</span><h2>Learn the method by changing the model</h2></div>
+      <p>Each lab combines the core concept, when the method is appropriate, an interactive example, HTA guidance, and references.</p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <span class="tag">Lab 01 · Survival modelling</span>
+        <h3>Mixture Cure Models</h3>
+        <p>Understand how a cure fraction changes survival extrapolation and why that assumption can materially change lifetime benefit estimates.</p>
+        <ul class="features">
+          <li>What the model is actually assuming</li>
+          <li>When cure models are defensible</li>
+          <li>Interactive cure-fraction simulation</li>
+          <li>NICE DSU and ISPOR evidence</li>
+        </ul>
+        <a class="launch" href="labs/mixture-cure-model/">Launch lab →</a>
+      </article>
+      <article class="card placeholder">
+        <span class="tag">Coming next</span>
+        <h3>Future HEOR Lab</h3>
+        <p>This hub is structured so new tutorials can be added as independent labs without changing the main site.</p>
+      </article>
+      <article class="card placeholder">
+        <span class="tag">Coming next</span>
+        <h3>Future HEOR Lab</h3>
+        <p>Potential areas include partitioned survival, survival extrapolation, PSA, utilities, and model validation.</p>
+      </article>
+    </div>
+  </main>
+  <footer class="footer"><div class="wrap">HEOR Interactive Labs · Educational methods resource</div></footer>
+</body>
+</html>
