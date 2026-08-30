@@ -1,32 +1,58 @@
 # HEOR Interactive Labs
 
-A growing collection of interactive tutorials for **health economics and outcomes research (HEOR)**, **health technology assessment (HTA)**, survival modelling, and economic evaluation.
+A growing collection of interactive, browser-based learning tools designed to make **health economics and outcomes research (HEOR)** and **health technology assessment (HTA)** methods easier to understand and apply.
 
-The goal is to move beyond static explanations. Each lab connects the methodological theory to an interactive worked example so users can change assumptions and immediately see how the model behaves.
+The labs focus on **learning by seeing and doing**: change model assumptions, follow calculations, inspect fitted and extrapolated curves, and connect methodological choices to what happens in a health economic model.
 
-## Open the live site
+## Interactive labs
 
-**[Launch HEOR Interactive Labs](https://kareemelfass.github.io/HEOR-Interactive-Labs/)**
+### 1. Mixture Cure Model Lab
 
-## Available labs
+Learn how mixture cure models represent cured and uncured latent populations, how cure probability can be modelled rather than entered directly, and how long-term expected mortality affects extrapolated survival.
 
-### 01. Mixture Cure Models
+**[Open the live Mixture Cure Model Lab](https://kareemelfass.github.io/HEOR-Interactive-Labs/labs/mixture-cure-model/)**
 
-An interactive tutorial covering:
+Topics covered:
+- Theoretical basis of mixture cure modelling
+- Differences from standard parametric, flexible parametric, mixture, and non-mixture cure models
+- NICE DSU terminology and concepts
+- When cure modelling may be appropriate
+- Published HEOR and HTA examples
+- Logistic modelling of cure probability
+- Weibull survival for the uncured population
+- Expected mortality for the cured population
+- Interactive construction of the mixture survival curve
+- HTA guidance and methodological references
 
-1. Theoretical background: what mixture cure models are, when they may be used, and how they differ from other survival models
-2. Key cure-model terms and components
-3. Published HEOR and HTA examples
-4. A worked interactive example with model-derived cure probability, Weibull uncured survival, and expected mortality
-5. NICE DSU methodological guidance and relevant published evidence
-6. Core references
+> **Repository transition:** this lab is currently hosted inside the HEOR Interactive Labs repository. It will be moved to its own standalone repository so that each HEOR lab can be developed and shared independently, matching the architecture used for the Interactive Biostatistics Learning Tools collection.
 
-**[Open the Mixture Cure Models Lab](https://kareemelfass.github.io/HEOR-Interactive-Labs/labs/mixture-cure-model/)**
+---
 
-## Planned topics
+## More labs are coming
 
-Future labs can cover additional survival extrapolation approaches, partitioned survival models, probabilistic sensitivity analysis, utilities, model validation, evidence synthesis, and other applied HEOR methods.
+This repository is the central index for the **HEOR Interactive Labs** collection. Future simulations, calculators, and guided modelling tutorials will be added here as they are developed.
 
-## Repository structure
+Potential areas include:
+- Alternative survival extrapolation methods
+- Partitioned survival models
+- Treatment-effect waning
+- Relative survival and excess mortality
+- Probabilistic sensitivity analysis
+- Utilities and QALYs
+- Model validation
+- Evidence synthesis for economic models
 
-The HTML source for the public site is stored in this repository. The live educational interface is served through GitHub Pages from the `main` branch.
+Each lab is intended to be:
+- Interactive
+- Educational rather than a black-box calculator
+- Grounded in HEOR and HTA methodological guidance
+- Easy to use in a web browser
+- Focused on understanding how modelling assumptions affect results
+
+## Educational use
+
+These labs are designed for methodological education and demonstration. They are not substitutes for case-specific model development, appropriate HTA guidance, clinical validation, or validated analytical software.
+
+---
+
+Created by **Kareem Elfass**
