@@ -10,7 +10,9 @@ The labs focus on **learning by seeing and doing**: change model assumptions, fo
 
 Learn how mixture cure models represent cured and uncured latent populations, how cure probability can be modelled rather than entered directly, and how long-term expected mortality affects extrapolated survival.
 
-**[Open the live Mixture Cure Model Lab](https://kareemelfass.github.io/HEOR-Interactive-Labs/labs/mixture-cure-model/)**
+**[Open the live Mixture Cure Model Lab](https://kareemelfass.github.io/mixture-cure-model-lab/)**
+
+**[View the repository](https://github.com/kareemelfass/mixture-cure-model-lab)**
 
 Topics covered:
 - Theoretical basis of mixture cure modelling
@@ -23,8 +25,6 @@ Topics covered:
 - Expected mortality for the cured population
 - Interactive construction of the mixture survival curve
 - HTA guidance and methodological references
-
-> **Repository transition:** this lab is currently hosted inside the HEOR Interactive Labs repository. It will be moved to its own standalone repository so that each HEOR lab can be developed and shared independently, matching the architecture used for the Interactive Biostatistics Learning Tools collection.
 
 ---
 
