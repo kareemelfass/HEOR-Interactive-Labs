@@ -12,7 +12,7 @@
     .eyebrow{display:inline-block;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}.hero h1{font-size:clamp(2.5rem,6vw,4.8rem);line-height:1.03;margin:0 0 20px;letter-spacing:-.04em}.hero p{max-width:810px;font-size:1.18rem;color:#475569;margin:0}.hero-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.pill{background:rgba(255,255,255,.78);border:1px solid var(--line);padding:8px 12px;border-radius:999px;font-size:.88rem;color:#475569}
     main{padding:48px 0 80px}.purpose{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;margin-bottom:48px}.purpose-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px}.purpose h2{margin:0 0 10px;font-size:1.55rem}.purpose p{color:#475569;margin:0}.purpose ul{margin:0;padding-left:20px;color:#475569}.purpose li{margin:7px 0}
     .section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:22px}.section-head h2{font-size:1.8rem;margin:0;letter-spacing:-.02em}.section-head p{color:var(--muted);margin:0;max-width:610px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px}.lab-link{display:block;text-decoration:none;border-radius:var(--radius)}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:320px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.lab-link:hover .card,.lab-link:focus .card{transform:translateY(-2px);border-color:#a9bce8;box-shadow:0 14px 38px rgba(15,23,42,.11)}.lab-link:focus{outline:3px solid rgba(36,87,214,.22);outline-offset:4px}.tag{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent2)}.card h3{font-size:1.45rem;margin:10px 0}.card p{color:var(--muted);margin:0 0 18px}.features{padding-left:18px;color:#475569;margin:0 0 24px}.features li{margin:6px 0}.launch{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:white;font-weight:750;padding:11px 16px;border-radius:11px}.placeholder{box-shadow:none;border-style:dashed;background:transparent}.placeholder .tag{color:#94a3b8}.placeholder h3{color:#64748b}.placeholder p{color:#94a3b8}.footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.9rem}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:20px}.lab-link{display:block;text-decoration:none;border-radius:var(--radius)}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column;min-height:320px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.lab-link:hover .card,.lab-link:focus .card{transform:translateY(-2px);border-color:#a9bce8;box-shadow:0 14px 38px rgba(15,23,42,.11)}.lab-link:focus{outline:3px solid rgba(36,87,214,.22);outline-offset:4px}.tag{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent2)}.card h3{font-size:1.45rem;margin:10px 0}.card p{color:var(--muted);margin:0 0 18px}.features{padding-left:18px;color:#475569;margin:0 0 24px}.features li{margin:6px 0}.launch{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:white;font-weight:750;padding:11px 16px;border-radius:11px}.repo-link{display:inline-block;margin-top:10px;color:var(--accent);font-size:.9rem;font-weight:700}.placeholder{box-shadow:none;border-style:dashed;background:transparent}.placeholder .tag{color:#94a3b8}.placeholder h3{color:#64748b}.placeholder p{color:#94a3b8}.footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.9rem}
     @media(max-width:720px){.hero{padding-top:52px}.purpose{grid-template-columns:1fr}.section-head{display:block}.section-head p{margin-top:8px}}
   </style>
 </head>
@@ -36,7 +36,7 @@
       <div class="purpose-card">
         <span class="eyebrow">What this site is for</span>
         <h2 id="purpose-title">Learn HEOR methods by interacting with the model</h2>
-        <p>These labs are designed to bridge the gap between reading a methodological paper and actually understanding what a model is doing. Rather than presenting equations alone, each tutorial connects the assumptions, parameters, fitted curves, and implications for economic evaluation.</p>
+        <p>These labs are designed to bridge the gap between reading a methodological paper and actually understanding what a model is doing. Rather than presenting equations alone, each tutorial connects assumptions, parameters, fitted curves, extrapolations, and implications for economic evaluation.</p>
       </div>
       <div class="purpose-card">
         <span class="eyebrow">Each lab includes</span>
@@ -53,11 +53,11 @@
     <section aria-labelledby="labs-title">
       <div class="section-head">
         <div><span class="eyebrow">Available labs</span><h2 id="labs-title">Interactive tutorials</h2></div>
-        <p>Select a lab to open the full tutorial. New HEOR methods will be added to this library over time.</p>
+        <p>Select a lab to open the full tutorial. Each lab is maintained in its own repository so it can evolve and be shared independently.</p>
       </div>
 
       <div class="grid">
-        <a class="lab-link" href="/HEOR-Interactive-Labs/labs/mixture-cure-model/" aria-label="Open Mixture Cure Models interactive tutorial">
+        <a class="lab-link" href="https://kareemelfass.github.io/mixture-cure-model-lab/" aria-label="Open Mixture Cure Models interactive tutorial">
           <article class="card">
             <span class="tag">Lab 01 · Survival modelling</span>
             <h3>Mixture Cure Models</h3>
@@ -71,11 +71,12 @@
             <span class="launch">Open Mixture Cure Model Lab →</span>
           </article>
         </a>
+        <a class="repo-link" href="https://github.com/kareemelfass/mixture-cure-model-lab">View Mixture Cure Model repository</a>
 
         <article class="card placeholder">
           <span class="tag">Future lab</span>
           <h3>More HEOR tutorials coming</h3>
-          <p>Future labs can cover survival extrapolation, partitioned survival models, probabilistic sensitivity analysis, utilities, model validation, evidence synthesis, and other HEOR methods.</p>
+          <p>Future labs can cover survival extrapolation, partitioned survival models, treatment-effect waning, relative survival, probabilistic sensitivity analysis, utilities, model validation, evidence synthesis, and other HEOR methods.</p>
         </article>
       </div>
     </section>
