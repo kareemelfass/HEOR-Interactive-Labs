@@ -26,4 +26,25 @@ Topics covered:
 
 ---
 
+### 2. Markov Model Basics Lab
+
+Learn the mechanics of a simple three-state cohort Markov model by changing transition probabilities and watching the cohort move through Stable disease, Progressed disease, and Death cycle by cycle.
+
+**[Open the Markov Model Basics Lab](https://kareemelfass.github.io/HEOR-Interactive-Labs/markov-model-basics/)**
+
+Topics covered:
+- Health states and absorbing states
+- Transition probabilities
+- Transition matrices and row-sum checks
+- Cycle-by-cycle cohort movement
+- Markov traces
+- State occupancy over time
+- State costs and utility weights
+- QALY accumulation
+- Worked first-cycle calculations
+
+This introductory lab deliberately excludes discounting, half-cycle correction, tunnel states, time-varying transition probabilities, calibration, probabilistic sensitivity analysis, treatment comparisons, and microsimulation.
+
+---
+
 More HEOR labs will be added here as they are developed.
