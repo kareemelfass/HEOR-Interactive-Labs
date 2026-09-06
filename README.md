@@ -47,4 +47,25 @@ This introductory lab deliberately excludes discounting, half-cycle correction, 
 
 ---
 
+### 3. Semi-Markov Models in HEOR Lab
+
+Build a semi-Markov cohort model from first principles and see exactly how time since state entry changes transition risks and cohort calculations.
+
+**[Open the Semi-Markov Models in HEOR Lab](https://kareemelfass.github.io/HEOR-Interactive-Labs/semi-markov-model/)**
+
+Topics covered:
+- Why memory can matter in state-transition models
+- Clock-forward versus clock-reset time
+- Weibull sojourn survival and hazards
+- Converting survival functions to cycle-specific transition probabilities
+- Why aggregate state occupancy can be insufficient
+- Tunnel states and state-duration tracking
+- Costs, QALYs and treatment comparisons
+- Competing transitions and cause-specific hazards
+- Evidence sources for transition models
+- Treatment effects, hazard ratios and extrapolation
+- End-to-end four-cycle semi-Markov calculation
+
+---
+
 More HEOR labs will be added here as they are developed.
