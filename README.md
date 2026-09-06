@@ -68,4 +68,28 @@ Topics covered:
 
 ---
 
+### 4. Decision Tree Basics Lab
+
+Learn how to construct and roll back a simple health-economic decision tree, from decision and chance nodes through pathway probabilities, expected costs, QALYs, ICERs, and net monetary benefit.
+
+**[Open the Decision Tree Basics Lab](https://kareemelfass.github.io/HEOR-Interactive-Labs/decision-tree-basics/)**
+
+Topics covered:
+- Decision, chance, and terminal nodes
+- Branch probabilities and complementary probabilities
+- Multiplying probabilities along a pathway
+- Expected-value calculations
+- Pathway-level weighted costs and QALYs
+- Rollback from terminal nodes to the decision node
+- Incremental costs and QALYs
+- ICER interpretation and dominance
+- Net monetary benefit
+- Worked learner exercise
+- Connection to a published HEOR decision-tree example
+- When a simple decision tree becomes inadequate for recurrent or long-term processes
+
+All mathematical notation in this lab is rendered with MathJax, including equations that update dynamically when model inputs change.
+
+---
+
 More HEOR labs will be added here as they are developed.
