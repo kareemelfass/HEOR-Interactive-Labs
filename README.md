@@ -92,4 +92,28 @@ All mathematical notation in this lab is rendered with MathJax, including equati
 
 ---
 
+### 5. PSM vs Multi-State Models in Oncology Lab
+
+Explore the structural difference between a partitioned survival model and an explicit state-transition or multi-state model when treatment delays progression.
+
+**[Open the PSM vs Multi-State Models in Oncology Lab](https://kareemelfass.github.io/HEOR-Interactive-Labs/psm-vs-multistate-oncology/)**
+
+Topics covered:
+- PSM state occupancy from PFS and OS
+- Better PFS with identical OS
+- PF, PD and death calculations
+- Life-years versus QALYs when OS is unchanged
+- Explicit PF to PD, PF to death, and PD to death transitions
+- Direct versus indirect mortality effects
+- How delayed progression can generate an indirect OS benefit
+- Why PSM and multi-state extrapolations can diverge
+- Why immature OS makes structural assumptions more important
+- A practical decision process for choosing and stress-testing model structure
+- Interactive knowledge checks
+- NICE DSU TSD 19 and methodological references
+
+The numerical examples are simulated for teaching and are not estimates from a specific oncology trial.
+
+---
+
 More HEOR labs will be added here as they are developed.
