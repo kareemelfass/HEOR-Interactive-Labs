@@ -8,6 +8,12 @@ test("Exact competing first-exit row and expected counts",()=>{
  close(x.stay+x.prog+x.death,1);close(x.stay,Math.exp(-.12));
  close(x.prog,2*(1-Math.exp(-.12))/3);close(x.death,(1-Math.exp(-.12))/3);
 });
+test("Zero-time CIF baseline is valid for drawing survival curves",()=>{
+ const x=competingIncidence(.08,.04,0);
+ assert.deepEqual(x,{pf:1,progressed:0,preDeath:0,netTTP:1,naiveDeathGap:0});
+ const y=competingIncidence(0,0,0);
+ assert.deepEqual(y,x);
+});
 test("First-exit CIF partitions cohort at month 12",()=>{
  const x=competingIncidence(.08,.04,12);close(x.pf+x.progressed+x.preDeath,1);
  close(x.preDeath,(1-Math.exp(-1.44))/3);
