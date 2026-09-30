@@ -15,6 +15,15 @@ function showChapter(index){
   window.scrollTo({top:0,behavior:"instant"});
   if(window.MathJax?.typesetPromise)window.MathJax.typesetPromise([sections[chapter]]).catch(()=>{});
 }
+// Set up independent chapter navigation before running any calculator or cohort model.
+sections.forEach((section,i)=>{
+ const b=document.createElement("button");b.type="button";b.className="navbtn";b.innerHTML='<span class="navnum">'+String(i).padStart(2,"0")+'</span><span>'+section.dataset.title+'</span>';
+ b.addEventListener("click",()=>showChapter(i));$("chapternav").append(b);
+});
+$("prev").addEventListener("click",()=>showChapter(chapter-1));
+$("next").addEventListener("click",()=>showChapter(chapter+1));
+window.addEventListener("hashchange",()=>{const n=Number(location.hash.slice(2));if(location.hash.match(/^#c\d+$/)&&n!==chapter)showChapter(n);});
+let target=location.hash.match(/^#c(\d+)$/);showChapter(target?Number(target[1]):0);
 function drawLines(node,data,series,{xMax=null}={}){
   const W=900,H=310,p={left:58,right:16,top:25,bottom:39},plotW=W-p.left-p.right,plotH=H-p.top-p.bottom;
   const max=xMax??Math.max(...data.map(d=>d.t),1);
@@ -165,11 +174,4 @@ document.querySelectorAll(".quiz").forEach(quiz=>{
    result.textContent=good?"Correct. Open the worked solution to check every step.":"Not quite. Check whether you are entering a hazard, probability, or expected count, then open the worked solution.";
  });
 });
-sections.forEach((section,i)=>{
- const b=document.createElement("button");b.type="button";b.className="navbtn";b.innerHTML='<span class="navnum">'+String(i).padStart(2,"0")+'</span><span>'+section.dataset.title+'</span>';
- b.addEventListener("click",()=>showChapter(i));$("chapternav").append(b);
-});
-$("prev").addEventListener("click",()=>showChapter(chapter-1));
-$("next").addEventListener("click",()=>showChapter(chapter+1));
-window.addEventListener("hashchange",()=>{const n=Number(location.hash.slice(2));if(location.hash.match(/^#c\d+$/)&&n!==chapter)showChapter(n);});
-let target=location.hash.match(/^#c(\d+)$/);showChapter(target?Number(target[1]):0);
+
