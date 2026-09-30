@@ -15,6 +15,10 @@ export function psm(pfs,os){
 }
 export function survivor(h,t){nonnegative(h,"Hazard");nonnegative(t,"Time");return Math.exp(-h*t);}
 export function competingIncidence(hProg,hDeath,t){
+  nonnegative(hProg,"Progression hazard");nonnegative(hDeath,"PF death hazard");nonnegative(t,"Time");
+  // A survival/CIF curve always includes its baseline: S(0)=1 and CIF(0)=0.
+  // Do not pass t=0 to the strictly-positive finite-cycle converter.
+  if(t===0)return {pf:1,progressed:0,preDeath:0,netTTP:1,naiveDeathGap:0};
   const tr=constantTransitions(hProg,hDeath,t);
   return {pf:tr.stay,progressed:tr.prog,preDeath:tr.death,
     netTTP:survivor(hProg,t),naiveDeathGap:survivor(hProg,t)-tr.stay};
