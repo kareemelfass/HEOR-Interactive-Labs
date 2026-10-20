@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Nine interactive lessons about health technology assessment for medical devices, with verified economic worked examples and calculators.">
+<meta name="theme-color" content="#15324e">
+<title>HTA for Medical Devices | Interactive Companion</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body id="top">
+<header class="top"><div class="container top-in">
+<a class="brand" href="#top">Medical Device HTA Lab</a>
+<details class="navmenu" id="navmenu"><summary aria-label="Open navigation menu">☰ Chapters</summary><ul>
+<li><a href="#s1">01 · WHO device definition</a></li><li><a href="#s2">02 · Discounting</a></li>
+<li><a href="#s3">03 · Risk classification</a></li><li><a href="#s4">04 · Counterfactual effects</a></li>
+<li><a href="#s5">05 · National guidelines</a></li><li><a href="#s6">06 · Economies of scale</a></li>
+<li><a href="#s7">07 · NPV and IRR</a></li><li><a href="#s8">08 · Annuity and depreciation</a></li>
+<li><a href="#s9">09 · RWE transferability</a></li><li><a href="#refs">References</a></li>
+</ul></details></div></header>
+<div class="hero"><div class="container"><div class="kicker">Conference companion · October 2026</div>
+<h1>HTA for Medical Devices: Interactive Companion</h1>
+<p>Medical devices are not drugs. They are used by operators, change often, cost a lot up front and are bought by hospitals. This page gives the key definitions, the numbers behind the economics, and the methods to handle weak or foreign evidence.</p>
+<div class="stats"><span>9 expert chapters</span><span>6 calculators and explorers</span><span>Mobile-first</span><span>No tracking</span></div>
+<div class="notice">Numbers in worked examples are illustrative, not real prices or trial results.</div>
+<p class="small" style="color:#e3f4f6">Companion to “What Is Different When Conducting HTA for Medical Devices?” · Prepared by Kareem El-Fass</p>
+</div></div>
+<main class="container">
+<p class="intro">Tap a chapter to expand it. Calculators update instantly when you change an input. Sections 2, 4, 6, 7 and 8 contain numerical examples that you can reproduce, and every widget has a Reset button.</p>
+
+<details class="chapter" id="s1" open><summary><span class="chapter-index">01</span><span class="chapter-headline">What is a medical device? (WHO definition)</span></summary><div class="chapter-body">
+<div class="key">Key idea: a medical device works mainly by physical or mechanical means, not by drug, immune or metabolic action.</div>
+<p><strong>The WHO definition</strong> (WHO, <em>Health technology assessment of medical devices</em>, second edition, 2025, Glossary, pages ix to x) <a href="#ref1">[1]</a>:</p>
+<blockquote><p><strong>Medical device:</strong> Any instrument, apparatus, implement, machine, appliance, implant, reagent for in vitro use, software, material or other similar or related article intended by the manufacturer to be used, alone or in combination, for human beings for one or more of the specific medical purpose(s) of:</p>
+<ul><li>diagnosis, prevention, monitoring, treatment or alleviation of disease;</li>
+<li>diagnosis, monitoring, treatment, alleviation of, or compensation for, an injury;</li>
+<li>investigation, replacement, modification or support of the anatomy or physiological process;</li>
+<li>supporting or sustaining life;</li><li>control of conception;</li>
+<li>cleaning, disinfection or sterilization of medical devices;</li>
+<li>providing information by means of in vitro examination of specimens derived from the human body;</li>
+<li>and does not achieve its primary intended action by pharmacological, immunological, or metabolic means, in or on the human body, but which may be assisted in its intended function by such means.</li></ul></blockquote>
+<h3>The WHO note on borderline products <a href="#ref1">[1]</a></h3>
+<blockquote>Products which may be considered to be medical devices in some jurisdictions but not in others include: disinfection substances, aids for persons with disabilities, devices incorporating animal and/or human tissues, devices for in-vitro fertilization or assisted reproduction technologies.</blockquote>
+<h3>In vitro diagnostic (IVD) device (WHO Glossary) <a href="#ref1">[1]</a></h3>
+<blockquote>'In Vitro Diagnostic (IVD) medical device' means a medical device, whether used alone or in combination, intended by the manufacturer for the in-vitro examination of specimens derived from the human body solely or principally to provide information for diagnostic, monitoring or compatibility purposes.</blockquote>
+<p><em>“In vitro” means outside the body, for example in a laboratory.</em></p>
+<h3>How to read the definition: three tests</h3><ol>
+<li><strong>Is it intended by the manufacturer for a medical purpose?</strong> The intended use decides, not the object itself.</li>
+<li><strong>Does it fit one of the listed purposes?</strong> Diagnosis, treatment, monitoring, support of anatomy, life support, contraception, cleaning medical devices, or lab testing of human specimens.</li>
+<li><strong>Is its main action NOT pharmacological, immunological or metabolic?</strong> If the main action is chemical in the body, it is a medicine, even if a device delivers it.</li></ol>
+<p><strong>Combination products</strong> (WHO Glossary) <a href="#ref1">[1]</a>: a product that combines two or more types of medical products (for example a medicine and a device) into one product. HTA of these needs to consider both parts.</p>
+<div class="widget" id="quiz"><h3>Interactive: Is it a medical device?</h3><p class="small">Choose an answer on each card, then see the reason.</p><div class="quiz-grid" id="quiz-cards"></div><button type="button" class="reset" data-reset="quiz">Reset quiz</button>
+<p class="small">Final classification depends on national regulation. This quiz only illustrates the WHO definition.</p></div>
+<p class="source-line">Sources for this section: <a href="#ref1">[1]</a>.</p></div></details>
+
+<details class="chapter" id="s2"><summary><span class="chapter-index">02</span><span class="chapter-headline">Discounting and high up-front costs</span></summary><div class="chapter-body">
+<div class="key">Key idea: discounting never shrinks a cost paid today, but it does shrink health benefits that come later. So the higher the discount rate, the worse a technology with a large up-front cost looks.</div>
+<h3>Terms</h3><ul>
+<li><strong>Discounting:</strong> converting future costs and benefits into today's value, because a benefit or payment now is valued more than the same one later.</li>
+<li><strong>Discount rate (r):</strong> the yearly rate used for this conversion. A review of European guidelines recommends country-specific rates; without local guidance, EUnetHTA recommends 3% to 5%, with a wider range of 0% to 10% explored in sensitivity analysis <a href="#ref2">[2]</a>.</li>
+<li><strong>ICER (incremental cost-effectiveness ratio):</strong> extra cost divided by extra health gain, here cost per QALY.</li>
+<li><strong>QALY (quality-adjusted life year):</strong> one year of life in full health; a year in poorer health counts as less than one.</li></ul>
+<h3>The mechanism</h3><ul>
+<li>A device is often <strong>paid for at the start</strong> (year 0). Year 0 is not discounted, so its cost stays the same whatever the rate.</li>
+<li>Its <strong>health benefits come later</strong> (years 1 to 5), so they are discounted.</li>
+<li>A drug taken every year has costs <strong>and</strong> benefits spread over time, so both shrink together.</li>
+<li>Result: the higher the rate, the more the device's ICER rises compared with the drug's.</li></ul>
+<div class="worked"><h3>Worked example</h3>
+<p>Both options cost <strong>US$10,000 in total</strong> (undiscounted) and give <strong>0.2 QALYs a year for 5 years</strong> (1.0 QALY undiscounted). Device: US$10,000 paid at year 0. Drug: US$2,000 paid at the end of each year, years 1 to 5. QALYs are counted at the end of each year, years 1 to 5.</p>
+<div class="table-wrap"><table><thead><tr><th>Discount rate</th><th>Annuity factor (5 years)</th><th>QALYs, today's value</th><th>Device cost, today's value</th><th>Drug cost, today's value</th><th>Device ICER</th><th>Drug ICER</th></tr></thead><tbody>
+<tr><td>0%</td><td>5.0000</td><td>1.0000</td><td>10,000</td><td>10,000</td><td>10,000</td><td>10,000</td></tr>
+<tr><td>3%</td><td>4.5797</td><td>0.9159</td><td>10,000</td><td>9,159</td><td>10,918</td><td>10,000</td></tr>
+<tr><td>5%</td><td>4.3295</td><td>0.8659</td><td>10,000</td><td>8,659</td><td>11,549</td><td>10,000</td></tr>
+<tr><td>8%</td><td>3.9927</td><td>0.7985</td><td>10,000</td><td>7,985</td><td>12,523</td><td>10,000</td></tr></tbody></table></div>
+<h4>How the 5% row is calculated</h4><ul>
+<li>Annuity factor = (1 - 1.05<sup>-5</sup>) / 0.05 = <strong>4.3295</strong></li>
+<li>QALYs today = 0.2 x 4.3295 = <strong>0.8659</strong></li><li>Device ICER = 10,000 / 0.8659 = <strong>US$11,549</strong></li>
+<li>Drug cost today = 2,000 x 4.3295 = 8,659, so drug ICER = 8,659 / 0.8659 = <strong>US$10,000</strong></li></ul></div>
+<h3>What it shows</h3><ul><li>At 0%, both are identical.</li><li>At 3%, 5% and 8%, the device ICER is about <strong>9%, 15% and 25% higher</strong>, with the same total spending and the same health gain.</li><li><strong>Why this matters for devices:</strong> implants, capital equipment and one-off procedures carry most of their cost at the start. The choice of discount rate can move a device across a cost-effectiveness threshold.</li><li><strong>Practical point:</strong> always report results at several discount rates for up-front technologies.</li></ul>
+<div class="widget" id="discount-widget"><h3>Interactive: Up-front vs spread-out cost</h3><div class="notice">Numbers in worked examples are illustrative, not real prices or trial results.</div>
+<div class="fields">
+<label>Discount rate: <output id="discount-rate-label">5.0%</output><input id="discount-rate" type="range" min="0" max="10" step=".5" value="5"></label>
+<label>Total cost (US$)<input id="discount-cost" type="number" min="1" step="100" value="10000"></label>
+<label>Years<input id="discount-years" type="number" min="1" max="50" step="1" value="5"></label>
+<label>QALYs per year<input id="discount-qaly" type="number" min=".001" max="10" step=".01" value=".2"></label></div>
+<div class="metrics" id="discount-out"></div><div class="chart" id="discount-chart" role="img" aria-label="Device and drug ICER curves across discount rates"></div>
+<div class="legend"><span>Device ICER</span><span class="alt">Drug ICER</span></div><button type="button" class="reset" data-reset="discount">Reset</button></div>
+<p class="source-line">Sources for this section: <a href="#ref2">[2]</a>. Calculations are standard discounting (own worked example).</p></div></details>
+
+<details class="chapter" id="s3"><summary><span class="chapter-index">03</span><span class="chapter-headline">Classes of medical devices</span></summary><div class="chapter-body">
+<div class="key">Key idea: regulators group devices by risk. Higher risk means stricter evidence rules before the device can be sold. Classification is a regulatory step, not an HTA step, but it shapes how much evidence an HTA will find.</div>
+<h3>What drives the risk class (WHO) <a href="#ref1">[1]</a></h3>
+<blockquote>Regulators classify medical devices according to factors such as the potential level of hazard and risk to patients, with risk being defined in relation to the duration of use, degree of invasiveness, whether the device is implantable or non-implantable, or whether it is active or contains an active substance.</blockquote>
+<h3>General examples (WHO) <a href="#ref1">[1]</a></h3>
+<blockquote>Different countries have different risk classification systems, but in general, simple devices such as thermometers are categorized as low risk, while devices such as hearing aids and infusion pumps for intravenous medications are classified as medium risk, and devices such as implanted stimulators as high risk.</blockquote>
+<h3>Classes by region</h3><div class="table-wrap"><table><thead><tr><th>Region</th><th>Classes, lowest to highest risk</th><th>What it means</th><th>Source</th></tr></thead><tbody>
+<tr><td>EU (MDR 2017/745)</td><td>I, IIa, IIb, III</td><td>Four risk groups set by classification rules (Article 51 and Annex VIII). The manufacturer applies the rules. Class III is the highest risk.</td><td><a href="#ref3">[3]</a></td></tr>
+<tr><td>US (FDA)</td><td>I, II, III</td><td>Class I: general controls, many exempt from premarket notification. Class II: special controls, generally a 510(k) (a notice showing the device is equivalent to one already on the market). Class III: premarket approval (PMA).</td><td><a href="#ref4">[4]</a></td></tr>
+<tr><td>Canada</td><td>I, II, III, IV</td><td>Examples given by Health Canada: manual wheelchair (I), hearing aid (II), hip implant (III), pacemaker (IV).</td><td><a href="#ref5">[5]</a></td></tr>
+<tr><td>EU IVD</td><td>A, B, C, D</td><td>A separate scheme. Examples: specimen receptacles (A), pregnancy tests (B), genetic or cancer tests (C), HIV or hepatitis infectious load (D).</td><td><a href="#ref6">[6]</a></td></tr></tbody></table></div>
+<h3>Why the class matters for HTA</h3><ul><li><strong>Evidence depth:</strong> in the EU, clinical investigations (studies in people) are required for implantable and class III devices, with listed exceptions. The regulation does <strong>not</strong> require these studies to be randomised <a href="#ref7">[7]</a>.</li>
+<li><strong>Which devices get an HTA:</strong> WHO notes that, unlike most medicines, low-risk devices are not required to undergo HTA <a href="#ref1">[1]</a>.</li>
+<li><strong>Regulatory data is not enough for HTA:</strong> WHO states that clinical data from the regulatory process <q>will not be sufficient for HTA</q> <a href="#ref1">[1]</a>, because HTA asks about effectiveness against current care and value for money.</li></ul>
+<div class="widget" id="class-widget"><h3>Interactive: Class explorer</h3><p class="small">Choose a region to view its risk ladder.</p><div class="btnrow" id="class-tabs" role="group" aria-label="Regulatory jurisdiction"></div><div class="risk-ladder" id="class-ladder"></div><p id="class-example"></p><p class="small">This explorer shows class labels only. It is not a tool to classify a real device.</p><button type="button" class="reset" data-reset="class">Reset</button></div>
+<p class="source-line">Sources for this section: <a href="#ref1">[1]</a>, <a href="#ref3">[3]</a>, <a href="#ref4">[4]</a>, <a href="#ref5">[5]</a>, <a href="#ref6">[6]</a>, <a href="#ref7">[7]</a>.</p></div></details>
+
+<details class="chapter" id="s4"><summary><span class="chapter-index">04</span><span class="chapter-headline">Matching, propensity scores and counterfactual effects</span></summary><div class="chapter-body">
+<div class="key">Key idea: when there is no randomised trial, we compare treated patients with similar untreated patients, to estimate what would have happened to the treated patients without the device.</div>
+<h3>Why this matters for devices</h3><ul><li>Device trials are often small, short or not randomised, so HTA often relies on <strong>real-world evidence (RWE)</strong>: evidence from routine care data such as registries and claims.</li><li>Daubner-Bendes et al. recommend relying on RWE when trial evidence is limited, and add <a href="#ref8">[8]</a>:</li></ul>
+<blockquote>However, appropriate methods of bias-adjustment (e.g. counterfactual effect estimation) need to be applied.</blockquote>
+<h3>Terms, in plain words</h3><ul>
+<li><strong>Counterfactual:</strong> the outcome the same patient <em>would have had</em> under the other option. We never see it directly, so we estimate it.</li>
+<li><strong>Confounding:</strong> a factor (for example disease severity) that affects <strong>both</strong> who gets the device <strong>and</strong> the outcome. It makes a raw comparison misleading.</li>
+<li><strong>Propensity score (PS):</strong> each patient's probability of getting the device, given their characteristics (age, risk, and so on). It squeezes many characteristics into <strong>one number</strong> <a href="#ref9">[9]</a>.</li>
+<li><strong>Matching:</strong> pairing each device patient with an untreated patient who has a similar propensity score.</li>
+<li><strong>Balance check:</strong> after matching, the groups should look alike. A common rule is a <strong>standardised mean difference</strong> (the difference in means divided by the pooled standard deviation) below 0.1 for each characteristic <a href="#ref10">[10]</a>.</li>
+<li><strong>ATT (average treatment effect on the treated):</strong> the effect of the device among the patients who actually received it.</li></ul>
+<div class="worked"><h3>Worked example: one confounder, checked by hand</h3><p>Device patients tend to be <strong>low risk</strong>. Outcome: complication rate.</p>
+<div class="table-wrap"><table><thead><tr><th>Risk group</th><th>Device patients</th><th>Device complication rate</th><th>Standard care patients</th><th>Standard care complication rate</th></tr></thead><tbody><tr><td>High risk</td><td>20</td><td>30%</td><td>80</td><td>35%</td></tr><tr><td>Low risk</td><td>80</td><td>10%</td><td>20</td><td>12%</td></tr></tbody></table></div>
+<h4>Step 1. Naive comparison (misleading)</h4><ul><li>Device: (20 x 30% + 80 x 10%) / 100 = (6 + 8) / 100 = <strong>14.0%</strong></li><li>Standard care: (80 x 35% + 20 x 12%) / 100 = (28 + 2.4) / 100 = <strong>30.4%</strong></li><li>Naive difference: 14.0% - 30.4% = <strong>-16.4 percentage points</strong>. The device looks very good.</li></ul>
+<h4>Step 2. Why that is wrong</h4><p>Most device patients are low risk, and most standard care patients are high risk. The comparison mixes the device effect with the risk difference (confounding).</p>
+<h4>Step 3. Build the counterfactual for device patients</h4><ul><li>Ask: what complication rate would the <strong>same 100 device patients</strong> have had with standard care?</li><li>Use the standard care rates within each risk group, weighted by the device patients' mix (20 high, 80 low).</li><li>Counterfactual = (20 x 35% + 80 x 12%) / 100 = (7 + 9.6) / 100 = <strong>16.6%</strong></li></ul>
+<h4>Step 4. The adjusted effect (ATT)</h4><ul><li>ATT = 14.0% - 16.6% = <strong>-2.6 percentage points</strong></li><li>The device still helps, but about <strong>6 times less</strong> than the naive comparison suggested.</li></ul>
+<h4>Step 5. Where the propensity score fits</h4><p>Here the propensity score is simply the share of each risk group that got the device: <strong>0.20</strong> in high risk (20 of 100) and <strong>0.80</strong> in low risk (80 of 100). Matching on the propensity score is the same as comparing within risk groups. With many characteristics (age, sex, comorbidities, centre), the propensity score does this in <strong>one step</strong> <a href="#ref9">[9]</a>.</p></div>
+<h3>Example R code (for analysts)</h3>
+<div class="code-wrap"><pre><code>library(MatchIt)                                    # 1
+m &lt;- matchit(device ~ age + sex + risk_score + centre_volume,
+             data = df,
+             method = "nearest",                    # 2
+             distance = "glm", link = "linear.logit",  # 3
+             caliper = 0.2,                         # 4
+             estimand = "ATT")                      # 5
+summary(m)                                          # 6
+md &lt;- match.data(m)                                 # 7
+fit &lt;- lm(complication ~ device, data = md, weights = weights)  # 8
+lmtest::coeftest(fit, vcov. = sandwich::vcovCL, cluster = ~subclass)  # 9</code></pre></div>
+<p><strong>What the code does (high level):</strong> it estimates each patient's propensity score, pairs each device patient with the closest untreated patient, checks that the pairs are similar, and then compares complication rates within the matched sample.</p>
+<h4>Line by line</h4><ol>
+<li>Loads the <strong>MatchIt</strong> package, which does propensity score matching in R.</li>
+<li><code>matchit(...)</code> builds the matched sample. The formula says: model the chance of <code>device</code> (1 = got the device, 0 = not) from age, sex, risk score and centre volume. <code>method = "nearest"</code> pairs each device patient with the nearest control.</li>
+<li><code>distance = "glm"</code> estimates the propensity score with a logistic regression. <code>link = "linear.logit"</code> measures closeness on the logit scale (the log-odds), which is the scale the caliper rule refers to.</li>
+<li><code>caliper = 0.2</code> refuses pairs that are further apart than 0.2 standard deviations of the logit propensity score, a common rule of thumb <a href="#ref10">[10]</a>.</li>
+<li><code>estimand = "ATT"</code> asks for the effect in patients who received the device.</li>
+<li><code>summary(m)</code> prints balance statistics, including standardised mean differences, before and after matching.</li>
+<li><code>match.data(m)</code> returns the matched patients only, with a <code>weights</code> column and a <code>subclass</code> column (the pair ID).</li>
+<li><code>lm(...)</code> regresses the 0/1 complication outcome on device use in the matched data. The device coefficient is the <strong>risk difference</strong> (ATT).</li>
+<li>Computes standard errors that allow for the pairing (clustered by <code>subclass</code>), which gives confidence intervals accounting for matched pairs.</li></ol>
+<h3>Device-specific cautions</h3><ul><li><strong>Operator and centre effects:</strong> outcomes depend on who uses the device and where. Include centre or operator volume, or cluster by centre.</li>
+<li><strong>Learning curve and calendar time:</strong> early cases may do worse. Include year of procedure or operator experience.</li>
+<li><strong>Device version:</strong> check that all patients received the same (or equivalent) version.</li>
+<li><strong>Unmeasured confounding:</strong> matching only balances what is measured. Report a sensitivity analysis such as the <strong>E-value</strong> (how strong an unmeasured confounder would need to be to explain away the effect) <a href="#ref11">[11]</a>.</li></ul>
+<div class="widget" id="ps-widget"><h3>Interactive: Naive vs adjusted effect</h3><div class="notice">Numbers in worked examples are illustrative, not real prices or trial results.</div>
+<p class="small">All complication rates are percentages. Counts need not be equal across groups.</p>
+<div class="fields">
+<label>Device, high-risk patients<input type="number" id="ps-dh" min="0" value="20"></label><label>Device, high-risk rate (%)<input type="number" id="ps-rdh" min="0" max="100" value="30"></label>
+<label>Device, low-risk patients<input type="number" id="ps-dl" min="0" value="80"></label><label>Device, low-risk rate (%)<input type="number" id="ps-rdl" min="0" max="100" value="10"></label>
+<label>Standard care, high-risk patients<input type="number" id="ps-ch" min="0" value="80"></label><label>Standard care, high-risk rate (%)<input type="number" id="ps-rch" min="0" max="100" value="35"></label>
+<label>Standard care, low-risk patients<input type="number" id="ps-cl" min="0" value="20"></label><label>Standard care, low-risk rate (%)<input type="number" id="ps-rcl" min="0" max="100" value="12"></label></div>
+<div class="metrics" id="ps-out"></div><div class="chart" id="ps-chart" role="img" aria-label="Naive and adjusted percentage-point risk differences"></div>
+<p class="small">The demonstration assumes risk category captures the relevant confounding, with comparable potential outcomes within each risk stratum. This need not hold in real studies.</p>
+<button type="button" class="reset" data-reset="ps">Reset</button></div>
+<p class="source-line">Sources for this section: <a href="#ref8">[8]</a>, <a href="#ref9">[9]</a>, <a href="#ref10">[10]</a>, <a href="#ref11">[11]</a>.</p></div></details>
+
+<details class="chapter" id="s5"><summary><span class="chapter-index">05</span><span class="chapter-headline">What national guidelines say about medical devices</span></summary><div class="chapter-body">
+<div class="key">Key idea: most economic evaluation guidelines were written for medicines. A 2025 systematic review searched for device-specific advice and found it in only a few national guidelines, covering only some device features <a href="#ref12">[12]</a>.</div>
+<h3>What the review found (Akpinar et al., 2025) <a href="#ref12">[12]</a></h3><ul><li>The authors reviewed 77 grey literature sources and economic evaluation guidelines.</li>
+<li><q>Relevant information for only five medical device-specific features was found in six guidelines.</q></li>
+<li><q>None of the guidelines addressed the domains of organizational impact or transferability.</q></li></ul>
+<h3>Medical device-specific features and relevant guideline items by country</h3>
+<p class="small">Reproduced from Akpinar et al. 2025, Table 3 <a href="#ref12">[12]</a>. G1 to G8 refer to the guideline list below. Swipe the table sideways on your phone.</p>
+<div class="table-wrap"><table id="guideline-table"><thead><tr><th>Device feature</th><th>Country (guideline)</th><th>Relevant guideline item (verbatim)</th></tr></thead><tbody>
+<tr data-feature="Low evidence" data-country="New Zealand"><td>Low evidence</td><td>New Zealand [G1]</td><td><q>Trials on medical devices may be of insufficient duration to evaluate long-term efficacy and may only report intermediate endpoints. As lower-quality evidence increases the level of uncertainty in the analysis, conservative assumptions should be applied, and extensive sensitivity analysis undertaken.</q></td></tr>
+<tr data-feature="Learning curve" data-country="Japan"><td>Learning curve</td><td>Japan [G2]</td><td><q>Regarding the evaluation of medical devices, if there are reliable and quantitative data, analysis reflecting "learning effect" (i.e., improvement of treatment effect via the accumulation of clinicians' experience) or "product improvement effect" can be submitted in addition to analyses not considering the effects, upon agreement in consultation with C2H.</q></td></tr>
+<tr data-feature="Learning curve" data-country="New Zealand"><td>Learning curve</td><td>New Zealand [G1]</td><td><q>In cases where there is evidence of reduced efficacy or safety in clinical practice compared with the trial, the analysis should adjust the efficacy/safety of a device in the first few years and assume increased efficacy/safety over time as operators gain experience.</q></td></tr>
+<tr data-feature="Learning curve" data-country="UK"><td>Learning curve</td><td>United Kingdom [G3]</td><td><q>Assumptions included in models should, when appropriate, be validated by a user of the technology who has experience of using it in the NHS or a user with appropriate expertise that can be applied to the technology. This is particularly relevant for the evaluation of medical devices.</q></td></tr>
+<tr data-feature="Learning curve" data-country="Netherlands"><td>Learning curve</td><td>The Netherlands [G4]</td><td><q>For many care interventions, such as medical devices, there is a learning curve that has an effect on the outcomes. This may have an impact on the external validity of the study results, such as when the findings of a study involving experienced users are generalized to the entire population. The opposite applies if outcomes of a short-term study with inexperienced users are extrapolated over a longer time horizon. It is important that the effect of any learning curve is clarified using a scenario and/or uncertainty analysis, where the learning period is excluded.</q></td></tr>
+<tr data-feature="Incremental innovation" data-country="France"><td>Incremental innovation</td><td>France [G5]</td><td><q>The reference case analysis is time-specific. Any change in the healthcare strategy, particularly the arrival of a new comparator on the market, will invalidate the previous cost-effectiveness evaluation. The evaluation takes account of the changes in the characteristics of technologies over time (performance, cost, etc.). Where the introduction of an intervention entails the withdrawal of another intervention (e.g. new version of a medical device, industrial development strategy, etc.), the intervention replaced is to be included in the analysis to inform the decision-maker of all the consequences of the substitution.</q></td></tr>
+<tr data-feature="Incremental innovation" data-country="Ireland"><td>Incremental innovation</td><td>Ireland [G6]</td><td><q>For medical devices, which can change substantially over time in terms of design, it must be clear that selected studies are based on the same device. Evidence of efficacy in a specific device should not be generalized to other similar devices or subsequent generations of a device unless it can be shown that they are at least equivalent and that the synthesized evidence is appropriately adjusted to account for differences.</q></td></tr>
+<tr data-feature="Incremental innovation" data-country="Japan"><td>Incremental innovation</td><td>Japan [G2]</td><td>Same item as Japan under "Learning curve" (learning effect or "product improvement effect" analyses may be submitted upon agreement with C2H).</td></tr>
+<tr data-feature="Incremental innovation" data-country="New Zealand"><td>Incremental innovation</td><td>New Zealand [G1]</td><td><q>In cases where products have been modified since the reported clinical trials, it is recommended that the assessment be based on a synthesis of the trial data (to evaluate the overall efficacy of the product group) and any further evidence available on the impact of product modifications on the efficacy of the device.</q></td></tr>
+<tr data-feature="Incremental innovation" data-country="Netherlands"><td>Incremental innovation</td><td>The Netherlands [G4]</td><td><q>For some healthcare interventions, incremental innovation throughout their life cycle is expected. This is not exceptional in the case of medical devices, but it can also apply to other interventions. The intervention could be improved further during or after an economic evaluation has been performed. As a result, it may be necessary to create a dynamic model for the effectiveness and the costs. It is important that the specifications of the care intervention investigated and any assumptions about innovation are accurately reported. The effect of any assumptions should be investigated in scenario analyses.</q></td></tr>
+<tr data-feature="Diversity" data-country="Netherlands"><td>Diversity</td><td>The Netherlands [G7]</td><td><q>The diversity of devices is enormous, and in the "healthcare market" we can distinguish two target groups of primary users of diagnostic or therapeutic devices. With regard to application on an individual level, for example, the thermometer with which diabetes patient monitor the foot temperature to prevent foot ulcers, there is not much difference with a common intervention; the market consists of the number of patients. With regards to equipment, such as a CT-scanner, the situation is less clear-cut. In that case, the first layer in the healthcare market is made up of the caregivers who will be using the device. The second layer consists of the patients on whom the caregivers will be applying the device. These two layers should be taken into account when determining the price per unit, also considering that the depreciation charges of the equipment via the procedure are influenced by the utilization degree, or in other terms, the non-optimal use of the device. That said, collective devices are often suitable for use in multiple patient populations, which may have a cost-reducing effect on the price per procedure.</q></td></tr>
+<tr data-feature="Dynamic pricing" data-country="France"><td>Dynamic pricing</td><td>France [G5]</td><td><q>Resources for which there is no tariff set (non-listed procedures, non-refundable medical devices or, heavy equipment, mobile medical units, etc.) should be valued at the average real price if observable, or via another method to be detailed. Medical devices and medicines are most often valued based on their tariff, except when this tariff does not represent all the expenses borne by the various funders: (1) medical devices for which a reference price has been set may be marketed at a price to be freely determined by the manufacturer. Such devices are valued at the volume-weighted average price calculated on the real quantities sold. (2) non-refundable devices sold at a price exceeding the applicable tariff are valued at the price actually paid.</q></td></tr>
+<tr data-feature="Other" data-country="Canada"><td>Other recommendations</td><td>Canada [G8]</td><td><q>Researchers should be careful to avoid double counting when measuring resources; for example, avoiding situations where resource use is estimated separately as well as being bundled together in a single case-mix estimate (e.g., medical devices). In such situations, researchers must be careful to avoid overestimating the use ascribed to a particular resource.</q></td></tr>
+<tr data-feature="Other" data-country="France"><td>Other recommendations</td><td>France [G5]</td><td><q>Micro-costing method: precise identification of the resources consumed per intervention</q></td></tr>
+<tr data-feature="Other" data-country="Ireland"><td>Other recommendations</td><td>Ireland [G6]</td><td><q>All adverse effects that are of clinical or economic importance should be included in the analysis.</q></td></tr>
+<tr data-feature="Other" data-country="New Zealand"><td>Other recommendations</td><td>New Zealand [G1]</td><td><q>Medical devices have costs that may differ to those for medicines, and which need to be considered. These costs include, but are not limited to:</q> one-off costs ("capital", "disposal of current device(s)", "costs of switching out devices already in use", "implementation"); fixed costs ("hiring additional staff", "overheads", "training"); costs associated with use ("operating costs", "maintenance and repair", "consumables").</td></tr>
+<tr data-feature="Other" data-country="Netherlands"><td>Other recommendations</td><td>The Netherlands [G4]</td><td><q>The primary aim of interventions in healthcare is not always to improve the health-related quality of life or extend the life expectancy of the patient. For some interventions, such as medical devices, effects may be achieved in terms of broader value components. Examples include convenience for the caregiver, or a reduction in the time required for the procedure. It may be relevant for these kinds of interventions to include those other value components in the economic evaluation as well. Methods are available that can be used to identify and quantify that valuation by directly consulting patients and users, such as a DCE and the MCDA.</q></td></tr>
+<tr data-feature="Other" data-country="Netherlands"><td>Other recommendations</td><td>The Netherlands [G4]</td><td><q>Due to the use of outcome measures other than the quality of life for economic evaluations of medical devices, it is not always possible to perform a CUA. Instead, a CEA is a good alternative.</q></td></tr>
+</tbody></table></div>
+<p class="small">Abbreviations (from the source table): C2H, Center for Outcomes Research and Economic Evaluation for Health (Japan); CEA, cost-effectiveness analysis; CUA, cost-utility analysis; DCE, discrete choice experiment; MCDA, multi-criteria decision analysis; NHS, National Health Service (UK).</p>
+<p class="small">Editorial notes: In the France incremental innovation item, the source uses dashes around "particularly the arrival of a new comparator on the market"; they are shown here as commas to keep the no-dash rule. The New Zealand cost list and the France dynamic pricing list were bullet lists in the source; they are shown inline.</p>
+<h3>Guidelines cited in the table</h3><ul>
+<li><strong>[G1] New Zealand (ref 38):</strong> Pharmac, New Zealand Government. Prescription for pharmacoeconomic analysis: methods for cost-utility analysis. 2015.</li>
+<li><strong>[G2] Japan (ref 39):</strong> Core2 Health. Guideline for preparing cost-effectiveness evaluation to the Central Social Insurance Medical Council. 2022.</li>
+<li><strong>[G3] United Kingdom (ref 40):</strong> NICE. NICE health technology evaluations: the manual. 2022.</li>
+<li><strong>[G4] The Netherlands (ref 41):</strong> Zorginstituut Nederland. Guideline for economic evaluations in healthcare (2024 version). 2024.</li>
+<li><strong>[G5] France (ref 42):</strong> Haute Autorité de Santé (HAS). Methodological guidance: choices in methods for economic evaluation. 2020.</li>
+<li><strong>[G6] Ireland (ref 43):</strong> Health Information and Quality Authority (HIQA). Guidelines for the economic evaluation of health technologies in Ireland. 2019.</li>
+<li><strong>[G7] The Netherlands (ref 44):</strong> Health Care Institute. Guideline for economic evaluations in healthcare. 2016.</li>
+<li><strong>[G8] Canada (ref 45):</strong> CADTH. Guidelines for the economic evaluation of health technologies: Canada. 4th ed. Ottawa: CADTH; 2017.</li></ul>
+<h3>Quick summary by feature (from review text <a href="#ref12">[12]</a>)</h3><ul>
+<li><strong>Low evidence:</strong> New Zealand.</li><li><strong>Learning curve:</strong> Japan, UK, the Netherlands, New Zealand.</li>
+<li><strong>Incremental innovation:</strong> France, Ireland, Japan, the Netherlands, New Zealand.</li><li><strong>Diversity:</strong> the Netherlands.</li>
+<li><strong>Dynamic pricing:</strong> France.</li><li><strong>Organizational impact and transferability:</strong> no guideline.</li></ul>
+<div class="widget" id="guideline-widget"><h3>Interactive: Guideline finder</h3>
+<p class="small">Filter the source table by a device feature and a country. All quotations remain unchanged.</p>
+<p class="tag">FEATURE</p><div class="chip-set" id="feature-chips" role="group" aria-label="Filter by feature"></div>
+<p class="tag">COUNTRY</p><div class="chip-set" id="country-chips" role="group" aria-label="Filter by country"></div>
+<p id="guideline-count" aria-live="polite"></p><div class="finder-grid" id="guideline-cards"></div>
+<button type="button" class="reset" data-reset="guidelines">Reset filters</button></div>
+<p class="source-line">Sources for this section: <a href="#ref12">[12]</a>.</p></div></details>
+
+<details class="chapter" id="s6"><summary><span class="chapter-index">06</span><span class="chapter-headline">Economies of scale: cost per case and volume</span></summary><div class="chapter-body">
+<div class="key">Key idea: a device with a large fixed cost becomes cheaper per patient the more patients it treats, until it hits capacity and a second machine is needed.</div>
+<h3>Terms</h3><ul><li><strong>Fixed cost:</strong> cost that does not change with the number of patients in a year (the machine, its maintenance contract).</li><li><strong>Variable cost:</strong> cost that rises with each patient (single-use consumables).</li><li><strong>Average cost per case:</strong> total yearly cost divided by number of cases.</li><li><strong>Economies of scale:</strong> average cost falls as volume rises, because the fixed cost is shared by more patients.</li><li><strong>Utilisation:</strong> how much of the machine's capacity is actually used.</li></ul>
+<h3>What the sources say</h3><ul>
+<li>Daubner-Bendes et al. <a href="#ref8">[8]</a>: at hospitals, equipment is a fixed (capital) cost, while consumables are variable costs, and <q>As the average cost is dependent on the economies of scale, it is not easy to calculate the actual cost per intervention of complex MDs with high upfront costs and unpredictable maintenance costs.</q></li>
+<li>Daubner-Bendes et al. <a href="#ref8">[8]</a>: <q>economies of scale in large specialised centres accelerates the adoption of MDs and allows institutes to employ more specialised operators and ancillary staff, which ultimately improves outcomes and reduces the average cost per case.</q></li>
+<li>Dutch guideline, quoted in Akpinar et al. <a href="#ref12">[12]</a>: depreciation charges per procedure <q>are influenced by the utilization degree, or in other terms, the non-optimal use of the device.</q></li>
+<li>WHO <a href="#ref1">[1]</a>: some countries <q>are moving towards centralized procurement to take advantage of economies of scale. The latter may not; however, be suitable for countries with diverse health needs.</q></li>
+<li><strong>Policy implication</strong> (Daubner-Bendes Recommendation 2.1 <a href="#ref8">[8]</a>): national HTA should use <q>average expected payments, rather than actual costs</q>, because actual costs depend on each hospital's volume and economies of scale.</li></ul>
+<div class="worked"><h3>Worked example</h3>
+<ul><li>Capital: US$550,000 (machine 500,000 + installation and training 50,000), life 5 years, discount rate 8%.</li>
+<li>Annual capital cost (annuity): 550,000 / 3.99271 = <strong>US$137,751</strong>.</li><li>Maintenance: <strong>US$25,000 a year</strong> per machine.</li>
+<li>Fixed cost per machine per year: 137,751 + 25,000 = <strong>US$162,751</strong>.</li><li>Consumables: <strong>US$300 per case</strong>.</li><li>Capacity: <strong>1,000 cases a year</strong> per machine.</li></ul>
+<p><strong>Formula:</strong> machines needed = volume / 1,000, rounded up. Cost per case = (machines x 162,751) / volume + 300.</p>
+<div class="table-wrap"><table><thead><tr><th>Cases a year</th><th>Machines</th><th>Fixed cost per case (US$)</th><th>+ Consumables (US$)</th><th>Cost per case (US$)</th></tr></thead><tbody>
+<tr><td>100</td><td>1</td><td>1,627.51</td><td>300</td><td><strong>1,927.51</strong></td></tr><tr><td>250</td><td>1</td><td>651.00</td><td>300</td><td><strong>951.00</strong></td></tr><tr><td>500</td><td>1</td><td>325.50</td><td>300</td><td><strong>625.50</strong></td></tr><tr><td>750</td><td>1</td><td>217.00</td><td>300</td><td><strong>517.00</strong></td></tr>
+<tr><td>1,000</td><td>1</td><td>162.75</td><td>300</td><td><strong>462.75</strong></td></tr><tr><td>1,200</td><td>2</td><td>271.25</td><td>300</td><td><strong>571.25</strong></td></tr><tr><td>1,500</td><td>2</td><td>217.00</td><td>300</td><td><strong>517.00</strong></td></tr><tr><td>2,000</td><td>2</td><td>162.75</td><td>300</td><td><strong>462.75</strong></td></tr></tbody></table></div></div>
+<h3>What it shows</h3><ul><li>Going from 100 to 1,000 cases cuts the cost per case from <strong>US$1,927.51 to US$462.75</strong> (a 76% drop).</li>
+<li>At 1,200 cases a <strong>second machine</strong> is needed, so cost per case jumps back up to US$571.25 (a "step" cost).</li>
+<li><strong>Price discounts with volume</strong> are a second source of savings: if bulk buying cut consumables by 10% (US$270 instead of US$300), the cost per case at 1,000 cases would fall from US$462.75 to <strong>US$432.75</strong>.</li>
+<li><strong>For HTA:</strong> the same device can look cost-effective in a high-volume centre and not cost-effective in a low-volume centre. State the assumed volume and test it in sensitivity analysis.</li></ul>
+<div class="widget" id="scale-widget"><h3>Interactive: Volume and cost per case</h3><div class="notice">Numbers in worked examples are illustrative, not real prices or trial results.</div>
+<div class="fields">
+<label>Capital (US$)<input id="scale-capital" type="number" min="0" step="1000" value="550000"></label>
+<label>Life (years)<input id="scale-life" type="number" min="1" max="60" value="5"></label>
+<label>Discount rate (%)<input id="scale-rate" type="number" min="0" max="50" step=".5" value="8"></label>
+<label>Maintenance per machine/year (US$)<input id="scale-maint" type="number" min="0" value="25000"></label>
+<label>Consumables per case (US$)<input id="scale-cons" type="number" min="0" value="300"></label>
+<label>Capacity per machine (cases/year)<input id="scale-capacity" type="number" min="1" value="1000"></label>
+<label>Volume: <output id="scale-volume-label">1,000 cases</output><input id="scale-volume" type="range" min="50" max="3000" step="50" value="1000"></label></div>
+<div class="metrics" id="scale-out"></div><div class="chart" id="scale-chart" role="img" aria-label="Cost per case falls with increasing volume and steps up as machines are added"></div>
+<button type="button" class="reset" data-reset="scale">Reset</button></div>
+<p class="source-line">Sources for this section: <a href="#ref1">[1]</a>, <a href="#ref8">[8]</a>, <a href="#ref12">[12]</a>. Worked example is own calculation.</p></div></details>
+
+<details class="chapter" id="s7"><summary><span class="chapter-index">07</span><span class="chapter-headline">NPV and IRR: the buyer's view</span></summary><div class="chapter-body">
+<div class="key">Key idea: a hospital buying a device asks a money question: “Will what we are paid per case cover the purchase, the running costs and the return we need?” NPV and IRR answer it. They measure money, not health, so they sit beside the ICER and never replace it.</div>
+<h3>Terms</h3><ul>
+<li><strong>Cash flow:</strong> money in minus money out in a year.</li><li><strong>Discounting:</strong> converting future money into today's money (see <a href="#s2">Section 2</a>).</li>
+<li><strong>NPV (net present value):</strong> the sum of all cash flows, each converted to today's value. Above zero means the project earns more than the discount rate.</li>
+<li><strong>IRR (internal rate of return):</strong> the discount rate at which NPV is exactly zero. It is the project's own yearly return. Compare it with the return you require (the "hurdle rate").</li>
+<li><strong>Payback period:</strong> years until the cash received equals the cash paid (not discounted).</li></ul>
+<p><strong>Why it matters for devices:</strong> Daubner-Bendes et al. recommend that national HTA use <q>average expected payments, rather than actual costs</q> <a href="#ref8">[8]</a>. The payment level per case is exactly what decides whether a hospital's investment pays back.</p>
+<div class="worked"><h3>Example A: the simplest case</h3>
+<p>Pay <strong>1,000</strong> now. Receive <strong>500</strong> at the end of each of the next 3 years. Discount rate <strong>10%</strong>.</p>
+<div class="table-wrap"><table><thead><tr><th>Year</th><th>Cash</th><th>Divide by</th><th>Value today</th></tr></thead><tbody><tr><td>0</td><td>-1,000</td><td>1</td><td>-1,000.0</td></tr>
+<tr><td>1</td><td>500</td><td>1.10</td><td>454.5</td></tr><tr><td>2</td><td>500</td><td>1.21</td><td>413.2</td></tr><tr><td>3</td><td>500</td><td>1.331</td><td>375.7</td></tr><tr><td><strong>NPV</strong></td><td></td><td></td><td><strong>243.4</strong></td></tr></tbody></table></div>
+<ul><li><strong>NPV = +243.4:</strong> after covering the cost and a 10% return, you are about 243 better off in today's money.</li>
+<li><strong>IRR:</strong> at 20% the NPV is still +53.2; at about <strong>23.4%</strong> it reaches zero. So IRR is about 23.4%, above the 10% hurdle. Accept.</li></ul></div>
+<div class="worked"><h3>Example B: a hospital buys a device</h3><ul>
+<li>Purchase plus training (year 0): <strong>US$1,050,000</strong></li><li>Payment received per case: <strong>US$6,000</strong></li>
+<li>Variable cost per case: <strong>US$3,500</strong>, so margin per case = 6,000 - 3,500 = <strong>US$2,500</strong></li>
+<li>Maintenance: <strong>US$60,000 a year</strong></li>
+<li>Cases per year (years 1 to 5): <strong>120, 180, 220, 220, 220</strong></li>
+<li>Life: 5 years, no resale value. Discount rate: <strong>8%</strong></li></ul>
+<h4>Cash flows</h4><div class="table-wrap"><table><thead><tr><th>Year</th><th>Calculation</th><th>Net cash flow (US$)</th><th>Discount factor at 8%</th><th>Value today (US$)</th></tr></thead><tbody>
+<tr><td>0</td><td>purchase</td><td>-1,050,000</td><td>1.0000</td><td>-1,050,000</td></tr>
+<tr><td>1</td><td>120 x 2,500 - 60,000</td><td>240,000</td><td>0.9259</td><td>222,222</td></tr>
+<tr><td>2</td><td>180 x 2,500 - 60,000</td><td>390,000</td><td>0.8573</td><td>334,362</td></tr>
+<tr><td>3</td><td>220 x 2,500 - 60,000</td><td>490,000</td><td>0.7938</td><td>388,978</td></tr>
+<tr><td>4</td><td>220 x 2,500 - 60,000</td><td>490,000</td><td>0.7350</td><td>360,165</td></tr>
+<tr><td>5</td><td>220 x 2,500 - 60,000</td><td>490,000</td><td>0.6806</td><td>333,486</td></tr>
+<tr><td><strong>Total</strong></td><td></td><td></td><td></td><td><strong>NPV = 589,213</strong></td></tr></tbody></table></div>
+<h4>Results</h4><ul><li><strong>NPV at 8% = US$589,213</strong></li><li><strong>IRR = 25.2%</strong></li>
+<li><strong>Payback about 2.9 years</strong> (cumulative cash: -810,000 after year 1, -420,000 after year 2, then 420,000 / 490,000 = 0.86 of year 3)</li><li>NPV at 3% = US$857,078; at 12% = US$413,407</li></ul>
+<h4>Scenarios</h4><div class="table-wrap"><table><thead><tr><th>Scenario</th><th>NPV at 8% (US$)</th><th>IRR</th><th>Reading</th></tr></thead><tbody>
+<tr><td>Base case: payment US$6,000</td><td>589,213</td><td>25.2%</td><td>Invest</td></tr>
+<tr><td>Payment cut to US$5,000</td><td>-162,298</td><td>2.5%</td><td>Do not invest</td></tr>
+<tr><td>Cases 25% lower every year</td><td>119,519</td><td>11.8%</td><td>Still positive, thin margin</td></tr>
+<tr><td>Break-even payment</td><td>0</td><td>8.0%</td><td>US$5,216 per case</td></tr>
+<tr><td>Break-even volume (payment US$6,000)</td><td>0</td><td>8.0%</td><td>About 69% of planned cases</td></tr>
+</tbody></table></div></div>
+<h3>What the example shows</h3><ul><li><strong>Payment per case decides adoption.</strong> A cut of US$1,000 per case turns a good investment into a loss.</li><li>A payer can ask: “What payment makes NPV zero?” Here, about US$5,216.</li><li><strong>Volume matters too</strong> (see <a href="#s6">Section 6</a>): below about 69% of planned cases, the investment does not pay back.</li></ul>
+<h3>When to trust NPV or IRR: decision steps</h3><ol>
+<li><strong>One project, yes or no?</strong> Both give the same answer for conventional cash flows.</li>
+<li><strong>Choosing between projects, or only one can be funded?</strong> Use <strong>NPV</strong>. IRR ignores size:
+<ul><li>Project A: invest US$100,000, receive US$60,000 a year for 3 years → IRR <strong>36.3%</strong>, NPV at 8% <strong>US$54,626</strong>.</li><li>Project B: invest US$1,000,000, receive US$450,000 a year for 3 years → IRR <strong>16.6%</strong>, NPV at 8% <strong>US$159,694</strong>.</li><li>IRR picks A; NPV picks B, which creates more value.</li></ul></li>
+<li><strong>Cash flows change sign more than once</strong> (for example a big mid-life upgrade)? Use <strong>NPV</strong>: there can be more than one IRR.</li><li><strong>Talking to non-finance people?</strong> Use IRR as the headline, with NPV beside it.</li></ol>
+<h3>Cautions</h3><ul><li><strong>Money, not health:</strong> a device can pass the NPV test and fail the ICER test, or the reverse.</li>
+<li><strong>Simple model:</strong> tax, inflation and resale value are left out here.</li><li><strong>Spreadsheet tip:</strong> Excel's NPV function treats the first value as year 1, so add the year 0 purchase separately <a href="#ref13">[13]</a>.</li></ul>
+<div class="widget" id="npv-widget"><h3>Interactive: NPV and IRR calculator</h3><div class="notice">Numbers in worked examples are illustrative, not real prices or trial results.</div><div class="fields">
+<label>Purchase and training (US$)<input id="npv-purchase" type="number" min="0" value="1050000"></label>
+<label>Payment per case (US$)<input id="npv-payment" type="number" min="0" value="6000"></label>
+<label>Variable cost per case (US$)<input id="npv-variable" type="number" min="0" value="3500"></label>
+<label>Maintenance per year (US$)<input id="npv-maint" type="number" min="0" value="60000"></label>
+<label>Year 1 cases<input id="npv-y1" type="number" min="0" value="120"></label>
+<label>Year 2 cases<input id="npv-y2" type="number" min="0" value="180"></label>
+<label>Year 3 cases<input id="npv-y3" type="number" min="0" value="220"></label>
+<label>Year 4 cases<input id="npv-y4" type="number" min="0" value="220"></label>
+<label>Year 5 cases<input id="npv-y5" type="number" min="0" value="220"></label>
+<label>Discount rate (%)<input id="npv-rate" type="number" min="0" max="100" step=".5" value="8"></label></div>
+<div class="metrics" id="npv-out"></div><div class="table-wrap"><table><thead><tr><th>Year</th><th>Cases</th><th>Cash flow</th><th>Discount factor</th><th>Value today</th><th>Cumulative NPV</th></tr></thead><tbody id="npv-cash-rows"></tbody></table></div><div class="chart" id="npv-chart" role="img" aria-label="Yearly discounted cash flows with cumulative discounted cash flow"></div>
+<button type="button" class="reset" data-reset="npv">Reset</button>
+<h4>Optional mini example A</h4><p>Invest US$1,000 today, receive US$500 for 3 years. At 10%, <span id="mini-npv"></span>.</p>
+</div><p class="source-line">Sources: <a href="#ref8">[8]</a>, <a href="#ref13">[13]</a>; IRR pitfalls are standard corporate finance (own synthesis).</p></div></details>
+
+<details class="chapter" id="s8"><summary><span class="chapter-index">08</span><span class="chapter-headline">Depreciation, annuity and the double-counting trap</span></summary><div class="chapter-body">
+<div class="key">Key idea: a device is paid for once. You can show that cost at year 0 or as equal yearly annuity payments. Both give the same answer. Adding depreciation on top of either one counts the device twice.</div>
+<h3>Terms</h3><ul><li><strong>Capital cost:</strong> the one-off cost of buying and installing the device.</li><li><strong>Depreciation:</strong> an accounting way to spread a cost already paid over the years of use. Straight-line depreciation uses equal slices with no interest.</li>
+<li><strong>Annuity (equivalent annual cost):</strong> equal yearly payments whose value today equals the price. They include the cost of having money tied up (interest).</li>
+<li><strong>Book value:</strong> the cost minus the depreciation so far.</li><li><strong>Capital charge:</strong> interest on the book value.</li></ul>
+<div class="worked"><h3>Step 0: the same device and the same rate</h3><ul><li><strong>Capital:</strong> US$550,000 paid at year 0 (price 500,000 + installation and training 50,000).</li><li><strong>Life:</strong> 5 years. <strong>Discount rate:</strong> 8%.</li><li><strong>Running costs:</strong> US$325,000 a year (maintenance 25,000 + consumables 300 x 1,000 cases).</li><li><strong>Volume:</strong> 1,000 cases a year.</li></ul>
+<h3>Step 1: the building block, the discount factor</h3><ul><li><strong>Discount factor</strong> = 1 / (1 + r)<sup>t</sup>. It converts a future US$1 into today's money.</li><li><strong>Why it works:</strong> US$1 today grows to US$1.08 in one year. So US$1.08 next year is worth US$1 today.</li></ul>
+<div class="table-wrap"><table><thead><tr><th>Year (t)</th><th>Calculation</th><th>Discount factor</th></tr></thead><tbody>
+<tr><td>0</td><td>1 / 1.08<sup>0</sup></td><td>1.00000</td></tr><tr><td>1</td><td>1 / 1.08</td><td>0.92593</td></tr><tr><td>2</td><td>1 / 1.1664</td><td>0.85734</td></tr>
+<tr><td>3</td><td>1 / 1.2597</td><td>0.79383</td></tr><tr><td>4</td><td>1 / 1.3605</td><td>0.73503</td></tr><tr><td>5</td><td>1 / 1.4693</td><td>0.68058</td></tr></tbody></table></div>
+<h3>Step 2: where the annuity factor comes from</h3><ul><li>The <strong>annuity factor</strong> is just the <em>sum of the discount factors for years 1 to 5</em>.</li><li>0.92593 + 0.85734 + 0.79383 + 0.73503 + 0.68058 = <strong>3.99271</strong></li><li><strong>Meaning:</strong> US$1 paid every year for 5 years is worth <strong>US$3.99271 today</strong>, not US$5.</li><li><strong>The annuity payment</strong> is the yearly amount whose value today equals the price: payment x 3.99271 = 550,000; payment = 550,000 / 3.99271 = <strong>US$137,751</strong>.</li></ul>
+<h3>Step 3: Method A (year 0) and Method B (annuity)</h3><div class="table-wrap"><table><thead><tr><th>Year</th><th>Discount factor</th><th>A: cash paid</th><th>A: value today</th><th>B: cash paid</th><th>B: value today</th></tr></thead><tbody>
+<tr><td>0</td><td>1.00000</td><td>550,000</td><td>550,000</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>0.92593</td><td>0</td><td>0</td><td>137,751</td><td>127,547</td></tr><tr><td>2</td><td>0.85734</td><td>0</td><td>0</td><td>137,751</td><td>118,099</td></tr>
+<tr><td>3</td><td>0.79383</td><td>0</td><td>0</td><td>137,751</td><td>109,351</td></tr><tr><td>4</td><td>0.73503</td><td>0</td><td>0</td><td>137,751</td><td>101,251</td></tr><tr><td>5</td><td>0.68058</td><td>0</td><td>0</td><td>137,751</td><td>93,751</td></tr>
+<tr><td><strong>Total value today</strong></td><td></td><td></td><td><strong>550,000</strong></td><td></td><td><strong>550,000</strong></td></tr></tbody></table></div>
+<ul><li><strong>Same total, different timing.</strong> A pays at once. B pays in instalments, and each instalment is worth less because it is later.</li><li><strong>Cash actually paid in B:</strong> US$688,755. The extra US$138,755 is the cost of waiting (interest).</li><li><strong>So the annuity already contains the discounting.</strong> You must not discount it again as a separate step and then add something else.</li></ul>
+<h4>The annuity as a loan repayment schedule</h4><p>Each payment = interest on what is still owed + repayment of principal.</p>
+<div class="table-wrap"><table><thead><tr><th>Year</th><th>Payment</th><th>Interest (8%)</th><th>Principal repaid</th><th>Still owed</th></tr></thead><tbody>
+<tr><td>1</td><td>137,751</td><td>44,000</td><td>93,751</td><td>456,249</td></tr>
+<tr><td>2</td><td>137,751</td><td>36,500</td><td>101,251</td><td>354,998</td></tr>
+<tr><td>3</td><td>137,751</td><td>28,400</td><td>109,351</td><td>245,647</td></tr>
+<tr><td>4</td><td>137,751</td><td>19,652</td><td>118,099</td><td>127,547</td></tr>
+<tr><td>5</td><td>137,751</td><td>10,204</td><td>127,547</td><td>0</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>688,755</strong></td><td><strong>138,755</strong></td><td><strong>550,000</strong></td><td></td></tr></tbody></table></div>
+<h3>Step 4: what straight-line depreciation does</h3><p><strong>Straight-line depreciation</strong> = 550,000 / 5 = <strong>US$110,000 a year</strong>, with no interest. Now discount those charges the way a model would:</p>
+<div class="table-wrap"><table><thead><tr><th>Year</th><th>Depreciation</th><th>Discount factor</th><th>Value today</th></tr></thead><tbody>
+<tr><td>1</td><td>110,000</td><td>0.92593</td><td>101,852</td></tr><tr><td>2</td><td>110,000</td><td>0.85734</td><td>94,307</td></tr>
+<tr><td>3</td><td>110,000</td><td>0.79383</td><td>87,322</td></tr><tr><td>4</td><td>110,000</td><td>0.73503</td><td>80,853</td></tr><tr><td>5</td><td>110,000</td><td>0.68058</td><td>74,864</td></tr>
+<tr><td><strong>Total</strong></td><td>550,000 (not discounted)</td><td></td><td><strong>439,198</strong></td></tr></tbody></table></div>
+<ul><li>Depreciation on its own gives a capital cost of <strong>US$439,198</strong>, not US$550,000.</li><li><strong>Why it is lower:</strong> it spreads the cost evenly but ignores that the money was tied up earlier. The first-year charge should carry more interest, because you still owe more.</li></ul>
+<h3>Step 5: depreciation used correctly (with a capital charge)</h3><p><strong>Capital charge</strong> = interest on the part of the device not yet used up, called the <em>book value</em> (cost minus depreciation so far). It is the cost of having money tied in the device.</p>
+<div class="table-wrap"><table><thead><tr><th>Year</th><th>Book value at start</th><th>Capital charge (8%)</th><th>Depreciation</th><th>Total yearly cost</th><th>Discount factor</th><th>Value today</th></tr></thead><tbody>
+<tr><td>1</td><td>550,000</td><td>44,000</td><td>110,000</td><td>154,000</td><td>0.92593</td><td>142,593</td></tr><tr><td>2</td><td>440,000</td><td>35,200</td><td>110,000</td><td>145,200</td><td>0.85734</td><td>124,486</td></tr>
+<tr><td>3</td><td>330,000</td><td>26,400</td><td>110,000</td><td>136,400</td><td>0.79383</td><td>108,279</td></tr><tr><td>4</td><td>220,000</td><td>17,600</td><td>110,000</td><td>127,600</td><td>0.73503</td><td>93,790</td></tr><tr><td>5</td><td>110,000</td><td>8,800</td><td>110,000</td><td>118,800</td><td>0.68058</td><td>80,853</td></tr>
+<tr><td><strong>Total</strong></td><td></td><td></td><td></td><td></td><td></td><td><strong>550,000</strong></td></tr></tbody></table></div>
+<ul><li><strong>Depreciation + capital charge = US$550,000.</strong> It is the same money again.</li><li><strong>The rule:</strong> depreciation is acceptable if you pair it with a capital charge, <strong>and</strong> you do <em>not</em> also put the purchase in year 0.</li></ul>
+<h3>Step 6: the double-counting mistake (Method D)</h3><ul>
+<li><strong>What the analyst did:</strong> put US$550,000 in year 0, <em>and</em> added straight-line depreciation of US$110,000 a year, discounted.</li>
+<li><strong>Capital cost in the model:</strong> 550,000 + 439,198 = <strong>US$989,198</strong>.</li><li><strong>Why this is wrong:</strong> the US$550,000 at year 0 is the whole purchase. Depreciation is only that same purchase described year by year. You paid for the device once, yet the model charges for it <strong>1.8 times</strong>.</li></ul>
+<h3>Step 7: all five methods compared, in cost per case</h3>
+<p><strong>Discounted cases:</strong> 1,000 x 3.99271 = <strong>3,992.7</strong>. <strong>Running costs, value today:</strong> 325,000 x 3.99271 = <strong>US$1,297,631</strong> (the same in all methods).</p>
+<div class="table-wrap"><table><thead><tr><th>Method</th><th>Capital, value today</th><th>+ Running costs = Total</th><th>Cost per case</th><th>Verdict</th></tr></thead><tbody>
+<tr><td><strong>A</strong> Year 0</td><td>550,000</td><td>1,847,631</td><td><strong>US$462.75</strong></td><td>Correct</td></tr>
+<tr><td><strong>B</strong> Annuity</td><td>550,000</td><td>1,847,631</td><td><strong>US$462.75</strong></td><td>Correct</td></tr>
+<tr><td><strong>C</strong> Depreciation only</td><td>439,198</td><td>1,736,829</td><td><strong>US$435.00</strong></td><td>Understated by US$27.75 (6%)</td></tr>
+<tr><td><strong>D</strong> Year 0 + depreciation</td><td>989,198</td><td>2,286,829</td><td><strong>US$572.75</strong></td><td>Overstated by US$110 (24%)</td></tr>
+<tr><td><strong>E</strong> Depreciation + capital charge</td><td>550,000</td><td>1,847,631</td><td><strong>US$462.75</strong></td><td>Correct</td></tr></tbody></table></div></div>
+<h3>Step 8: the one idea that ties it together</h3><ul><li><strong>Principal part of each annuity payment</strong> (from the loan table) is the <em>true</em> economic depreciation. It is smaller in early years and larger in later years: 93,751, 101,251, 109,351, 118,099, 127,547.</li>
+<li><strong>Interest part</strong> is the capital charge.</li><li><strong>Annuity = depreciation + capital charge</strong>, in a version that already includes the time value of money.</li><li><strong>Straight-line depreciation</strong> is a rougher, interest-free version of that, which is why it needs a capital charge to be correct.</li></ul>
+<h3>Which method to use: decision steps</h3><ol><li><strong>Need a cost per case or per year?</strong> Use the annuity (B), or depreciation plus capital charge (E). No year-0 line.</li>
+<li><strong>Building a model over several years?</strong> Put the purchase at year 0 (A). No depreciation.</li><li><strong>Doing a budget impact analysis?</strong> Record the cash in the year it is paid, not discounted, and no depreciation.</li><li><strong>Never combine</strong> A with depreciation. That gives D.</li></ol>
+<p><strong>What the sources say:</strong> the Adams et al. checklist, quoted in Akpinar et al., asks <q>Was depreciation considered appropriately and measured correctly?</q> <a href="#ref12">[12]</a>. The sources do not give a formula; the methods above are standard financial maths (own synthesis).</p>
+<div class="widget" id="capital-widget"><h3>Interactive: Five capital cost methods</h3><div class="notice">Numbers in worked examples are illustrative, not real prices or trial results.</div>
+<div class="fields"><label>Capital (US$)<input id="capital-cost" type="number" min="0" value="550000"></label>
+<label>Life (years)<input id="capital-life" type="number" min="1" max="50" value="5"></label>
+<label>Discount rate (%)<input id="capital-rate" type="number" min="0" max="100" step=".5" value="8"></label>
+<label>Maintenance/year (US$)<input id="capital-maint" type="number" min="0" value="25000"></label>
+<label>Consumables/case (US$)<input id="capital-cons" type="number" min="0" value="300"></label>
+<label>Cases/year<input id="capital-cases" type="number" min="1" value="1000"></label></div>
+<div class="metrics" id="capital-out"></div>
+<h4>Discount factors</h4><div class="table-wrap"><table><thead><tr><th>Year</th><th>Discount factor</th><th>Annuity payment</th><th>Value today</th></tr></thead><tbody id="capital-discount-rows"></tbody></table></div>
+<h4>Annuity loan schedule</h4><div class="table-wrap"><table><thead><tr><th>Year</th><th>Starting balance</th><th>Payment</th><th>Interest</th><th>Principal</th><th>Remaining balance</th></tr></thead><tbody id="capital-loan-rows"></tbody></table></div>
+<h4>Five methods</h4><div class="table-wrap"><table><thead><tr><th>Method</th><th>Capital present value</th><th>Total present cost</th><th>Cost per case</th><th>Difference vs A</th><th>Verdict</th></tr></thead><tbody id="capital-method-rows"></tbody></table></div>
+<div class="chart" id="capital-chart" role="img" aria-label="Cost per case under five alternative capital-cost methods"></div>
+<button type="button" class="reset" data-reset="capital">Reset</button></div>
+<p class="source-line">Sources: <a href="#ref12">[12]</a>. Calculations are own worked example.</p></div></details>
+
+<details class="chapter" id="s9"><summary><span class="chapter-index">09</span><span class="chapter-headline">Transferring real-world evidence to late-adopter countries</span></summary><div class="chapter-body">
+<div class="key">Key idea: countries that adopt devices late (for example in Central and Eastern Europe, and many middle-income countries) often have no local data yet. Real-world evidence from early-adopter countries can help, but only after checking that the device is the same, the study is good enough, and the setting is similar.</div>
+<h3>The recommendation (Daubner-Bendes et al., Recommendation #1.2 <a href="#ref8">[8]</a>), verbatim</h3>
+<blockquote>Explore the feasibility of transferring RWE to late technology adopter countries in a stepwise approach. In order to overcome the uncertain quality and local relevance of RWD, a stepwise approach is recommended to explore the feasibility of transferring international RWE to CEE countries. The first step should be the systematic search and collection of potentially relevant RWEs, followed by an evaluation of the equivalence of technologies presented in the study of origin and local context. As a result, studies in which the technologies have no major differences should be channelled into further assessment. In the next step, the quality of evidence should be evaluated by using quality assessment tools, such as GRADE, ROBINS-I or the ISPOR initiative on RWE transparency and include only studies with appropriate quality for quantitative synthesis (e.g., meta-analysis). As a last step to guarantee applicability of evidence in local jurisdiction, use of a transferability checklist [e.g., EUnetHTA Adaptation Toolkit] should be considered to evaluate the variation in patient population, medical practise and health systems. In CEE countries with capacity constraints in the follow-up care and heterogeneous patient pathways, highly conservative effectiveness estimates should be applied. On the other hand, limited variability in the real-world outcomes across centres in the country of origin indicates less dependence on local factors, and consequently increased transferability of high-quality RWE with appropriate comparator can be assumed to late technology adopter countries.</blockquote>
+<p class="small">Reference numbers inside the original quotation were removed for readability.</p>
+<h3>Terms</h3><ul><li><strong>RWD (real-world data):</strong> data from routine care, such as registries, claims and electronic health records.</li>
+<li><strong>RWE (real-world evidence):</strong> evidence produced by analysing RWD.</li><li><strong>CEE:</strong> Central and Eastern Europe.</li>
+<li><strong>Transferability:</strong> whether results from one country apply in another.</li></ul>
+<h3>The four steps, in plain words</h3><ol><li><strong>Search and collect.</strong> Systematically find all potentially relevant RWE studies.</li>
+<li><strong>Check the technology is equivalent.</strong> Is the device (and version) in the study the same as the one used locally? Keep only studies with no major differences.</li>
+<li><strong>Check the quality.</strong> Rate each study with a quality tool and keep only those good enough to pool (for example in a meta-analysis):
+<ul><li><strong>GRADE:</strong> rates the certainty of a body of evidence <a href="#ref14">[14]</a>.</li><li><strong>ROBINS-I:</strong> rates risk of bias in a non-randomised study <a href="#ref15">[15]</a>.</li><li><strong>ISPOR RWE transparency initiative:</strong> good practice for transparent real-world studies <a href="#ref16">[16]</a>.</li></ul></li>
+<li><strong>Check applicability to the local setting.</strong> Use a transferability checklist, such as the <strong>EUnetHTA HTA Adaptation Toolkit</strong> <a href="#ref17">[17]</a>, to compare patients, medical practice and health system.</li></ol>
+<h3>Two decision cues from the recommendation</h3><ul><li><strong>Be conservative</strong> when the local system has limited follow-up capacity or very different patient pathways: use <strong>highly conservative effectiveness estimates</strong>.</li>
+<li><strong>Be more confident</strong> when outcomes in the country of origin vary little between centres: results depend less on local factors, so high-quality RWE with an appropriate comparator transfers better.</li></ul>
+<p><strong>Link to <a href="#s4">Section 4</a>:</strong> step 3 is where bias adjustment (matching, propensity scores, counterfactual effect estimation) is judged. A study that did not adjust for confounding should not pass the quality step.</p>
+<div class="widget" id="transfer-widget"><h3>Interactive: RWE transfer checklist</h3>
+<p class="small">Answer the four screening questions and two context questions. This is rule-based guidance, not a validated score.</p>
+<div id="transfer-questions"></div><div class="output" id="transfer-out" role="status" aria-live="polite">Select an answer for each question.</div>
+<button type="button" class="reset" data-reset="transfer">Reset</button>
+<p class="small">Teaching aid based on Daubner-Bendes et al. Recommendation #1.2. Not a formal assessment tool.</p></div>
+<p class="source-line">Sources: <a href="#ref8">[8]</a>, <a href="#ref14">[14]</a>, <a href="#ref15">[15]</a>, <a href="#ref16">[16]</a>, <a href="#ref17">[17]</a>.</p></div></details>
+
+<section class="chapter" style="padding:20px" id="refs"><h2>References</h2><ol class="references">
+<li id="ref1">World Health Organization. <em>Health technology assessment of medical devices</em>, second edition. WHO Medical Device Technical Series. Geneva: WHO; 2025. Glossary (pages ix to x), sections 2.6, 2.7 and 7.1. Licence CC BY-NC-SA 3.0 IGO. <a href="https://www.who.int/publications" target="_blank" rel="noopener noreferrer">WHO publications</a>.</li>
+<li id="ref2">Blüher M, et al. Critical review of European health-economic guidelines for the health technology assessment of medical devices. <em>Frontiers</em>. 2019. (Section "Discount Rate": EUnetHTA 3% to 5%; 0% to 10% in sensitivity analysis; same rate for costs and utilities unless specified.)</li>
+<li id="ref3">European Commission, UDI Helpdesk. Medical device classification; and Regulation (EU) 2017/745 on medical devices, Article 51 and Annex VIII. <a href="https://eur-lex.europa.eu/eli/reg/2017/745/oj" target="_blank" rel="noopener noreferrer">EU MDR</a>.</li>
+<li id="ref4">US Food and Drug Administration. Classify your medical device (web page). <a href="https://www.fda.gov/medical-devices/overview-device-regulation/classify-your-medical-device" target="_blank" rel="noopener noreferrer">FDA</a>.</li>
+<li id="ref5">Health Canada. Guidance on medical device establishment licensing (web page): four classes I to IV.</li>
+<li id="ref6">Regulation (EU) 2017/746 on in vitro diagnostic medical devices: classes A to D (examples as summarised by OpenRegulatory, IVDR classification guide). <a href="https://eur-lex.europa.eu/eli/reg/2017/746/oj" target="_blank" rel="noopener noreferrer">EU IVDR</a>.</li>
+<li id="ref7">Regulation (EU) 2017/745, Article 2(45) and Article 61(4) to (6), as quoted in MDCG 2023-7: Guidance on exemptions from the requirement to perform clinical investigations pursuant to Article 61(4)-(6) MDR.</li>
+<li id="ref8">Daubner-Bendes R, Kovács S, Niewada M, et al., Kaló Z. Quo vadis HTA for medical devices in Central and Eastern Europe? Recommendations to address methodological challenges. <em>Frontiers in Public Health</em>. 2020;8:612410. <a href="https://doi.org/10.3389/fpubh.2020.612410" target="_blank" rel="noopener noreferrer">doi:10.3389/fpubh.2020.612410</a>. (Challenge 2.1; Recommendations #1.1.b, #1.2 and #2.1.)</li>
+<li id="ref9">Rosenbaum PR, Rubin DB. The central role of the propensity score in observational studies for causal effects. <em>Biometrika</em>. 1983;70(1):41-55. <a href="https://doi.org/10.1093/biomet/70.1.41" target="_blank" rel="noopener noreferrer">DOI</a>.</li>
+<li id="ref10">Austin PC. An introduction to propensity score methods for reducing the effects of confounding in observational studies. <em>Multivariate Behavioral Research</em>. 2011;46(3):399-424. <a href="https://doi.org/10.1080/00273171.2011.568786" target="_blank" rel="noopener noreferrer">DOI</a>.</li>
+<li id="ref11">VanderWeele TJ, Ding P. Sensitivity analysis in observational research: introducing the E-value. <em>Annals of Internal Medicine</em>. 2017;167(4):268-274. <a href="https://doi.org/10.7326/M16-2607" target="_blank" rel="noopener noreferrer">DOI</a>.</li>
+<li id="ref12">Akpinar I, Unsal A, Paulden M, Round J. A systematic review of health economic evaluation quality assessment instruments for medical devices. <em>International Journal of Technology Assessment in Health Care</em>. 2025;41(1):e40. (Table 2, Table 3 and guideline references 38 to 45, listed as G1 to G8.)</li>
+<li id="ref13">Kim DS. How to decide on purchasing new medical equipment. <em>OBG Management</em>. 2018;30(5). (Practice-management article.)</li>
+<li id="ref14">Guyatt GH, Oxman AD, Vist G, et al. GRADE guidelines: 4. Rating the quality of evidence, study limitations (risk of bias). <em>Journal of Clinical Epidemiology</em>. 2011;64:407-415. <a href="https://doi.org/10.1016/j.jclinepi.2010.07.017" target="_blank" rel="noopener noreferrer">DOI</a>. Also: Schünemann HJ, et al. Chapter 14, <em>Cochrane Handbook</em>, version 6, 2019.</li>
+<li id="ref15">Sterne JAC, Hernán MA, McAleenan A, Reeves BC, Higgins JPT. Chapter 25: Assessing risk of bias in a non-randomized study. In: <em>Cochrane Handbook for Systematic Reviews of Interventions</em>, version 6. Cochrane; 2019.</li>
+<li id="ref16">Berger M, Crown W, Daniel G, et al. Improving transparency in non-interventional research for hypothesis testing: why, what, and how. Considerations from the Real-World Evidence Transparency Initiative. ISPOR; 2019.</li>
+<li id="ref17">EUnetHTA. HTA Adaptation Toolkit, version 5. European Network for Health Technology Assessment; 2011.</li></ol></section>
+</main>
+<footer class="footer"><div class="container">
+<p><strong>HTA for Medical Devices: Interactive Companion</strong></p>
+<p>Companion to “What Is Different When Conducting HTA for Medical Devices?” Worked examples use illustrative numbers. Quotations are verbatim from the cited sources.</p>
+<p>Share this page: <a href="https://kareemelfass.github.io/HEOR-Interactive-Labs/medical-devices-hta/">kareemelfass.github.io/HEOR-Interactive-Labs/medical-devices-hta/</a></p>
+<div id="qr-container"><p><a href="./qr-code.svg" target="_blank" rel="noopener noreferrer">Open the page QR code (SVG)</a></p><img src="./qr-code.svg" width="180" height="180" alt="QR code for this companion page"></div>
+<p class="small" style="color:#d0e7f0">Updated October 2026. Offline-friendly: no external JavaScript dependencies, analytics or tracking.</p></div></footer>
+<button class="backtop" type="button" id="backtop" aria-label="Back to top">↑ Top</button>
+<script src="./app.js" defer></script>
+</body></html>
