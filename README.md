@@ -4,6 +4,27 @@ A growing collection of interactive, browser-based learning tools for **health e
 
 The focus is **learning by seeing and doing**: change model assumptions, follow calculations, inspect fitted and extrapolated curves, and see how methodological choices affect health economic models.
 
+## Featured: HTA for Medical Devices, Interactive Companion
+
+**New companion lab:** *What Is Different When Conducting HTA for Medical Devices?*
+
+**[Open the HTA for Medical Devices interactive website](https://kareemelfass.github.io/HEOR-Interactive-Labs/medical-devices-hta/)**
+
+[View the full source code and QR assets in this repository](https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/medical-devices-hta)
+
+A mobile-first reference with **nine sections**, worked calculations, quizzes, interactive charts and calculators, and 17 cited references. Topics include:
+
+- WHO device definition and regulatory classes
+- Discounting of up-front device costs
+- Propensity scores and counterfactual effects
+- Device-specific economic evaluation guidelines
+- Economies of scale and capacity constraints
+- NPV and IRR for hospital investment decisions
+- Annuity, depreciation and capital-cost double counting
+- Transferability of international real-world evidence
+
+---
+
 ## Interactive labs
 
 ### 1. Mixture Cure Model Lab
