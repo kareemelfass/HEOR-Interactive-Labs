@@ -25,6 +25,14 @@ A mobile-first reference with **nine sections**, worked calculations, quizzes, i
 
 ---
 
+## Featured: Partitioned Survival Modelling Lab
+
+**[Open the interactive PSM tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/partitioned-survival-lab/)**
+
+A two-part interactive tutorial: (1) PFS and OS, including state occupancy, LY/QALY/cost calculations, structural dislinkage, and logically impossible curve crossing; and (2) PFS, OS, TTP and time on treatment, including treatment-duration costing and limitations of marginal survival curves.
+
+---
+
 ## Interactive labs
 
 ### 1. Mixture Cure Model Lab
