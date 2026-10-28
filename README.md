@@ -4,6 +4,24 @@ A growing collection of interactive, browser-based learning tools for **health e
 
 The focus is **learning by seeing and doing**: change model assumptions, follow calculations, inspect fitted and extrapolated curves, and see how methodological choices affect health economic models.
 
+## Featured: RMST and AFT Interactive Lab
+
+**[Open the RMST and Accelerated Failure Time tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/rmst-aft-lab/)**
+
+A single, fully observed illustrative oncology survival example is used throughout to explain the difference between **restricted mean survival time (RMST)** and **accelerated failure time (AFT)**. Set a survival horizon or a time multiplier and see the survival curves, every area-under-the-KM calculation, the patient-level capped-time check, the AFT quantile ratios, and the HEOR calculator update together.
+
+- One dataset, synchronous RMST and AFT calculations
+- Interactive Kaplan–Meier survival curves with shaded restricted areas
+- Step-by-step RMST interval table and full numerical formulas
+- Time-ratio interpretation, AFT coefficient, survival-function identity and limitations
+- Life-years, discounted QALYs, ICER and net monetary benefit
+- Verified economic-evaluation examples from Lueza et al. (2016), Amdahl et al. (2016) and Brinkmann et al. (2025)
+- CSV export, conceptual checks and methodological safeguards
+
+**[Browse the complete source](https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/rmst-aft-lab)**
+
+---
+
 ## Featured: HTA for Medical Devices, Interactive Companion
 
 **New companion lab:** *What Is Different When Conducting HTA for Medical Devices?*
