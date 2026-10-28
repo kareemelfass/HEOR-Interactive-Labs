@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102c45">
+<meta name="description" content="Interactive RMST and accelerated failure time tutorial using one survival dataset, KM curves, step-by-step calculations and HEOR worked examples.">
+<title>RMST &amp; AFT | HEOR Interactive Lab</title>
+<style>
+:root{--navy:#112940;--deep:#0c233a;--teal:#087c78;--mint:#d8f4ee;--blue:#3765b1;--sky:#edf4ff;--gold:#d49b4a;--ink:#1a2d45;--muted:#53677a;--line:#dce5ed;--paper:#fff;--bg:#f4f7fa;--red:#a33d38;--shadow:0 5px 24px #1029400c}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{font:16px/1.62 system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink);margin:0}
+a{color:#096b82;text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #de9d45;outline-offset:3px}
+button,input{font:inherit}button{cursor:pointer}
+header{background:var(--deep);color:white;position:sticky;top:0;z-index:30;box-shadow:0 3px 13px #10253b25}
+.header-inner{max-width:1180px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 22px}
+.logo{color:white;font-weight:800;text-decoration:none;font-size:14px;line-height:1.25;white-space:nowrap}.logo small{display:block;font-size:10px;letter-spacing:1.3px;color:#9db9c6;text-transform:uppercase}
+nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin}
+nav a{padding:8px 10px;color:#d8e9f2;text-decoration:none;white-space:nowrap;font-size:12px;font-weight:650;border-radius:7px}nav a:hover{background:#234761}
+main{max-width:1180px;padding:23px 22px 65px;margin:auto}
+.hero{background:linear-gradient(120deg,#102c46,#174f61 69%,#11716d);border-radius:20px;color:#fff;padding:36px 39px;position:relative;overflow:hidden}
+.hero:after{content:"";pointer-events:none;border:1px solid #ffffff24;border-radius:50%;width:300px;height:300px;position:absolute;right:-100px;top:-140px;box-shadow:0 0 0 35px #ffffff08,0 0 0 75px #ffffff08}
+.eyebrow{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;font-weight:750;color:#c5f3e8}
+h1{font-size:clamp(30px,4.5vw,49px);line-height:1.1;margin:10px 0 15px;letter-spacing:-1.1px}
+.hero p{max-width:820px;color:#dcecf3;font-size:17px;margin:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:19px}.chip{border:1px solid #ffffff6c;border-radius:22px;padding:4px 11px;font-size:12px}
+h2{font-size:clamp(23px,3.2vw,31px);line-height:1.24;letter-spacing:-.6px;margin:0 0 11px}
+h3{font-size:19px;line-height:1.3;margin:0 0 11px}h4{font-size:15px;margin:10px 0 5px}
+p{margin:9px 0 13px}.lead{color:#3d566a;font-size:16px;max-width:930px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:24px 27px;margin:18px 0}
+.chapter{margin-top:29px}.step{font-size:11px;letter-spacing:1.55px;color:var(--teal);text-transform:uppercase;font-weight:850;margin-bottom:7px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2>*{min-width:0}.grid3>*{min-width:0}
+.mini{background:#f5f9fb;border:1px solid #e0eaf0;border-radius:11px;padding:15px}
+.mini strong{display:block;font-size:17px}
+.mini p{color:var(--muted);font-size:14px}
+.signal{border-left:4px solid var(--teal);padding:11px 15px;background:#eff9f7;border-radius:0 9px 9px 0;font-size:14px;margin:14px 0}
+.caution{border-left:4px solid var(--gold);background:#fff9ef;padding:12px 16px;border-radius:0 9px 9px 0;font-size:14px;margin:14px 0}
+.subtle{color:var(--muted);font-size:13px}
+.statrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}
+.stat{background:#f4f8fb;border:1px solid #e1eaf0;border-radius:12px;padding:14px}
+.stat .lab{font-size:11px;line-height:1.4;color:var(--muted);font-weight:750;text-transform:uppercase;letter-spacing:.4px}
+.stat .val{font-size:clamp(21px,2.6vw,31px);font-weight:800;line-height:1.3;font-variant-numeric:tabular-nums}
+.stat .under{font-size:11px;color:var(--muted)}
+.standard{color:var(--blue)}.new{color:var(--teal)}
+input[type=range]{width:100%;accent-color:var(--teal);cursor:pointer}
+.control{padding:12px 0;border-bottom:1px solid #e6edf3}.control:last-child{border:0}
+.control label{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-weight:720;font-size:14px}.control output{font-variant-numeric:tabular-nums;color:var(--teal)}
+.control .desc{font-size:12px;color:var(--muted);margin-top:4px}
+.btn{font-size:13px;font-weight:750;background:white;border:1px solid #b7cad6;border-radius:9px;padding:10px 13px;color:#25445a}
+.btn:hover{background:#e8f3f4}.btn.primary{background:var(--navy);color:white;border-color:var(--navy)}.btn.primary:hover{background:#235276}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.tablewrap{overflow-x:auto;max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+th,td{padding:10px 11px;border-bottom:1px solid #e5ebf0;text-align:left;vertical-align:top}
+thead th{color:#2f4b61;background:#eef4f8;font-weight:750}
+tbody tr:last-child td{border-bottom:0}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.krow{background:#eff8f7}
+svg.chart{display:block;width:100%;height:auto;min-height:220px;max-height:390px;background:#fcfeff;border:1px solid #e5edf3;border-radius:13px}
+.legend{display:flex;gap:17px;flex-wrap:wrap;margin:8px 0 10px;font-size:12px;color:var(--muted)}
+.swatch{width:12px;height:8px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:middle}.key-std{background:var(--blue)}.key-new{background:var(--teal)}.key-tau{background:var(--gold)}
+.eq{background:#f3f7fa;border:1px solid #e2eaf0;border-radius:10px;margin:12px 0;padding:12px 16px;overflow-x:auto;font-size:15px}
+.formulalist{font-size:13px;line-height:1.8}
+.mathsum{font-size:14px;font-weight:730;background:#eff9f7;border:1px solid #cde7e1;border-radius:10px;padding:12px 15px;margin-top:13px}
+.quiz{border:1px solid #d8e5eb;background:#f6fafc;border-radius:12px;padding:17px;margin:11px 0}
+.quiz h4{font-size:15px;margin-top:0}
+.answers{display:flex;gap:9px;flex-wrap:wrap}
+.feedback{min-height:22px;font-size:14px;margin:10px 0 0;font-weight:650}
+.feedback.right{color:#076a4e}.feedback.wrong{color:#9c422e}
+details{border:1px solid #e0e8ef;border-radius:10px;margin:12px 0;padding:11px 14px;background:white}
+summary{cursor:pointer;font-weight:750}
+.callnum{font-variant-numeric:tabular-nums;font-weight:800}
+.paper{padding:17px 0;border-bottom:1px solid #e2eaf0}.paper:last-child{border:0}
+.paper small{display:block;color:var(--muted);margin:0 0 8px}
+.paper h3{margin:0 0 6px}
+.paper a{font-weight:700;font-size:13px}
+footer{margin-top:35px;padding:20px 0;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+code{font-size:.93em;background:#f0f4f7;padding:2px 4px;border-radius:4px}
+.hidden{display:none!important}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:850px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.statrow{grid-template-columns:repeat(2,minmax(0,1fr))}.header-inner{flex-wrap:wrap}.header-inner nav{width:100%}.panel{padding:19px}.hero{padding:26px}}
+@media(max-width:520px){main{padding:12px 11px 55px}.panel{padding:16px}.hero{padding:24px}.stat{padding:11px}.stat .val{font-size:23px}nav a{font-size:11px;padding:7px}svg.chart{min-height:170px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{header,.btn,.control input,.quiz{display:none!important}body{background:white}.panel{box-shadow:none;break-inside:avoid}.hero{color:white}}
+</style>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},options:{enableMenu:false}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+<header><div class="header-inner">
+<a class="logo" href="../">HEOR INTERACTIVE LABS<small>Survival analysis lab</small></a>
+<nav aria-label="Page chapters">
+<a href="#overview">Start</a><a href="#data">Same data</a><a href="#rmst">RMST</a><a href="#aft">AFT</a><a href="#comparison">Compare</a><a href="#heor">HEOR</a><a href="#studies">Studies</a><a href="#practice">Test yourself</a>
+</nav></div></header>
+<main>
+<section class="hero" id="overview">
+<div class="eyebrow">Interactive tutorial · Learn by changing the numbers</div>
+<h1>RMST and AFT, demystified</h1>
+<p>One cancer survival dataset. Two ways of describing benefit. Build the Kaplan–Meier curve, count survival months, stretch the survival clock, and translate the results into life-years and QALYs.</p>
+<div class="chips"><span class="chip">No prior modelling required</span><span class="chip">Fully worked calculations</span><span class="chip">Live survival curves</span><span class="chip">Published HEOR examples</span></div>
+</section>
+<div class="caution"><strong>Learning note:</strong> All patient data and adjustable scenario outputs on this page are illustrative, not clinical trial evidence. Four fully observed death times per arm are used so every calculation is visible. Published studies are clearly labelled in the evidence section.</div>
+<section class="panel chapter">
+<div class="step">First, the distinction</div>
+<h2>Both talk about time, but answer different questions</h2>
+<div class="grid2">
+<div class="mini"><strong>RMST: accumulated time</strong><p>By month 24, how many months of life did the average patient accumulate? RMST adds the area underneath a survival curve, stopping at a chosen time.</p><strong style="color:var(--blue)">Measured in months</strong></div>
+<div class="mini"><strong>AFT: a stretched clock</strong><p>How much longer does it take for events to occur under the new treatment? The accelerated failure time model multiplies the distribution of event times by a common factor.</p><strong style="color:var(--teal)">Measured as a time ratio</strong></div>
+</div>
+<div class="signal"><strong>The aim of this lab:</strong> See why the same example can produce <strong>3.75 months of RMST gain at month 24</strong> and an <strong>AFT time ratio of 1.50</strong>, without any contradiction.</div>
+</section>
+
+<section class="panel chapter" id="data">
+<div class="step">Chapter 1 · The same four observed times in each arm</div>
+<h2>Start with one survival dataset</h2>
+<p class="lead">Imagine a small study in which the ordered times to death in the standard-treatment arm are 6, 12, 18, and 24 months. The new-treatment arm starts with 9, 18, 27, and 36 months. There is no censoring in this example.</p>
+<div class="grid2">
+<div>
+<div class="control"><label for="tr">AFT time multiplier <output id="trOut">1.50</output></label><input type="range" id="tr" min="0.5" max="2" step="0.05" value="1.5"><div class="desc">Changes new-treatment times and all dependent RMST, KM and HEOR results together. The standard arm stays fixed.</div></div>
+<div class="control"><label for="tau">RMST horizon, τ <output id="tauOut">24 months</output></label><input type="range" id="tau" min="6" max="36" step="3" value="24"><div class="desc">The point where RMST stops counting. It does not change the AFT time ratio.</div></div>
+<div class="btn-row"><button id="reset" class="btn primary" type="button">Reset both controls</button><button id="download" class="btn" type="button">Export current table (CSV)</button></div>
+</div>
+<div><h3>Ordered times to death</h3><div class="tablewrap"><table><thead><tr><th>Ordered observation</th><th class="num">Standard</th><th class="num">New treatment</th></tr></thead><tbody id="timesRows"></tbody></table></div><p class="subtle">Rows show each arm's ordered survival times, not matched patient pairs or individual counterfactual treatment effects. The same ratio at every quantile is constructed for teaching.</p></div>
+</div>
+<div class="statrow">
+<div class="stat"><div class="lab">Standard RMST</div><div class="val standard" id="rmstStd">15.00</div><div class="under">months to τ</div></div>
+<div class="stat"><div class="lab">New RMST</div><div class="val new" id="rmstNew">18.75</div><div class="under">months to τ</div></div>
+<div class="stat"><div class="lab">RMST gain</div><div class="val" id="rmstDiff">+3.75</div><div class="under">months to τ</div></div>
+<div class="stat"><div class="lab">AFT time ratio</div><div class="val" id="aftRatio">1.50</div><div class="under">whole time distribution</div></div>
+</div>
+</section>
+
+<section class="panel">
+<div class="step">Chapter 1 continued · Build the Kaplan–Meier curves</div>
+<h3>Each death reduces survival by one quarter</h3>
+<p>With four patients at baseline and no censoring, the Kaplan–Meier (KM) curve starts at 100%, then drops to 75%, 50%, 25% and 0% as each death occurs. The height remains constant <em>between</em> deaths. The shaded area under each curve until the vertical gold line is its RMST.</p>
+<div class="legend"><span><i class="swatch key-std"></i>Standard treatment</span><span><i class="swatch key-new"></i>New treatment</span><span><i class="swatch key-tau"></i>RMST stopping time</span></div>
+<svg id="km" class="chart" viewBox="0 0 920 365" role="img" aria-label="Kaplan Meier survival step curves of the standard and new treatments, with shaded restricted mean survival time up to the chosen horizon"></svg>
+<div class="signal" id="curveReadout" aria-live="polite"></div>
+<details><summary>Why does each event produce a 25 percentage-point drop here?</summary><p>Before the first death, all 4 are at risk, so the conditional survival factor is <strong>3/4</strong> and KM falls to 0.75. Before the second death, 3 remain at risk, so the factor is <strong>2/3</strong>. The cumulative survival becomes (3/4) × (2/3) = 0.50. The two remaining deaths bring the curve to 0.25 and then 0. In real trials, censoring changes the risk sets and therefore the size of the subsequent KM drops.</p></details>
+</section>
+
+<section class="panel chapter" id="rmst">
+<div class="step">Chapter 2 · Calculate RMST, one small rectangle at a time</div>
+<h2>RMST counts the survival months under the curve</h2>
+<p>At any time interval, multiply <strong>how long the interval lasts</strong> by <strong>the proportion still alive during it</strong>. Sum all those rectangular areas until τ. That is the restricted mean survival time.</p>
+<div class="eq">\[ \operatorname{RMST}(\tau)=\int_0^\tau S(t)\,dt = E\{\min(T,\tau)\} \]</div>
+<h3>Step A. Follow the survival-curve rectangles</h3>
+<p class="subtle">An event at the beginning of an interval changes the survival probability for the following interval. Every row below shows the complete multiplication, not just the final answer.</p>
+<div class="tablewrap"><table><thead><tr><th>Time interval</th><th>Standard: duration × KM</th><th class="num">Std area</th><th>New: duration × KM</th><th class="num">New area</th></tr></thead><tbody id="areaRows"></tbody></table></div>
+<div class="mathsum" id="sumText" aria-live="polite"></div>
+<h3 style="margin-top:23px">Step B. Verify with the observed survival times</h3>
+<p>There is no censoring here. Therefore, we can also cap each observed death time at τ, add them and divide by four. This gives exactly the same answer as the KM area.</p>
+<div class="tablewrap"><table><thead><tr><th>Ordered observation</th><th>Standard: min(time, τ)</th><th>New: min(time, τ)</th></tr></thead><tbody id="capRows"></tbody></table></div>
+<div class="eq" id="patientFormula"></div>
+<div class="caution"><strong>What changes with real censored data?</strong> You cannot generally average only the observed event times. Use KM estimation and integrate its survival curve up to a horizon supported by follow-up. Patients censored before τ are handled through the KM risk sets. This demo has no confidence intervals, because its four illustrative outcomes are not intended for inference.</div>
+</section>
+
+<section class="panel chapter" id="aft">
+<div class="step">Chapter 3 · The accelerated failure time idea</div>
+<h2>AFT stretches or compresses the entire survival clock</h2>
+<p>Return to the <strong>same event-time data</strong>. Instead of asking how many months have accumulated by τ, ask how the new arm's event-time distribution is transformed from the standard arm's distribution.</p>
+<div class="eq">\[T_{\mathrm{new}}\ \overset{d}{=}\ \mathrm{TR}\,T_{\mathrm{standard}},\qquad \mathrm{TR}=e^{\beta}\]</div>
+<p class="subtle">The symbol \(\overset{d}{=}\) means equality in distribution. It does <em>not</em> describe a known treatment gain for any specific patient.</p>
+<div class="tablewrap"><table><thead><tr><th>Ordered quantile</th><th class="num">Standard time</th><th class="num">New time</th><th>Calculation</th></tr></thead><tbody id="aftRows"></tbody></table></div>
+<div class="grid2" style="margin-top:19px">
+<div class="mini"><strong>Interpret the ratio</strong><p id="aftInterpret">The new treatment stretches survival times by 50%.</p><p class="subtle">Ratio above 1: time is longer. Ratio below 1: time is shorter. Ratio 1: no time scaling.</p></div>
+<div class="mini"><strong>Regression coefficient and survival function</strong><p id="aftCoef"></p><div class="subtle">The relation <strong>S<sub>new</sub>(t) = S<sub>standard</sub>(t / TR)</strong> makes the same horizontal stretching visible in the KM chart.</div></div>
+</div>
+<details><summary>Does an AFT time ratio of 1.50 mean the hazard ratio is 0.50?</summary><p><strong>No.</strong> A time ratio describes the horizontal scaling of event times. A hazard ratio compares instantaneous event rates. Their relationship depends on the chosen survival distribution. Under a Weibull AFT model, the corresponding constant hazard ratio also depends on the Weibull shape parameter. With log-normal or log-logistic AFT models, proportional hazards generally do not hold.</p></details>
+<details><summary>Can we conclude from four observations that the AFT assumption holds?</summary><p>No. We deliberately constructed the new arm as a 1.5-fold rescaling of the standard arm. In an actual dataset, the AFT regression coefficient is estimated and a distributional assumption must be examined. Inspect model fit, log-time residuals, quantile behaviour and external plausibility. A violation of proportional hazards does not establish an AFT model as correct.</p></details>
+</section>
+
+<section class="panel chapter" id="comparison">
+<div class="step">Chapter 4 · Put them side by side</div>
+<h2>Same example, different estimands</h2>
+<p>An <strong>estimand</strong> is the quantity you aim to estimate. Here RMST targets average survival accrued within τ, while an AFT coefficient targets a multiplicative shift in event-time distribution.</p>
+<div class="grid2">
+<div class="mini"><h3>RMST is restricted</h3><p id="rmstNarr"></p><strong>Change the gold τ line:</strong> RMST gain changes because the area you include changes.</div>
+<div class="mini"><h3>AFT is a multiplier</h3><p id="aftNarr"></p><strong>Change the time-ratio slider:</strong> the entire new survival distribution is stretched or compressed.</div></div>
+<div class="tablewrap" style="margin-top:16px"><table><thead><tr><th>Decision question</th><th>RMST</th><th>AFT</th></tr></thead><tbody>
+<tr><td>What is reported?</td><td>Months of average survival up to τ</td><td>A time ratio, e.g. 1.50</td></tr>
+<tr><td>Is a chosen horizon necessary?</td><td>Yes</td><td>Not for the coefficient</td></tr>
+<tr><td>Needs a parametric distribution?</td><td>No, when calculated from KM</td><td>Usually yes, for parametric AFT extrapolation</td></tr>
+<tr><td>Requires proportional hazards?</td><td>No</td><td>No</td></tr>
+<tr><td>Could both be used together?</td><td>Yes: integrate an AFT-predicted survival curve</td><td>Yes: use RMST to describe/check that curve</td></tr>
+</tbody></table></div>
+<div class="signal"><strong>The practical rule:</strong> RMST is a survival summary measure; AFT is a survival regression model. They are complementary, not alternative estimates of the same parameter.</div>
+</section>
+
+<section class="panel chapter" id="heor">
+<div class="step">Chapter 5 · Translate survival into HEOR outcomes</div>
+<h2>From the same survival curve to life-years, QALYs and ICER</h2>
+<p>Because RMST is an area under overall survival, its difference corresponds to <strong>incremental undiscounted life-years</strong> when expressed in years. QALYs additionally weight survival by quality of life, represented here by one constant utility in both arms.</p>
+<div class="grid2">
+<div>
+<div class="control"><label for="utility">Same health utility in both arms <output id="utilityOut">0.80</output></label><input id="utility" type="range" min="0.4" max="1" value="0.8" step="0.05"><div class="desc">Simplified assumption: all alive time has the same utility regardless of progression or treatment.</div></div>
+<div class="control"><label for="cost">Incremental cost for new treatment <output id="costOut">$15,000</output></label><input id="cost" type="range" min="5000" max="30000" value="15000" step="500"></div>
+<div class="control"><label for="disc">Annual discount rate <output id="discOut">0%</output></label><input id="disc" type="range" min="0" max="6" value="0" step="1"><div class="desc">Uses time-specific discount factor (1 + r)<sup>−t/12</sup>. Discounted life-years are not the same as conventional undiscounted RMST.</div></div>
+<div class="control"><label for="wtp">Willingness to pay per QALY <output id="wtpOut">$50,000</output></label><input id="wtp" type="range" min="25000" max="150000" step="5000" value="50000"></div>
+</div>
+<div>
+<div class="statrow" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+<div class="stat"><div class="lab">Undiscounted LYG</div><div class="val" id="ly">0.313</div><div class="under">RMST difference ÷ 12</div></div>
+<div class="stat"><div class="lab">Incremental QALYs</div><div class="val" id="qaly">0.250</div><div class="under" id="qalyNote">undiscounted</div></div>
+<div class="stat"><div class="lab">ICER</div><div class="val" id="icer">$60,000</div><div class="under">per QALY gained</div></div>
+<div class="stat"><div class="lab">Incremental net monetary benefit</div><div class="val" id="nmb">−$2,500</div><div class="under">WTP × ΔQALYs − Δcost</div></div>
+</div>
+<div class="mathsum" id="heorMath"></div>
+</div>
+</div>
+<div class="caution"><strong>What this calculator deliberately omits:</strong> progression-specific utility, adverse events, changing costs, treatment duration, later therapies, uncertainty and the lifetime horizon. The incremental cost is an input, not derived from drug exposure. The fixed 4-patient dataset cannot support credible survival extrapolation on its own.</div>
+<h3 style="margin-top:20px">Where does AFT enter an economic model?</h3>
+<div class="grid3">
+<div class="mini"><strong>1. Fit observed survival</strong><p>Use observed PFS or OS with an appropriate parametric AFT model. Assess fit against KM curves and diagnose structural assumptions.</p></div>
+<div class="mini"><strong>2. Project beyond the trial</strong><p>Compute predicted S(t) over the decision horizon. The assumed distribution and treatment effect determine the long-term tail.</p></div>
+<div class="mini"><strong>3. Accumulate model outcomes</strong><p>Integrate projected survival for life-years. Combine survival or health-state occupancy with utilities and costs for QALYs and ICERs.</p></div>
+</div>
+<div class="signal"><strong>HEOR warning:</strong> A good RMST match inside the trial does not validate an AFT extrapolation beyond follow-up. Two distributions can have similar observed areas but radically different long-term tails.</div>
+</section>
+
+<section class="panel chapter" id="studies">
+<div class="step">Chapter 6 · Verify with actual published evidence</div>
+<h2>How researchers have used RMST and AFT in economic evaluations</h2>
+<p class="lead">These are published results, not outputs of this lab. Each study illustrates a distinct use: measuring incremental survival, checking curve fit, or constructing extrapolated survival models.</p>
+<div class="paper"><small>RMST in a trial-based cost-effectiveness analysis · 2016</small><h3>Lueza et al. | Radiotherapy in locally advanced non-small-cell lung cancer</h3>
+<p>The investigators used individual patient data from 10 trials with roughly 2,000 patients. Depending on how trial-specific information was pooled, estimated RMST differences ranged from <strong>1.7 to 2.5 months</strong>. Corresponding mean ICERs ranged from <strong>€24,299 to €34,934 per life-year gained</strong>; the probability of cost-effectiveness at €25,000 per life-year ranged from 31% to 68%.</p>
+<p><strong>HEOR implication:</strong> Estimating RMST differences is consequential for accumulated life-years and cost-effectiveness conclusions. The variation was across alternative pooling/estimation strategies, not a time-ratio experiment.</p>
+<a href="https://doi.org/10.1371/journal.pone.0150032" target="_blank" rel="noopener noreferrer">Lueza et al. (2016), PLOS ONE: primary article ↗</a></div>
+<div class="paper"><small>RMST as a fit check and AFT for extrapolation · 2016</small><h3>Amdahl et al. | Pazopanib versus sunitinib in metastatic renal cell carcinoma, Canada</h3>
+<p>The base-case partitioned-survival model used empirical KM curves from COMPARZ over the observed period. For analyses beyond follow-up, the investigators fitted parametric distributions by <strong>AFT regression</strong> and assessed them using visual comparisons, information criteria and <strong>RMST agreement with empirical KM</strong>. A gamma model fitted well but was not used because its tails risked overstating survival.</p>
+<p>At list prices, the published base case reported <strong>CA$10,293 lower costs</strong> and <strong>0.059 additional QALYs</strong> with pazopanib compared with sunitinib. These results came from the complete economic model, <em>not simply from an AFT time ratio</em>.</p>
+<p><strong>HEOR implication:</strong> RMST can assess fit within observed follow-up while AFT supports extrapolation. Neither the RMST fit nor a low AIC can alone justify an implausible long-term tail.</p>
+<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4974040/" target="_blank" rel="noopener noreferrer">Amdahl et al. (2016), Current Oncology: primary article ↗</a></div>
+<div class="paper"><small>AFT models supplying health-economic transition probabilities · 2025</small><h3>Brinkmann et al. | ¹⁷⁷Lu-PSMA-617 for metastatic castration-resistant prostate cancer, Germany</h3>
+<p>Published VISION and TheraP PFS/OS curves were digitised and reconstructed. The investigators fitted parametric accelerated failure time hazard models to generate time-dependent transition probabilities for cohort state-transition models. The third-line comparison of ¹⁷⁷Lu-PSMA-617 plus standard care versus standard care alone reported <strong>€27,200 incremental costs</strong>, <strong>0.39 incremental QALYs</strong>, and a published <strong>€69,418 per QALY</strong> ICER.</p>
+<p><strong>HEOR implication:</strong> Fitted time-to-event distributions feed model transitions, occupancy, costs and QALYs. These economic results depend on the entire model, not only the AFT specification.</p>
+<a href="https://doi.org/10.1007/s00259-025-07317-9" target="_blank" rel="noopener noreferrer">Brinkmann et al. (2025), European Journal of Nuclear Medicine and Molecular Imaging: primary article ↗</a></div>
+<details><summary>Supporting methodology and what remains uncertain</summary>
+<p>Royston and Parmar (2013) describe RMST as the area under S(t), including its value when proportional hazards does not hold. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3922847/" target="_blank" rel="noopener noreferrer">Primary methodological paper</a>.</p>
+<p>All published figures above are taken from their respective studies. This lab does not independently reconstruct those clinical datasets, validate study-specific base-case models, or estimate confidence intervals. Selection of an AFT distribution requires clinical and statistical checks specific to each decision problem.</p></details>
+</section>
+
+<section class="panel chapter" id="practice">
+<div class="step">Chapter 7 · Check you understood the mechanism</div>
+<h2>Can you now distinguish the two?</h2>
+<div class="quiz" data-question="q1"><h4>1. The RMST gain at τ = 24 months is 3.75 months. Does every individual patient live 3.75 months longer?</h4><div class="answers"><button class="btn" data-choice="no">No, this is an average across the distribution</button><button class="btn" data-choice="yes">Yes, the gain is identical for everyone</button></div><p class="feedback" aria-live="polite"></p></div>
+<div class="quiz" data-question="q2"><h4>2. Keeping the same survival times, what happens when you move τ from 24 to 36 months?</h4><div class="answers"><button class="btn" data-choice="constant">The AFT ratio changes</button><button class="btn" data-choice="rmst">RMST changes; the AFT ratio does not</button></div><p class="feedback" aria-live="polite"></p></div>
+<div class="quiz" data-question="q3"><h4>3. An AFT model reproduces trial RMST accurately. Is its 20-year survival extrapolation therefore validated?</h4><div class="answers"><button class="btn" data-choice="no">No, long-term tails need independent assessment</button><button class="btn" data-choice="yes">Yes, good observed RMST guarantees the tail</button></div><p class="feedback" aria-live="polite"></p></div>
+<div class="quiz" data-question="q4"><h4>4. AFT time ratio = 1.50. Is this equivalent to a hazard ratio = 0.50?</h4><div class="answers"><button class="btn" data-choice="yes">Yes, always</button><button class="btn" data-choice="no">No, they measure different things</button></div><p class="feedback" aria-live="polite"></p></div>
+</section>
+<footer>HEOR Interactive Labs · RMST &amp; Accelerated Failure Time · Updated October 2026 · Illustration by construction, not clinical evidence. <a href="../">Return to all labs</a></footer>
+</main>
+<script>
+(function(){
+'use strict';
+var base=[6,12,18,24];
+var s={ratio:1.5,tau:24,utility:0.8,cost:15000,disc:0,wtp:50000};
+function $(id){return document.getElementById(id);}
+function fmt(x,n){return Number(x).toFixed(n===undefined?2:n);}
+function money(x){return (x<0?'−':'')+'$'+Math.abs(x).toLocaleString('en-US',{maximumFractionDigits:0});}
+function allNew(){return base.map(function(t){return t*s.ratio;});}
+function countAlive(times,t){return times.filter(function(x){return x>t+1e-8;}).length;}
+function survival(times,t){return countAlive(times,t)/times.length;}
+function rmst(times,tau){return times.reduce(function(sum,t){return sum+Math.min(t,tau);},0)/times.length;}
+function breaks(tau,st,nt){return [0,tau].concat(st,nt).filter(function(t){return t>=0 && t<=tau+1e-8;}).sort(function(a,b){return a-b;}).filter(function(x,i,a){return i===0||x-a[i-1]>1e-8;});}
+function integrate(times,horizon,rate){var t=breaks(horizon,times,[]),k=Math.log(1+rate/100)/12,total=0;
+for(var i=0;i<t.length-1;i++){var a=t[i],b=t[i+1],area=k<1e-12?b-a:(Math.exp(-k*a)-Math.exp(-k*b))/k;total+=survival(times,a)*area;}return total;}
+function node(id,text){$(id).textContent=text;}
+function xVal(t,max){return 62+(t/max)*815;}function yVal(v){return 302-v*255;}
+function line(x1,y1,x2,y2,color,width,dash){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+color+'" stroke-width="'+width+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+'/>';}
+function pathStep(times,max,fill,tau){var ev=times.slice().sort(function(a,b){return a-b;}),v=1,last=0,d='M '+fmt(xVal(0,max),2)+' '+fmt(yVal(1),2);
+if(fill){d='M '+fmt(xVal(0,max),2)+' '+fmt(yVal(0),2)+' L '+fmt(xVal(0,max),2)+' '+fmt(yVal(1),2);}
+for(var i=0;i<ev.length;i++){var time=ev[i];if(time>(fill?tau:max)+1e-8)break;d+=' L '+fmt(xVal(time,max),2)+' '+fmt(yVal(v),2);v-=1/ev.length;d+=' L '+fmt(xVal(time,max),2)+' '+fmt(yVal(v),2);}
+d+=' L '+fmt(xVal(fill?tau:max,max),2)+' '+fmt(yVal(v),2);
+if(fill)d+=' L '+fmt(xVal(tau,max),2)+' '+fmt(yVal(0),2)+' Z';
+return d;}
+function drawChart(nt){
+var max=Math.max(39,base[3],nt[nt.length-1])+2,svg='',v,xt;
+for(var i=0;i<=4;i++){v=i/4;svg+=line(62,yVal(v),877,yVal(v),'#e6edf3',1,'4 5');svg+='<text x="52" y="'+(yVal(v)+4)+'" text-anchor="end" font-size="13" fill="#53677a">'+(v*100)+'%</text>';}
+for(var j=0;j<=6;j++){xt=max*j/6;svg+=line(xVal(xt,max),47,xVal(xt,max),302,'#eef2f6',1,'3 5');svg+='<text x="'+xVal(xt,max)+'" y="322" text-anchor="middle" font-size="13" fill="#53677a">'+fmt(xt,0)+'</text>';}
+svg+='<text x="471" y="350" text-anchor="middle" font-size="13" fill="#53677a">Time since start (months)</text>';
+svg+='<text transform="translate(18,175) rotate(-90)" text-anchor="middle" font-size="13" fill="#53677a">Proportion alive</text>';
+svg+='<path d="'+pathStep(base,max,true,s.tau)+'" fill="#3765b1" fill-opacity=".12"/>';
+svg+='<path d="'+pathStep(nt,max,true,s.tau)+'" fill="#087c78" fill-opacity=".17"/>';
+svg+=line(xVal(s.tau,max),46,xVal(s.tau,max),302,'#ba831e',2,'7 5');
+svg+='<text x="'+Math.min(xVal(s.tau,max)+6,816)+'" y="38" font-size="13" fill="#906617" font-weight="700">τ = '+s.tau+'</text>';
+svg+='<path d="'+pathStep(base,max,false,s.tau)+'" fill="none" stroke="#3765b1" stroke-width="3.5" stroke-linejoin="round"/>';
+svg+='<path d="'+pathStep(nt,max,false,s.tau)+'" fill="none" stroke="#087c78" stroke-width="3.5" stroke-linejoin="round"/>';
+svg+=line(62,302,877,302,'#64788c',1.2);svg+=line(62,47,62,302,'#64788c',1.2);
+$('km').innerHTML=svg;
+node('curveReadout','At month '+s.tau+': standard survival = '+fmt(survival(base,s.tau)*100,1)+'%; new survival = '+fmt(survival(nt,s.tau)*100,1)+'%. The coloured shaded areas are the average months accumulated up to the gold line, not simply survival at that one moment.');
+}
+function render(){
+var nt=allNew(),a=rmst(base,s.tau),b=rmst(nt,s.tau),d=b-a;
+node('trOut',fmt(s.ratio));node('tauOut',s.tau+' months');
+node('rmstStd',fmt(a));node('rmstNew',fmt(b));
+node('rmstDiff',(d>=0?'+':'')+fmt(d));node('aftRatio',fmt(s.ratio));
+$('timesRows').innerHTML=base.map(function(t,i){return '<tr><td>'+(i+1)+'</td><td class="num">'+fmt(t,0)+' mo</td><td class="num">'+fmt(nt[i],2)+' mo</td></tr>';}).join('');
+drawChart(nt);
+var pts=breaks(s.tau,base,nt),rows=[],sf=[],nf=[];
+for(var i=0;i<pts.length-1;i++){
+var t0=pts[i],t1=pts[i+1],h=t1-t0,ps=survival(base,t0),pn=survival(nt,t0),as=h*ps,an=h*pn;
+sf.push(as);nf.push(an);
+rows.push('<tr><td class="num">'+fmt(t0,2)+'–'+fmt(t1,2)+'</td><td>'+fmt(h,2)+' × '+fmt(ps,2)+'</td><td class="num">'+fmt(as,2)+'</td><td>'+fmt(h,2)+' × '+fmt(pn,2)+'</td><td class="num">'+fmt(an,2)+'</td></tr>');
+}
+$('areaRows').innerHTML=rows.join('')+'<tr class="krow"><td><strong>Sum</strong></td><td>Σ interval area</td><td class="num"><strong>'+fmt(a)+'</strong></td><td>Σ interval area</td><td class="num"><strong>'+fmt(b)+'</strong></td></tr>';
+node('sumText','Standard RMST = '+sf.map(function(x){return fmt(x,2);}).join(' + ')+' = '+fmt(a)+' months. New RMST = '+nf.map(function(x){return fmt(x,2);}).join(' + ')+' = '+fmt(b)+' months. Difference = '+fmt(b)+' − '+fmt(a)+' = '+fmt(d)+' months.');
+$('capRows').innerHTML=base.map(function(v,i){return '<tr><td>'+(i+1)+'</td><td>min('+fmt(v,2)+', '+s.tau+') = <strong>'+fmt(Math.min(v,s.tau),2)+'</strong></td><td>min('+fmt(nt[i],2)+', '+s.tau+') = <strong>'+fmt(Math.min(nt[i],s.tau),2)+'</strong></td></tr>';}).join('');
+node('patientFormula','Standard: ('+base.map(function(t){return fmt(Math.min(t,s.tau),2);}).join(' + ')+') / 4 = '+fmt(a)+' months. New: ('+nt.map(function(t){return fmt(Math.min(t,s.tau),2);}).join(' + ')+') / 4 = '+fmt(b)+' months.');
+$('aftRows').innerHTML=base.map(function(v,i){return '<tr><td>'+(i+1)+'</td><td class="num">'+fmt(v,2)+' mo</td><td class="num">'+fmt(nt[i],2)+' mo</td><td>'+fmt(v,2)+' × '+fmt(s.ratio)+' = '+fmt(nt[i],2)+'</td></tr>';}).join('');
+var shift=(s.ratio-1)*100;
+node('aftInterpret',s.ratio>1.00001?'A time ratio of '+fmt(s.ratio)+' makes the new treatment distribution '+fmt(shift,0)+'% longer in time.':s.ratio<.99999?'A time ratio of '+fmt(s.ratio)+' compresses event times by '+fmt(-shift,0)+'%.':'The time ratio is 1. The distributions have identical time scales.');
+node('aftCoef','β = ln('+fmt(s.ratio)+') = '+fmt(Math.log(s.ratio),3)+'; therefore TR = e^β = '+fmt(s.ratio)+'.');
+node('rmstNarr','By '+s.tau+' months, the new treatment has accumulated '+fmt(b)+' months per patient versus '+fmt(a)+' months on standard care. Gain: '+fmt(d)+' months. Choosing another horizon changes the areas.');
+node('aftNarr','The event-time distribution is multiplied by '+fmt(s.ratio)+'. This applies to all time quantiles in the constructed example, whether the RMST horizon is 12, 24 or 36 months.');
+updateHeor(nt,d);
+}
+function updateHeor(nt,d){
+var ly=d/12, discounted=(integrate(nt,s.tau,s.disc)-integrate(base,s.tau,s.disc))/12;
+var qaly=discounted*s.utility,nmb=s.wtp*qaly-s.cost;
+node('utilityOut',fmt(s.utility));node('costOut',money(s.cost));node('discOut',s.disc+'%');node('wtpOut',money(s.wtp));
+node('ly',fmt(ly,3));node('qaly',fmt(qaly,3));
+node('qalyNote',s.disc===0?'undiscounted':'discounted at '+s.disc+'%/year');
+if(qaly>1e-9){node('icer',money(s.cost/qaly));}else{node('icer','N/A');}
+node('nmb',money(nmb));
+var msg='Undiscounted incremental life-years = '+fmt(d,2)+' months ÷ 12 = '+fmt(ly,4)+' years. ';
+msg+='Discounted incremental life-years = '+fmt(discounted,4)+'. Incremental QALYs = '+fmt(discounted,4)+' × '+fmt(s.utility,2)+' = '+fmt(qaly,4)+'. ';
+msg+='Incremental NMB = '+money(s.wtp)+' × '+fmt(qaly,4)+' − '+money(s.cost)+' = '+money(nmb)+'.';
+if(qaly>1e-9)msg+=' ICER = '+money(s.cost)+' / '+fmt(qaly,4)+' = '+money(s.cost/qaly)+' per QALY (unrounded values used).';
+else msg+=' With no positive incremental QALYs, a positive-cost ICER should not be interpreted as cost-effective gain.';
+node('heorMath',msg);
+}
+function exportCSV(){
+var nt=allNew(),rows=[['Observation order','Standard death time (months)','New death time (months)','Standard capped at tau','New capped at tau']];
+base.forEach(function(x,i){rows.push([i+1,x,nt[i],Math.min(x,s.tau),Math.min(nt[i],s.tau)]);});
+rows.push(['RMST horizon',s.tau]);rows.push(['AFT time ratio',s.ratio]);rows.push(['Standard RMST',rmst(base,s.tau)]);rows.push(['New RMST',rmst(nt,s.tau)]);rows.push(['RMST difference',rmst(nt,s.tau)-rmst(base,s.tau)]);
+rows.push(['Annual discount %',s.disc]);rows.push(['Utility',s.utility]);rows.push(['Incremental costs',s.cost]);rows.push(['WTP',s.wtp]);
+var csv=rows.map(function(a){return a.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\r\n'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+var anchor=document.createElement('a');anchor.href=url;anchor.download='rmst-aft-example.csv';document.body.appendChild(anchor);anchor.click();anchor.remove();setTimeout(function(){URL.revokeObjectURL(url);},1500);
+}
+['tr','tau','utility','cost','disc','wtp'].forEach(function(id){$(id).addEventListener('input',function(){s[id==='tr'?'ratio':id==='disc'?'disc':id]=Number(this.value);render();});});
+$('reset').addEventListener('click',function(){s.ratio=1.5;s.tau=24;$('tr').value='1.5';$('tau').value='24';render();});
+$('download').addEventListener('click',exportCSV);
+var answers={
+q1:{right:'no',ok:'Correct. RMST describes an average survival-time gain, not a guaranteed individual gain.',bad:'Not quite. An RMST difference is an average over the groups.'},
+q2:{right:'rmst',ok:'Correct. RMST depends on where you stop integrating. The underlying AFT ratio is unchanged.',bad:'Try again: moving τ changes the area counted, not the time multiplier.'},
+q3:{right:'no',ok:'Correct. Extrapolated survival tails need clinical plausibility and external validation.',bad:'No. Matching the observed area does not tell us the distant tail is correct.'},
+q4:{right:'no',ok:'Correct. Time ratios scale survival times. Hazard ratios compare instantaneous hazards.',bad:'Not generally. Even under a Weibull model the conversion depends on its shape parameter.'}};
+document.querySelectorAll('.quiz').forEach(function(box){var q=answers[box.getAttribute('data-question')];box.querySelectorAll('button').forEach(function(btn){btn.addEventListener('click',function(){var correct=btn.getAttribute('data-choice')===q.right,p=box.querySelector('.feedback');p.textContent=correct?q.ok:q.bad;p.className='feedback '+(correct?'right':'wrong');});});});
+render();
+})();
+</script>
+</body></html>
