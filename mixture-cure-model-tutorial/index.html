@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="A step-by-step interactive tutorial on mixture cure models for HEOR and HTA: when to use them, how to estimate the cure fraction, worked calculations, published examples, pitfalls and HTA use.">
 <title>Mixture Cure Model Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
@@ -104,7 +103,7 @@ html{scroll-behavior:smooth}
 </div>
 
 <nav class="bar" aria-label="Sections"><div class="in">
-  <a href="#idea">The idea</a><a href="#getpi">How we get π</a><a href="#defcured">Who is cured</a><a href="#curepoint">Cure point</a><a href="#when">When to use</a><a href="#data">Data needed</a><a href="#how">How to use</a><a href="#calc">Worked calculation</a><a href="#published">Published examples</a><a href="#uses">Use cases</a><a href="#pitfalls">Pitfalls</a><a href="#hta">Use in HTA</a>
+  <a href="#idea">The idea</a><a href="#getpi">How we get π</a><a href="#defcured">Who is cured</a><a href="#curepoint">Cure point</a><a href="#when">When to use</a><a href="#data">Data needed</a><a href="#how">How to use</a><a href="#calc">Worked calculation</a><a href="#published">Published examples</a><a href="#uses">Use cases</a><a href="#pitfalls">Pitfalls</a><a href="#hta">Use in HTA</a><a href="#review">Notes on your files</a>
 </div></nav>
 
 <main class="wrap">
@@ -179,7 +178,7 @@ With background mortality: S_o(t) = S_b(t) × [ π + (1 − π) × S_u(t) ]</div
     <li><b>Mixture</b> (above): the cure fraction π is a direct parameter. This is the form most HTA submissions use.</li>
     <li><b>Non-mixture or promotion-time</b> model: the plateau comes from a capped cumulative hazard. With F(t) a distribution function and θ &gt; 0, <span class="mono">S(t) = exp[−θ × F(t)]</span> and the cure fraction is <span class="mono">e<sup>−θ</sup></span>.</li>
     <li>It is available in <code>flexsurvcure</code> with <code>mixture = FALSE</code>.</li>
-    <li>They are related but <b>not interchangeable</b>. With the same distribution family they fit differently, and a covariate effect means something different in each. Some sources call them "mathematically equivalent". That is too strong: they are alternative ways to build a plateau.</li>
+    <li>They are related but <b>not interchangeable</b>. With the same distribution family they fit differently, and a covariate effect means something different in each. Your HTA tutorial calls them "mathematically equivalent". I would soften that, and section 13 explains why.</li>
   </ul>
 
   <h3>Try it yourself</h3>
@@ -620,7 +619,7 @@ data.frame(dist = dists,
            AIC  = sapply(fits, AIC),
            cure = sapply(fits, function(f) f$res["theta", "est"]))</code></pre>
   <div class="callout warn"><span class="lbl">Not run here</span>
-    <p>I could not install R in my workspace, so this block was checked against the package README but <b>not executed</b>. Please confirm two things on your machine: that the cure row is called <code>theta</code> (print <code>fit_mcm$res</code>), and how covariates reach the cure fraction (the README implies the main formula, see <code>?flexsurvcure</code>). Some examples online use <code>anc = list(cure = ~ treat)</code> and <code>coef(fit)["cure"]</code>, which I could not confirm.</p></div>
+    <p>I could not install R in my workspace, so this block was checked against the package README but <b>not executed</b>. Please confirm two things on your machine: that the cure row is called <code>theta</code> (print <code>fit_mcm$res</code>), and how covariates reach the cure fraction (the README implies the main formula, see <code>?flexsurvcure</code>). Your source file used <code>anc = list(cure = ~ treat)</code> and <code>coef(fit)["cure"]</code>, which I could not confirm.</p></div>
   <p><b>Line by line:</b></p>
   <ul>
     <li><code>library(survival)</code>: loads the core survival tools. <code>Surv()</code> bundles time and event into one survival object.</li>
@@ -694,8 +693,8 @@ printsmcure(fit_semi)</code></pre>
   <p><b>Setup.</b> 1,000 patients. Suppose π = 0.45, so 450 are cured and 550 are uncured. The uncured follow a log-logistic latency:</p>
   <div class="eq">S_u(t) = 1 / (1 + λ × t^γ)     with λ = 0.30, γ = 1.5
 S(t)   = 0.45 + 0.55 × S_u(t)</div>
-  <div class="callout fix"><span class="lbl">A note on the latency formula</span>
-    <p>Some texts write the log-logistic as S<sub>u</sub>(t) = 1 / (1 + (λ·t)<sup>γ</sup>). This page uses <b>1 / (1 + λ·t<sup>γ</sup>)</b>. At t = 1 it gives 0.300 (which is λ·t<sup>γ</sup>), whereas (λ·t)<sup>γ</sup> would give 0.164. State which form you use. These numbers are <i>illustrative</i>: they are not the cure fraction from NICE TA975, whose text reports no tisagenlecleucel value.</p></div>
+  <div class="callout fix"><span class="lbl">Correction to your source file</span>
+    <p>Your file prints S<sub>u</sub>(t) = 1 / (1 + (λ·t)<sup>γ</sup>), but its table only works with <b>1 / (1 + λ·t<sup>γ</sup>)</b>. At t = 1 the table shows 0.300, which is λ·t<sup>γ</sup>, not (λ·t)<sup>γ</sup> = 0.164. I used the version that matches the table. These numbers are <i>illustrative</i>: they are not the cure fraction from NICE TA975, whose text reports no tisagenlecleucel value.</p></div>
 
   <p><b>Step 1: one row, slowly (year 5).</b></p>
   <ul>
@@ -707,7 +706,7 @@ S(t)   = 0.45 + 0.55 × S_u(t)</div>
     <li>Hazard: f<sub>u</sub>(5) = 0.30 × 1.5 × 5<sup>0.5</sup> / 4.354<sup>2</sup> = 1.006 / 18.96 = 0.0531. Then h(5) = 0.55 × 0.0531 / 0.576 = <b>0.0506</b> per year.</li>
   </ul>
 
-  <p><b>Step 2: the full table.</b> All values recomputed by me.</p>
+  <p><b>Step 2: the full table.</b> All values recomputed by me. Small rounding differences from your file exist at years 5 and 20.</p>
   <div class="tw"><table>
     <tr><th class="n">Year</th><th class="n">λ·t<sup>γ</sup></th><th class="n">S<sub>u</sub>(t)</th><th class="n">S(t)</th><th class="n">Alive of 1,000</th><th class="n">P(cured | alive)</th><th class="n">Hazard h(t)</th></tr>
     <tr><td class="n">0</td><td class="n">0.000</td><td class="n">1.000</td><td class="n">1.000</td><td class="n">1,000</td><td class="n">45.0%</td><td class="n">n/a</td></tr>
@@ -791,11 +790,11 @@ S(t)   = 0.45 + 0.55 × S_u(t)</div>
 
   <h3>Classic method papers (for citations)</h3>
   <ul>
-    <li>Boag JW (1949), <i>J R Stat Soc B</i> 11:15-53, and Berkson J, Gage RP (1952), <i>J Am Stat Assoc</i> 47:501-515: the origins of cure models in cancer. <i>Classic references, not retrieved from PubMed.</i></li>
+    <li>Boag JW (1949), <i>J R Stat Soc B</i> 11:15-53, and Berkson J, Gage RP (1952), <i>J Am Stat Assoc</i> 47:501-515: the origins of cure models in cancer. <i>Cited from my own knowledge, not in PubMed.</i></li>
     <li>Farewell VT (1982), <i>Biometrics</i> 38:1041-1046 (PMID 7168793): mixture model with a logistic cure part.</li>
     <li>Sy JP, Taylor JMG (2000), <i>Biometrics</i> 56:227-236 (PMID 10783800): semiparametric (Cox-type) mixture cure estimation.</li>
     <li>Royston P, Parmar MKB (2002), <i>Stat Med</i> 21:2175-2197 (PMID 12210632): the spline models that cure models are usually compared with.</li>
-    <li><i>Statistics Surveys</i> vol. 18 (2024), DOI 10.1214/24-SS147, a recent review of MCM methodology. Not opened for this tutorial.</li>
+    <li><i>Statistics Surveys</i> vol. 18 (2024), DOI 10.1214/24-SS147, a recent review of MCM methodology listed in your file. I did not open it.</li>
   </ul>
 </section>
 
@@ -875,7 +874,7 @@ S(t)   = 0.45 + 0.55 × S_u(t)</div>
   </ul>
 
   <div class="callout note"><span class="lbl">Other agencies</span>
-    <p>Some sources state that CADTH has "generally accepted" 1-knot splines or MCMs. I could not verify a CADTH-specific position, so this page makes no CADTH claim. NICE DSU TSD 21 on flexible survival methods is a good anchor, but please check the exact section on cure models before quoting it.</p></div>
+    <p>Your source file says CADTH has "generally accepted" 1-knot splines or MCMs. I could not verify a CADTH-specific position, so I left it out. NICE DSU TSD 21 on flexible survival methods is a good anchor, but please check the exact section on cure models before quoting it.</p></div>
 
   <h3>Reporting checklist</h3>
   <ul>
@@ -888,6 +887,25 @@ S(t)   = 0.45 + 0.55 × S_u(t)</div>
     <li>Scenario table: π low, base, high; alternative families; no-cure comparator.</li>
     <li>ICER and QALY change for each scenario.</li>
   </ul>
+</section>
+
+<!-- ======================= 10. REVIEW ======================= -->
+<section id="review">
+  <div class="eyebrow">13 · Notes on your source files</div>
+  <h2>Where we agree, and a few things to tidy</h2>
+  <p><b>Where we agree.</b> Your files get the core right: the form S(t) = π + (1 − π)S<sub>u</sub>(t), the conditional cure probability π / S(t), the hazard formula, the contrast with a single cure point, and the rule that π must be validated against outside data. I built this page on those.</p>
+  <p><b>Where I would adjust,</b> offered as a co-author would. In order of importance:</p>
+  <ol>
+    <li><b>Formula vs table.</b> The printed latency formula uses (λ·t)<sup>γ</sup>, but the table uses λ·t<sup>γ</sup>. Pick one and state it. I used the table's version.</li>
+    <li><b>The 0.45 cure fraction is illustrative.</b> It reads like a TA975 or ELIANA estimate. The NICE text I retrieved reports no tisagenlecleucel cure value, so I would label it "hypothetical".</li>
+    <li><b>TA559 is mislabelled.</b> In the spline file, TA559 sits under "Tisagenlecleucel for Pediatric B-ALL". Per the NICE listings I found, it is an axicabtagene ciloleucel appraisal (DLBCL). Please verify on the NICE site before reuse.</li>
+    <li><b>R argument names.</b> <code>anc = list(cure = ~ treat)</code> and <code>coef(fit)["cure"]</code> do not match what I could confirm (<code>theta</code>, and formula covariates). Worth a quick test.</li>
+    <li><b>"Equivalent" mixture and non-mixture.</b> They are related, not interchangeable. I would say "alternative ways to build a plateau".</li>
+    <li><b>"MCM preferred over any spline when a plateau is visible" and "1 knot is supported by every relevant TA".</b> TA567 accepted a 1-knot spline and TA554/559 used MCMs, which supports a more careful statement: <i>plateau plus biology plus validation</i> favours an MCM. Kearns et al. also find that with immature data you cannot reliably choose, so clinical knowledge decides.</li>
+    <li><b>The "cure point" language.</b> Your file describes the MCM as handling a "transition", which is right, but a reader may still ask "when does the model say patients are cured?". Section 4 answers that: it never does, and any cure time comes from a rule you choose.</li>
+    <li><b>Reference list.</b> Entry 16 in the spline file is a news site about an unrelated cancer. Remove it before circulating. Also, I could not find the Whittington et al. 2018 record in PubMed by citation, so I did not use it as an example.</li>
+    <li><b>Duplicate upload.</b> Two of the four files were byte-identical copies.</li>
+  </ol>
 </section>
 
 <!-- ======================= GLOSSARY / SOURCES ======================= -->
