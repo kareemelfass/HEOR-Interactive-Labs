@@ -51,6 +51,25 @@ A two-part interactive tutorial: (1) PFS and OS, including state occupancy, LY/Q
 
 ---
 
+## Featured: Mixture Cure Models, Interactive Tutorial
+
+**[Open the Mixture Cure Models tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/mixture-cure-model-tutorial/)**
+
+A detailed, plain-language tutorial on mixture cure models (MCMs) for HEOR and HTA, with worked calculations and interactive calculators. It runs on one illustrative example (cure fraction 0.45, log-logistic latency) plus a simulated trial.
+
+- When to use an MCM: a decision process, not a checklist
+- How the cure fraction is estimated: plateau formula, maximum likelihood, profile-likelihood intervals, informed (outside-evidence) approach, covariates
+- How the model defines a patient as cured: latent label, Bayes' rule, EM algorithm
+- How a cure point is derived (the model has none): probability, hazard and clinical rules
+- Whether the cure fraction accounts for general population survival: background mortality and relative survival
+- Data needed, R and Python code with line-by-line explanations
+- Worked calculations, including the cost of a hard single cure point and a simulation showing how follow-up length changes the estimate
+- Published examples (including NICE TA975), pitfalls, and a reporting checklist for HTA submissions
+
+The numerical examples are illustrative or simulated for teaching. The R code was not executed when the tutorial was written, so check package argument names on your machine.
+
+---
+
 ## Interactive labs
 
 ### 1. Mixture Cure Model Lab
