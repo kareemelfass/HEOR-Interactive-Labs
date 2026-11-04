@@ -1,0 +1,1140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="A step-by-step interactive tutorial on mixture cure models for HEOR and HTA: when to use them, how to estimate the cure fraction, worked calculations, published examples, pitfalls and HTA use.">
+<title>Mixture Cure Model Tutorial</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout concept: a long teaching page with a sticky section bar. Two colours carry meaning all the way down:
+   teal = cured patients, amber = uncured patients. Ink is the observed or overall curve. */
+:root{
+  --bg:#F5F7F8; --panel:#FFFFFF; --fg:#13222E; --muted:#51616E; --line:#D5DDE2;
+  --cured:#0F8F86; --cured-soft:#D3EEEB; --uncured:#C27A12; --uncured-soft:#F6E2BF;
+  --cp:#7A4FD0; --code-bg:#EEF2F4; --note:#E4F1F6; --warn:#FBEFD6; --fix:#F7E3E3;
+  --link:#0B6BA8;
+  --display:"Literata",Georgia,serif; --body:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1A22; --panel:#16252F; --fg:#E6EDF1; --muted:#9FB0BC; --line:#2A3B47;
+  --cured:#35C7BB; --cured-soft:#15474A; --uncured:#E5A33E; --uncured-soft:#52390F;
+  --cp:#B196F2; --code-bg:#0C151C; --note:#133543; --warn:#43330F; --fix:#4A2323; --link:#6DBBEA; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1A22; --panel:#16252F; --fg:#E6EDF1; --muted:#9FB0BC; --line:#2A3B47;
+  --cured:#35C7BB; --cured-soft:#15474A; --uncured:#E5A33E; --uncured-soft:#52390F;
+  --cp:#B196F2; --code-bg:#0C151C; --note:#133543; --warn:#43330F; --fix:#4A2323; --link:#6DBBEA; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.65 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+.wrap{max-width:860px;margin:0 auto}
+a{color:var(--link)}
+h1,h2,h3{font-family:var(--display);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,6vw,46px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(24px,4.4vw,31px);font-weight:700;margin-top:0}
+h3{font-size:20px;font-weight:700;margin:30px 0 8px}
+p{margin:0 0 14px;max-width:68ch}
+ul,ol{margin:0 0 16px;padding-left:22px;max-width:70ch} li{margin:5px 0}
+b,strong{font-weight:700}
+.eyebrow{font:600 12px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+header.top{padding:44px 0 26px}
+header.top p.lead{font-size:19px;color:var(--muted);margin-top:14px}
+nav.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--panel);border-bottom:1px solid var(--line);margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:0 max(16px,env(safe-area-inset-left,0px))}
+nav.bar .in{max-width:860px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin}
+nav.bar a{white-space:nowrap;text-decoration:none;color:var(--muted);font:600 14px/1 var(--body);padding:14px 10px;border-bottom:3px solid transparent}
+nav.bar a:hover,nav.bar a:focus-visible{color:var(--fg);border-bottom-color:var(--cured);outline:none}
+section{padding-top:52px;scroll-margin-top:60px}
+.k{color:var(--cured);font-weight:700} .u{color:var(--uncured);font-weight:700}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px 20px;margin:18px 0}
+.callout{border-radius:4px;padding:14px 18px;margin:18px 0;max-width:72ch}
+.callout .lbl{font:700 12px/1 var(--body);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;display:block}
+.callout p:last-child,.callout ul:last-child{margin-bottom:0}
+.note{background:var(--note)} .warn{background:var(--warn)} .fix{background:var(--fix)}
+.tw{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:560px}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font:700 12px/1.2 var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--code-bg)}
+tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.mono,code{font-family:var(--mono);font-size:.88em}
+code{background:var(--code-bg);padding:1px 5px;border-radius:3px}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:6px;padding:14px 16px;overflow-x:auto;font:400 13.5px/1.55 var(--mono);margin:12px 0 8px}
+pre code{background:none;padding:0;font-size:inherit}
+.eq{font-family:var(--mono);font-size:15.5px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin:14px 0;overflow-x:auto;white-space:pre;line-height:1.7}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid2>*{min-width:0}
+@media (max-width:640px){.grid2{grid-template-columns:1fr}}
+.tag{display:inline-block;font:700 11px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;padding:4px 7px;border-radius:3px;margin-right:6px;vertical-align:1px}
+.tag.c{background:var(--cured-soft);color:var(--cured)} .tag.a{background:var(--uncured-soft);color:var(--uncured)}
+/* explorer */
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px 22px;margin:14px 0}
+.ctl label{display:block;font:600 14px/1.3 var(--body);margin-bottom:4px}
+.ctl output{font-family:var(--mono);color:var(--cured);font-weight:600}
+input[type=range]{width:100%;accent-color:var(--cured)}
+.chk{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+.read{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.read div{background:var(--code-bg);border-radius:4px;padding:10px 12px}
+.read span{display:block;font:600 11px/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.read b{font:600 21px/1.3 var(--mono);font-variant-numeric:tabular-nums}
+svg.chart{width:100%;height:auto;display:block}
+svg text{font-family:var(--body);fill:var(--muted);font-size:12px}
+svg .ax{stroke:var(--line);stroke-width:1} svg .gl{stroke:var(--line);stroke-width:1;opacity:.6}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:2px 0 2px 44px;margin:12px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--cured);color:#fff;font:700 15px/30px var(--body);text-align:center}
+:root[data-theme="dark"] .steps li::before{color:#06201E}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .steps li::before{color:#06201E}}
+details{border:1px solid var(--line);border-radius:6px;background:var(--panel);margin:10px 0;padding:0 16px}
+summary{cursor:pointer;font-weight:700;padding:12px 0}
+details[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
+.src li{font-size:15px}
+footer{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+:focus-visible{outline:2px solid var(--cured);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">HEOR survival modelling tutorial</div>
+  <h1>Mixture Cure Models, explained from the ground up</h1>
+  <p class="lead">What they are, when to use them, what data they need, a full worked calculation, real published examples, the traps, and how they are judged in HTA.</p>
+</header>
+</div>
+
+<nav class="bar" aria-label="Sections"><div class="in">
+  <a href="#idea">The idea</a><a href="#getpi">How we get π</a><a href="#defcured">Who is cured</a><a href="#curepoint">Cure point</a><a href="#when">When to use</a><a href="#data">Data needed</a><a href="#how">How to use</a><a href="#calc">Worked calculation</a><a href="#published">Published examples</a><a href="#uses">Use cases</a><a href="#pitfalls">Pitfalls</a><a href="#hta">Use in HTA</a>
+</div></nav>
+
+<main class="wrap">
+
+<section id="summary" style="padding-top:34px">
+  <div class="box">
+    <div class="eyebrow">In one minute</div>
+    <ul style="margin-top:12px">
+      <li>A <b>mixture cure model (MCM)</b> says your patients are <i>two hidden groups</i>: <span class="k">cured</span> patients who will never have the event, and <span class="u">uncured</span> patients who will have it sooner or later.</li>
+      <li>The curve is <span class="mono">S(t) = π + (1 − π) × S<sub>u</sub>(t)</span>. It levels off at <b>π</b> (the cure fraction) instead of sliding to zero.</li>
+      <li>The model <b>never labels a patient as cured</b>. It estimates a share (π) and, for each survivor, a <i>probability</i> of being cured.</li>
+      <li>There is <b>no cure date inside the model</b>. A "cure point" is something you <i>derive afterwards</i> from a threshold you choose.</li>
+      <li>Use it only when <b>cure is biologically believable</b>, the Kaplan-Meier curve <b>really flattens</b>, and follow-up is <b>long enough</b> to prove it.</li>
+      <li>The cure fraction is the hardest number to estimate. In the simulation in section 8 it was <i>unreliable until follow-up was about 3.5 times the median time to event of the uncured</i>.</li>
+      <li>In HTA, an MCM is judged mostly on one question: <b>can you defend π with outside evidence?</b></li>
+    </ul>
+  </div>
+  <p>Throughout this page, <span class="tag c">cured</span> is always teal and <span class="tag a">uncured</span> is always amber. Every technical term is explained the first time it appears, and there is a short glossary at the end.</p>
+</section>
+
+<!-- ======================= 1. THE IDEA ======================= -->
+<section id="idea">
+  <div class="eyebrow">1 · The idea</div>
+  <h2>Two hidden groups, one curve</h2>
+
+  <h3>The problem a standard model cannot solve</h3>
+  <p>A <b>survival curve</b> S(t) shows the share of patients still event-free at time t (the event can be death, relapse, progression). A <b>Kaplan-Meier (KM) curve</b> is the step-shaped estimate of that curve built from trial data, where patients who leave the study without an event are <b>censored</b> (we only know they were event-free up to their last visit).</p>
+  <p>A standard model such as Weibull or log-logistic gives <i>every</i> patient some risk at every moment. So the curve keeps sliding down toward zero, even when the real KM curve has gone flat. After some treatments (CAR-T cells, some immunotherapies, curative surgery) a flat tail is exactly what we see.</p>
+
+  <h3>The mixture idea, with a picture in your head</h3>
+  <ul>
+    <li>Picture 1,000 patients walking down a corridor.</li>
+    <li><span class="k">450</span> carry an invisible "never relapse" ticket. They keep walking forever.</li>
+    <li>The other <span class="u">550</span> each carry a hidden countdown clock. When a clock hits zero, that patient leaves (relapses).</li>
+    <li>Nobody can see the tickets. We only watch who is still in the corridor.</li>
+    <li>As time passes, countdown patients leave, so the people still walking are <i>more and more likely to be ticket holders</i>. The curve flattens because the corridor is filling up with the cured, not because anyone flipped a switch.</li>
+  </ul>
+
+  <h3>The formula, read in plain words</h3>
+  <div class="eq">S(t) = π + (1 − π) × S_u(t)</div>
+  <ul>
+    <li><b>π</b> (pi) is the <b>cure fraction</b>: the share of patients who will never have the event from this disease. It is a number between 0 and 1.</li>
+    <li><b>S<sub>u</sub>(t)</b> is the survival curve of the <span class="u">uncured</span> group only. It is called the <b>latency distribution</b> (latency means "the waiting time before the event"). It is a normal parametric curve such as Weibull or log-logistic.</li>
+    <li>Cured patients contribute <b>π</b> at every time, because they never leave.</li>
+    <li>Uncured patients contribute <b>(1 − π) × S<sub>u</sub>(t)</b>, which shrinks toward 0 over time.</li>
+    <li>So when t gets large, S<sub>u</sub>(t) → 0 and <b>S(t) → π</b>. The curve has a floor.</li>
+  </ul>
+
+  <h3>Three more formulas you will use</h3>
+  <div class="eq">Hazard:                 h(t) = (1 − π) × f_u(t) / S(t)
+Chance a survivor is cured: P(cured | alive at t) = π / S(t)
+With background mortality: S_o(t) = S_b(t) × [ π + (1 − π) × S_u(t) ]</div>
+  <ul>
+    <li>The <b>hazard</b> h(t) is the instantaneous risk of the event at time t, among people still event-free. f<sub>u</sub>(t) is the <b>density</b> of the uncured group (how fast they are leaving at time t).</li>
+    <li>The hazard <i>falls on its own</i> as S(t) falls toward the floor π, because the denominator S(t) stops shrinking. That is the "smooth transition" with no hard switch.</li>
+    <li><b>P(cured | alive at t)</b> reads "the probability of being cured, given you are still alive and event-free at t". The numerator π never changes. The denominator S(t) shrinks. So the probability rises.</li>
+    <li><b>Background mortality</b> S<sub>b</sub>(t) is the survival of the general population of the same age and sex, taken from a <b>life table</b> (a published table of death rates by age). Cured patients are free of <i>this disease</i>, but they can still die of other causes. The third formula follows Felizzi et al. (2021).</li>
+  </ul>
+
+  <div class="callout note"><span class="lbl">Key point</span>
+    <p>A specific patient <b>cannot</b> be labelled cured or uncured. "Cured" describes a share of the <i>population</i>. What the model gives you is a probability for each survivor, which is why it never needs a "cure date". Sections <a href="#defcured">3</a> and <a href="#curepoint">4</a> explain this in detail.</p></div>
+
+  <h3>Latency curve used in this tutorial</h3>
+  <p>For the examples, the uncured follow a <b>log-logistic</b> latency:</p>
+  <div class="eq">S_u(t) = 1 / (1 + λ × t^γ)</div>
+  <p>Here λ is a scale-type parameter and γ is the shape.</p>
+  <div class="callout warn"><span class="lbl">Software warning</span>
+    <p>In R's flexsurv package the log-logistic is written <span class="mono">S(t) = 1 / (1 + (t / scale)<sup>shape</sup>)</span>, so <b>λ = scale<sup>−shape</sup></b>. Always convert before copying parameters between tools.</p></div>
+
+  <h3>Mixture versus non-mixture</h3>
+  <ul>
+    <li><b>Mixture</b> (above): the cure fraction π is a direct parameter. This is the form most HTA submissions use.</li>
+    <li><b>Non-mixture or promotion-time</b> model: the plateau comes from a capped cumulative hazard. With F(t) a distribution function and θ &gt; 0, <span class="mono">S(t) = exp[−θ × F(t)]</span> and the cure fraction is <span class="mono">e<sup>−θ</sup></span>.</li>
+    <li>It is available in <code>flexsurvcure</code> with <code>mixture = FALSE</code>.</li>
+    <li>They are related but <b>not interchangeable</b>. With the same distribution family they fit differently, and a covariate effect means something different in each. Some sources call them "mathematically equivalent". That is too strong: they are alternative ways to build a plateau.</li>
+  </ul>
+
+  <h3>Try it yourself</h3>
+  <p>Move the sliders. Watch the teal block (cured, always present) and the amber block (uncured still alive, shrinking). The purple dashed line shows what a <b>single cure point</b> model would do: it declares everyone still alive at a chosen year to be cured and flattens the curve there.</p>
+
+  <div class="box" id="explorer">
+    <div class="ctl">
+      <div><label for="pi">Cure fraction π <output id="pi_o"></output></label><input id="pi" type="range" min="0" max="0.8" step="0.01" value="0.45"></div>
+      <div><label for="lam">Latency scale λ <output id="lam_o"></output></label><input id="lam" type="range" min="0.05" max="1" step="0.01" value="0.30"></div>
+      <div><label for="gam">Latency shape γ <output id="gam_o"></output></label><input id="gam" type="range" min="0.6" max="3" step="0.05" value="1.5"></div>
+      <div><label for="tsel">Look at year <output id="tsel_o"></output></label><input id="tsel" type="range" min="0" max="20" step="0.5" value="5"></div>
+      <div><label for="cp">Single cure point at year <output id="cp_o"></output></label><input id="cp" type="range" min="1" max="15" step="0.5" value="7"></div>
+      <div class="chk"><input id="showcp" type="checkbox" checked><label for="showcp" style="margin:0">Show single cure point curve</label></div>
+    </div>
+    <svg class="chart" id="expsvg" viewBox="0 0 720 380" role="img" aria-label="Survival curve split into cured and uncured patients"></svg>
+    <div class="read" id="readout"></div>
+    <p style="font-size:14px;color:var(--muted);margin:12px 0 0">Latency curve used: S<sub>u</sub>(t) = 1 / (1 + λ·t<sup>γ</sup>), a log-logistic. No background mortality here, to keep the idea clean.</p>
+  </div>
+</section>
+
+
+<!-- ======================= 2. HOW WE GET PI ======================= -->
+<section id="getpi">
+  <div class="eyebrow">2 · How we get π</div>
+  <h2>Where the cure fraction comes from</h2>
+  <p>The cure fraction is <b>not measured</b>. Nobody is tested for "cure". It is <i>inferred</i> from the shape of the curve. There are three routes, from intuition to what software really does.</p>
+
+  <h3>Route A: read it from the plateau (the intuition)</h3>
+  <p>At the end of follow-up, time T, the model says S(T) = π + (1 − π) × S<sub>u</sub>(T). Solve for π:</p>
+  <div class="eq">π = ( S(T) − S_u(T) ) / ( 1 − S_u(T) )</div>
+  <p>In words: <b>take the height of the curve at the end, remove the uncured people who are still waiting for their event, and rescale.</b></p>
+  <ul>
+    <li>If follow-up is long, S<sub>u</sub>(T) is close to 0 and π is almost exactly the plateau height.</li>
+    <li>If follow-up is short, S<sub>u</sub>(T) is large, and the plateau height <i>overstates</i> π.</li>
+  </ul>
+  <p><b>Worked example</b> (the fitted models from my simulation in section 8, true π = 0.40):</p>
+  <div class="tw"><table>
+    <tr><th>Follow-up T</th><th class="n">KM at T</th><th class="n">Fitted S<sub>u</sub>(T)</th><th>π = (S − S<sub>u</sub>) / (1 − S<sub>u</sub>)</th><th class="n">Fitted π̂</th></tr>
+    <tr><td>8 years</td><td class="n">0.4567</td><td class="n">0.1618</td><td>(0.4567 − 0.1618) / 0.8382 = <b>0.352</b></td><td class="n">0.352</td></tr>
+    <tr><td>15 years</td><td class="n">0.4167</td><td class="n">0.0578</td><td>(0.4167 − 0.0578) / 0.9422 = <b>0.381</b></td><td class="n">0.381</td></tr>
+  </table></div>
+  <p>Both lines return the fitted value exactly. In this simulation all censoring happens on the stop date, so the fitted curve passes through the KM end value and the formula is exact. In real data with scattered censoring it is an approximation, so treat it as a way to <i>understand</i> the estimate, not to compute it.</p>
+
+  <h3>Route B: maximum likelihood (what software does)</h3>
+  <p><b>Maximum likelihood</b> means: try every candidate value of the parameters and keep the ones that make the observed data most probable. Each patient contributes one term.</p>
+  <ul>
+    <li>A patient who <b>had the event</b> at time t<sub>i</sub> must be <span class="u">uncured</span>. Their contribution is the density <span class="mono">(1 − π) × f_u(t_i)</span>.</li>
+    <li>A patient who was <b>censored</b> at time t<sub>i</sub> is still event-free, and could be <span class="k">cured</span> or <span class="u">uncured</span>. Their contribution is <span class="mono">S(t_i) = π + (1 − π) × S_u(t_i)</span>.</li>
+  </ul>
+  <p>With d<sub>i</sub> = 1 for an event and d<sub>i</sub> = 0 for censoring, the likelihood L and its logarithm ℓ are:</p>
+  <div class="eq">L = Π_i  [ (1 − π) f_u(t_i) ]^d_i  ×  [ π + (1 − π) S_u(t_i) ]^(1 − d_i)
+
+ℓ = Σ_i  { d_i × ln[ (1 − π) f_u(t_i) ]  +  (1 − d_i) × ln[ π + (1 − π) S_u(t_i) ] }</div>
+  <p>The software searches for the π, λ and γ that make ℓ as large as possible. π is kept between 0 and 1 by estimating it on the <b>logit scale</b>:</p>
+  <div class="eq">π = 1 / (1 + e^(−β0)),     β0 = ln( π / (1 − π) )</div>
+
+  <p><b>Toy example by hand.</b> Three patients: one event at year 1, one censored at year 5, one censored at year 10. Use λ = 0.30, γ = 1.5 and try five values of π.</p>
+  <div class="tw"><table>
+    <tr><th class="n">Candidate π</th><th class="n">Event at year 1: (1 − π) f<sub>u</sub>(1)</th><th class="n">Censored at 5: S(5)</th><th class="n">Censored at 10: S(10)</th><th class="n">Log-likelihood ℓ</th></tr>
+    <tr><td class="n">0.00</td><td class="n">0.2663</td><td class="n">0.2297</td><td class="n">0.0954</td><td class="n">−5.144</td></tr>
+    <tr><td class="n">0.20</td><td class="n">0.2130</td><td class="n">0.3837</td><td class="n">0.2763</td><td class="n">−3.791</td></tr>
+    <tr><td class="n">0.45</td><td class="n">0.1464</td><td class="n">0.5763</td><td class="n">0.5024</td><td class="n">−3.160</td></tr>
+    <tr><td class="n"><b>0.60</b></td><td class="n">0.1065</td><td class="n">0.6919</td><td class="n">0.6381</td><td class="n"><b>−3.057</b></td></tr>
+    <tr><td class="n">0.80</td><td class="n">0.0533</td><td class="n">0.8459</td><td class="n">0.8191</td><td class="n">−3.300</td></tr>
+  </table></div>
+  <p><b>How to read it:</b></p>
+  <ul>
+    <li>Row π = 0.45, event term: f<sub>u</sub>(1) = 0.30 × 1.5 × 1<sup>0.5</sup> / (1 + 0.30)<sup>2</sup> = 0.45 / 1.69 = 0.2663. Times (1 − 0.45) = 0.55 gives 0.1464.</li>
+    <li>Row π = 0.45, censored at 5: S(5) = 0.45 + 0.55 × 0.2297 = 0.5763.</li>
+    <li>The log-likelihood adds the logs: ln 0.1464 + ln 0.5763 + ln 0.5024 = −1.921 − 0.551 − 0.688 = −3.160.</li>
+    <li>The best value is near <b>0.60</b>. Two long-surviving censored patients pull π <i>up</i>. The single early event pulls it <i>down</i>. That tug of war <i>is</i> the estimation.</li>
+  </ul>
+
+  <div class="box" id="toybox">
+    <div class="ctl"><div><label for="tpi">Try a candidate π <output id="tpi_o"></output></label><input id="tpi" type="range" min="0" max="0.95" step="0.01" value="0.45"></div></div>
+    <svg class="chart" id="toysvg" viewBox="0 0 720 250" role="img" aria-label="Log-likelihood of the three-patient example for each candidate cure fraction"></svg>
+    <div class="read" id="toyread"></div>
+    <p style="font-size:14px;color:var(--muted);margin:12px 0 0">Same three patients, λ = 0.30, γ = 1.5. Slide π and watch the log-likelihood climb to a peak and fall again.</p>
+  </div>
+
+  <h3>Standard errors and intervals</h3>
+  <ul>
+    <li>The <b>curvature</b> of ℓ around its peak tells you the precision: a sharp peak means a precise estimate, a flat peak means a vague one.</li>
+    <li>A <b>Wald interval</b> is built from that curvature on the logit scale: <span class="mono">logit(π̂) ± 1.96 × SE</span>.</li>
+    <li>A <b>profile likelihood interval</b> is better when the peak is flat. Keep every π whose log-likelihood is within 1.92 of the maximum (half of 3.84, the 95% cut-off of a chi-square distribution with 1 degree of freedom). It can be lopsided, which is honest.</li>
+  </ul>
+  <div class="box">
+    <svg class="chart" id="profsvg" viewBox="0 0 720 340" role="img" aria-label="Profile log-likelihood for the cure fraction at 3, 8 and 15 years of follow-up"></svg>
+    <p style="font-size:14px;color:var(--muted);margin:10px 0 0">Profile log-likelihood for π at three follow-up lengths (same simulated patients, true π = 0.40). A narrow peak means a well-determined π. The 3-year curve is almost flat.</p>
+  </div>
+  <div class="tw"><table>
+    <tr><th>Follow-up</th><th>Profile 95% interval for π</th><th>Wald 95% interval</th><th>Comment</th></tr>
+    <tr><td>3 years</td><td>about 0.02 to 0.47</td><td>0.00 to 1.00 (not estimable)</td><td>The data cannot rule out "almost no cure".</td></tr>
+    <tr><td>8 years</td><td>about 0.24 to 0.42</td><td>0.27 to 0.45</td><td>The peak is clear.</td></tr>
+    <tr><td>15 years</td><td>about 0.32 to 0.42</td><td>0.32 to 0.45</td><td>Tight.</td></tr>
+  </table></div>
+
+  <h3>What drives the estimate of π</h3>
+  <div class="tw"><table>
+    <tr><th>Driver</th><th>Why it matters</th></tr>
+    <tr><td><b>Height of the plateau</b></td><td>Higher flat tail means higher π.</td></tr>
+    <tr><td><b>Length of the plateau</b></td><td>A long flat stretch is evidence of cure. A short one could still be a slow decline.</td></tr>
+    <tr><td><b>Shape of the latency curve</b></td><td>A family with a long, slow tail can absorb the late survivors as "uncured", which lowers π.</td></tr>
+    <tr><td><b>Numbers still at risk in the tail</b></td><td>A tail built on 6 patients carries almost no information.</td></tr>
+    <tr><td><b>Covariates</b></td><td>π can differ by treatment arm or subgroup.</td></tr>
+  </table></div>
+
+  <h3>Route C: bring π from outside (the informed approach)</h3>
+  <p>When trial follow-up is too short, take π from other evidence and either fix it or give it a narrow range.</p>
+  <ul>
+    <li><b>Registry or long-term follow-up:</b> apply the plateau formula of Route A to long-term <i>relative survival</i> (patient survival divided by general-population survival).</li>
+    <li><b>Expert opinion:</b> a documented clinician panel (as in NICE TA975, where the company compared fits with clinician cure estimates).</li>
+    <li><b>Bayesian version:</b> put a prior distribution on π centred on the outside evidence.</li>
+    <li>Always run it for a <b>range</b> of π and show the results as scenarios.</li>
+  </ul>
+
+  <h3>Cure fraction with covariates</h3>
+  <p>To let the cure fraction depend on treatment (z = 1 for treated, 0 for control), use a <b>logistic regression</b> for π:</p>
+  <div class="eq">π(z) = 1 / (1 + e^(−(β0 + β1 × z)))</div>
+  <p>Example: control π = 0.30 gives β0 = ln(0.30 / 0.70) = −0.847. Treated π = 0.60 gives β0 + β1 = ln(0.60 / 0.40) = 0.405, so β1 = 1.253. The odds of cure are multiplied by e<sup>1.253</sup> = 3.5 in the treated arm.</p>
+  <h3>Who estimates π: the model or you?</h3>
+  <p><b>In the usual setup the model estimates π from your data.</b> You never type it in. The software treats π as one more unknown, next to the scale λ and shape γ of the latency curve, tries many combinations (Route B), and keeps the one that makes your data most probable. The clues it uses are the height of the flat tail, how long it stays flat, and how many patients are still at risk there.</p>
+  <p>The model can only do this well if you supply the right ingredients:</p>
+  <div class="tw"><table>
+    <tr><th>You supply</th><th>Why the model cannot guess it</th></tr>
+    <tr><td><b>The latency family</b> (Weibull, log-logistic, log-normal)</td><td>Different families give different π on the same data (13% to 18% in Felizzi et al.).</td></tr>
+    <tr><td><b>Background mortality</b> (life table), if π should mean "cured of the disease"</td><td>Without it, other-cause deaths look like disease events (next subsection).</td></tr>
+    <tr><td><b>Enough follow-up</b></td><td>With a short window "cured" and "event not yet happened" look the same. The software still prints a number, but the interval is huge (the 3-year case in section 8).</td></tr>
+    <tr><td><b>Outside evidence</b>, when the trial is short</td><td>Registry or clinician estimates can fix or bound π (Route C).</td></tr>
+  </table></div>
+  <p>A decision process, in order:</p>
+  <ol class="steps">
+    <li><b>Is follow-up long compared with how fast the uncured have their events, and is the flat tail well populated?</b> If yes, let the model estimate π (Route B).</li>
+    <li><b>Do you have outside evidence?</b> If yes, check the estimate against it. If the trial is too short for step 1, fix or bound π from outside instead (Route C) and show scenarios.</li>
+    <li><b>Have you dealt with background mortality?</b> If not, use one of the two fixes in the next subsection.</li>
+    <li><b>Report</b> π̂ with its interval and say which approach you used. HTA reviewers will ask.</li>
+  </ol>
+
+  <h3>Does π take the survival of the general population into account?</h3>
+  <p><b>π itself does not.</b> It is a plain share of patients: the fraction who will never have <i>this disease's</i> event. The general population enters through a <b>separate</b> term, S<sub>b</sub>(t), the survival of people of the same age and sex taken from a life table. The two multiply:</p>
+  <div class="eq">S_o(t) = S_b(t) × [ π + (1 − π) × S_u(t) ]</div>
+  <ul>
+    <li><span class="k">Cured patients</span> are free of the disease but still die of other causes, so they follow S<sub>b</sub>(t) only.</li>
+    <li><span class="u">Uncured patients</span> follow S<sub>b</sub>(t) times their disease curve S<sub>u</sub>(t).</li>
+    <li>In hazard terms, and when the two kinds of death are independent, the overall hazard is the sum of the two:</li>
+  </ul>
+  <div class="eq">h_o(t) = h_b(t) + h(t),     where h(t) = (1 − π) × f_u(t) / S(t)</div>
+
+  <p><b>Worked example.</b> Take π = 0.45, λ = 0.30, γ = 1.5, and a background death rate of 1% per year, so S<sub>b</sub>(t) = e<sup>−0.01t</sup> (an older population, for illustration).</p>
+  <div class="tw"><table>
+    <tr><th class="n">Year</th><th class="n">General population S<sub>b</sub>(t)</th><th class="n">Cured alive: 0.45 × S<sub>b</sub>(t)</th><th class="n">Disease-only S(t)</th><th class="n">Observed all-cause S<sub>o</sub>(t) = S<sub>b</sub>(t) × S(t)</th><th class="n">Relative survival S<sub>o</sub> / S<sub>b</sub></th></tr>
+    <tr><td class="n">0</td><td class="n">1.000</td><td class="n">0.450</td><td class="n">1.000</td><td class="n">1.000</td><td class="n">1.000</td></tr>
+    <tr><td class="n">5</td><td class="n">0.951</td><td class="n">0.428</td><td class="n">0.576</td><td class="n">0.548</td><td class="n">0.576</td></tr>
+    <tr><td class="n">10</td><td class="n">0.905</td><td class="n">0.407</td><td class="n">0.502</td><td class="n">0.455</td><td class="n">0.502</td></tr>
+    <tr><td class="n">20</td><td class="n">0.819</td><td class="n">0.368</td><td class="n">0.470</td><td class="n">0.385</td><td class="n">0.470</td></tr>
+    <tr><td class="n">30</td><td class="n">0.741</td><td class="n">0.333</td><td class="n">0.461</td><td class="n"><b>0.341</b></td><td class="n">0.461</td></tr>
+    <tr><td class="n">40</td><td class="n">0.670</td><td class="n">0.302</td><td class="n">0.457</td><td class="n">0.306</td><td class="n">0.457</td></tr>
+  </table></div>
+
+  <p>Now try it. Slide the background death rate and watch the observed curve (black) slide away from the disease-only curve (amber). It uses the <b>π, λ and γ currently set in the explorer in <a href="#idea">section 1</a></b>.</p>
+  <div class="box" id="bgbox">
+    <div class="ctl"><div><label for="hb">Background death rate per year <output id="hb_o"></output></label><input id="hb" type="range" min="0" max="0.03" step="0.001" value="0.01"></div></div>
+    <svg class="chart" id="bgsvg" viewBox="0 0 720 340" role="img" aria-label="Observed all-cause survival, disease-only survival, cured patients still alive and general population survival over 40 years"></svg>
+    <div class="read" id="bgread"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;margin-top:12px">
+      <span><i style="display:inline-block;width:26px;border-top:3px solid var(--fg);vertical-align:middle;margin-right:7px"></i>Observed all-cause survival</span>
+      <span><i style="display:inline-block;width:26px;border-top:3px dashed var(--uncured);vertical-align:middle;margin-right:7px"></i>Disease-only survival S(t)</span>
+      <span><i style="display:inline-block;width:26px;border-top:3px dotted var(--cured);vertical-align:middle;margin-right:7px"></i>Cured patients still alive</span>
+      <span><i style="display:inline-block;width:26px;border-top:2px dashed var(--muted);vertical-align:middle;margin-right:7px"></i>General population S<sub>b</sub>(t)</span>
+      <span><i style="display:inline-block;width:26px;border-top:1px solid var(--cured);vertical-align:middle;margin-right:7px"></i>Thin line: true π</span>
+    </div>
+  </div>
+
+  <p><b>How to read it:</b></p>
+  <ul>
+    <li>The <b>disease-only</b> curve levels off at π. The <b>observed</b> curve keeps sliding, because the cured patients keep dying of other causes.</li>
+    <li>With the starting values, reading the observed curve at year 30 as if it were the plateau gives <b>0.34</b>, not 0.45. The model cannot tell "a cured patient died of old age" from "an uncured patient had the disease event", because both are deaths.</li>
+    <li>Dividing the observed curve by S<sub>b</sub>(t) brings back the disease-only curve (last column). It tends to π as the last uncured patients leave. At year 40 it is 0.457, because a few uncured patients are still alive.</li>
+  </ul>
+
+  <p><b>Two fixes</b>, so that π means "cured of the disease":</p>
+  <ol>
+    <li><b>Relative survival.</b> Divide patient survival by the survival expected in the general population, then fit the cure model to that. The <code>cuRe</code> package works this way.</li>
+    <li><b>Put S<sub>b</sub>(t) inside the likelihood.</b> The model then knows that some deaths are ordinary deaths. Each patient needs a matching life-table rate (age, sex, country, year). The event term of the likelihood uses the overall hazard h<sub>b</sub>(t<sub>i</sub>) + h(t<sub>i</sub>) and the survival term uses S<sub>o</sub>(t<sub>i</sub>).</li>
+  </ol>
+  <p><b>What to expect in practice:</b></p>
+  <ul>
+    <li><b>Young patients and short follow-up:</b> the problem is small.</li>
+    <li><b>Older patients or 20 or more years of follow-up:</b> ignoring background deaths tends to push π̂ down and to distort the latency curve. The size depends on the latency family, so I did not put a single number on it.</li>
+    <li><b>In the economic model,</b> put S<sub>b</sub>(t) back in, so cured patients still die at normal rates. Without it, cured patients never die and life-years are overstated. Test an excess-risk multiplier on S<sub>b</sub>(t) as a scenario (see pitfall 5).</li>
+  </ul>
+</section>
+
+<!-- ======================= 3. HOW THE MODEL DEFINES CURED ======================= -->
+<section id="defcured">
+  <div class="eyebrow">3 · Who counts as cured</div>
+  <h2>How the model defines a patient as cured</h2>
+  <p><b>Short answer:</b> it does not decide for any individual. "Cured" is a <i>hidden label</i>. The model estimates how likely each survivor is to carry it.</p>
+
+  <h3>The definition</h3>
+  <p>Give every patient a hidden (<b>latent</b>) label Z<sub>i</sub>:</p>
+  <div class="eq">Z_i = 1  (cured)    with probability π
+Z_i = 0  (uncured)  with probability 1 − π</div>
+  <ul>
+    <li>If Z<sub>i</sub> = 1, the event time is infinite: the patient <b>never</b> has the event from this disease.</li>
+    <li>If Z<sub>i</sub> = 0, the event time follows the latency curve S<sub>u</sub>(t), which eventually reaches zero. This is the condition that makes the uncured group "proper".</li>
+    <li>With background mortality, cured patients still die at the general-population rate, so "cured" means <i>no excess risk from the disease</i>.</li>
+  </ul>
+
+  <h3>What the data tell us about the label</h3>
+  <p>We never observe Z<sub>i</sub>. We observe only whether an event happened.</p>
+  <ul>
+    <li><b>A patient with an event is certainly uncured.</b> Cured patients have no events, so P(cured | event) = 0.</li>
+    <li><b>A patient who is censored is a mixture of possibilities.</b> They are either cured, or uncured and not yet due for an event. By <b>Bayes' rule</b> (a way to update a probability after seeing evidence), a patient censored at time c has:</li>
+  </ul>
+  <div class="eq">P(cured   | censored at c) = π / S(c)
+P(uncured | censored at c) = (1 − π) × S_u(c) / S(c)</div>
+  <p><b>Worked example</b> with π = 0.45, λ = 0.30, γ = 1.5:</p>
+  <div class="tw"><table>
+    <tr><th>Patient</th><th>Computation</th><th class="n">Chance cured</th></tr>
+    <tr><td>Had an event at any time</td><td>no cured patient has events</td><td class="n"><b>0%</b></td></tr>
+    <tr><td>Censored at year 1</td><td>0.45 / 0.873</td><td class="n">51.5%</td></tr>
+    <tr><td>Censored at year 2</td><td>0.45 / 0.748</td><td class="n">60.2%</td></tr>
+    <tr><td>Censored at year 5</td><td>0.45 / 0.576</td><td class="n">78.1%</td></tr>
+    <tr><td>Censored at year 10</td><td>0.45 / 0.502</td><td class="n">89.6%</td></tr>
+    <tr><td>Censored at year 15</td><td>0.45 / 0.480</td><td class="n">93.8%</td></tr>
+  </table></div>
+  <p>The longer a patient stays event-free, the more their label looks like "cured". Nobody is <i>switched</i> to cured. The evidence simply accumulates. You can see this number live in the <b>P(cured | alive)</b> card of the explorer in <a href="#idea">section 1</a>.</p>
+
+  <h3>With covariates, the answer depends on the patient</h3>
+  <p>Using the arm example from section 2 (control π = 0.30, treated π = 0.60), the chance that a survivor is cured is:</p>
+  <div class="tw"><table>
+    <tr><th>Censored at</th><th class="n">Control arm</th><th class="n">Treated arm</th></tr>
+    <tr><td>Year 2</td><td class="n">44.2%</td><td class="n">73.5%</td></tr>
+    <tr><td>Year 5</td><td class="n">65.1%</td><td class="n">86.7%</td></tr>
+    <tr><td>Year 10</td><td class="n">81.8%</td><td class="n">94.0%</td></tr>
+  </table></div>
+
+  <h3>How software "decides": the EM algorithm</h3>
+  <p>Semiparametric packages such as <code>smcure</code> use the <b>EM algorithm</b> (expectation-maximisation: alternate between guessing the hidden labels and refitting the model).</p>
+  <ul>
+    <li><b>E-step (guess).</b> Give each patient a weight w<sub>i</sub> equal to the probability that they are <i>uncured</i>.</li>
+  </ul>
+  <div class="eq">w_i = 1                                              if patient i had an event
+w_i = (1 − π) S_u(t_i) / [ π + (1 − π) S_u(t_i) ]    if patient i was censored</div>
+  <ul>
+    <li><b>M-step (refit).</b> Update the cure fraction as the average probability of being cured, and refit the latency curve with each patient weighted by w<sub>i</sub>.</li>
+  </ul>
+  <div class="eq">π_new = (1 / n) × Σ_i (1 − w_i)</div>
+  <ul>
+    <li>Repeat until the numbers stop changing.</li>
+    <li><b>Numeric peek:</b> a patient censored at year 5 with the current π = 0.45 gets w = 0.219. They count as 0.781 of a cured patient and 0.219 of an uncured patient in the next update.</li>
+  </ul>
+
+  <h3>Can I label individuals?</h3>
+  <ul>
+    <li>You <i>can</i> say "patients with probability above 0.9 are probably cured", but that is a modelling statement, not a diagnosis.</li>
+    <li>HTA submissions do not need individual labels. They need π and the curve.</li>
+    <li>The probability depends on the model's latency assumption. Change the latency family and the same survivor gets a different probability.</li>
+  </ul>
+
+  <h3>What the model has to believe</h3>
+  <ol>
+    <li>The two groups exist from the start and do not change.</li>
+    <li>Cured patients never have the event from this disease.</li>
+    <li>Every uncured patient would eventually have the event, if followed long enough.</li>
+    <li>Long-term event-free survivors are cured <b>only if</b> the latency curve says an uncured patient would normally have had the event by then. <i>The assumed tail shape is what separates "cured" from "slow".</i> This is why π changes with the latency family (13% to 18% in Felizzi et al.).</li>
+  </ol>
+  <div class="callout warn"><span class="lbl">Statistical cure is not biological cure</span>
+    <p>In a mixture model, "cured" means a zero disease-related event hazard in the fitted model. Late relapses beyond the follow-up window would be invisible. In registry work, "statistical cure" means the excess mortality over the general population has returned to zero. Say which one you mean.</p></div>
+</section>
+
+<!-- ======================= 4. HOW THE MODEL FINDS THE CURE POINT ======================= -->
+<section id="curepoint">
+  <div class="eyebrow">4 · The cure point</div>
+  <h2>How the model finds the cure point</h2>
+  <p><b>Short answer:</b> it does not. A mixture cure model has <b>no cure-point parameter</b>. Cured patients are cured from time zero. What people call a "cure point" is a time you <i>derive after fitting</i>, using a rule you choose.</p>
+
+  <h3>Why there is no switch</h3>
+  <ul>
+    <li>The curve S(t) = π + (1 − π) × S<sub>u</sub>(t) is smooth at every t.</li>
+    <li>The hazard h(t) declines smoothly toward zero (or toward the background rate).</li>
+    <li>There is no moment at which patients change status. What changes is <b>our certainty</b> about who is left.</li>
+  </ul>
+
+  <h3>Three ways to define a cure point after the fit</h3>
+  <p><b>Rule 1: a probability threshold.</b> Pick a certainty level q (for example 95%) and find the time when P(cured | event-free at t) = q. Since this probability equals π / S(t), the target is S(t*) = π / q. Solving for the uncured survival at that time:</p>
+  <div class="eq">S_u* = π × (1/q − 1) / (1 − π)</div>
+  <p>For the log-logistic latency this inverts to:</p>
+  <div class="eq">t* = ( (1 / S_u* − 1) / λ ) ^ (1 / γ)</div>
+  <p><b>Worked example</b> (π = 0.45, λ = 0.30, γ = 1.5, q = 0.95):</p>
+  <ul>
+    <li>S<sub>u</sub>* = 0.45 × (1/0.95 − 1) / 0.55 = 0.45 × 0.05263 / 0.55 = <b>0.04306</b></li>
+    <li>1 / S<sub>u</sub>* − 1 = 23.22 − 1 = 22.22, divided by λ: 22.22 / 0.30 = <b>74.07</b></li>
+    <li>t* = 74.07<sup>1/1.5</sup> = 74.07<sup>0.667</sup>, which is <b>17.6 years</b></li>
+  </ul>
+  <p><b>Rule 2: a hazard threshold.</b> Choose the time when the hazard h(t) falls below a limit, for example the background hazard of the population, or an absolute value you can defend.</p>
+  <p><b>Rule 3: a clinical rule.</b> Clinicians state when a patient is usually considered cured. In NICE TA975 the committee said a person is cured of B-ALL if they have had no B-ALL-related event for around <b>7 years</b>. That is an <i>input from outside the model</i>, used to judge or support it.</p>
+
+  <h3>The same fit, eight different "cure points"</h3>
+  <div class="tw"><table>
+    <tr><th>Rule</th><th class="n">Cure point</th></tr>
+    <tr><td>80% sure a survivor is cured</td><td class="n">5.5 years</td></tr>
+    <tr><td>90% sure</td><td class="n">10.4 years</td></tr>
+    <tr><td>95% sure</td><td class="n">17.6 years</td></tr>
+    <tr><td>99% sure</td><td class="n">54.3 years</td></tr>
+    <tr><td>Hazard below 0.01 per year</td><td class="n">11.8 years</td></tr>
+    <tr><td>Hazard below 0.005 per year</td><td class="n">16.1 years</td></tr>
+    <tr><td>Hazard below 0.001 per year (the background rate used in section 8)</td><td class="n">31.9 years</td></tr>
+    <tr><td>Clinical rule (TA975)</td><td class="n">about 7 years</td></tr>
+  </table></div>
+  <p>The stricter your standard, the later the date. <b>There is no natural cut.</b> Year 7 corresponds to only about 84% certainty in this example, so 16% of survivors at that time (84 of 534) are still uncured.</p>
+
+  <h3>Try it yourself</h3>
+  <p>Move the certainty level. The teal curve is the probability that a survivor is cured. The cure point t* is where it crosses your level. It uses the <b>π, λ and γ currently set in the explorer in <a href="#idea">section 1</a></b>, so change those sliders and come back.</p>
+  <div class="box" id="cpbox">
+    <div class="ctl"><div><label for="q">Certainty level q <output id="q_o"></output></label><input id="q" type="range" min="0.5" max="0.99" step="0.01" value="0.95"></div></div>
+    <svg class="chart" id="cpsvg" viewBox="0 0 720 340" role="img" aria-label="Probability that an event-free survivor is cured over time, with the cure point at the chosen certainty level"></svg>
+    <div class="read" id="cpread"></div>
+    <p style="font-size:14px;color:var(--muted);margin:12px 0 0">Latency curve: S<sub>u</sub>(t) = 1 / (1 + λ·t<sup>γ</sup>). With the starting values (π = 0.45, λ = 0.30, γ = 1.5): 80% gives 5.5 years, 90% gives 10.4, 95% gives 17.6, 99% gives 54.3. If t* is beyond 60 years the readout says so.</p>
+  </div>
+
+  <h3>What this means in an economic model</h3>
+  <ul>
+    <li><b>With an MCM plus background mortality you do not need a cure point.</b> Cured patients follow the general-population hazard from day one, automatically. Uncured patients carry their latency hazard, which fades.</li>
+    <li><b>A cure point is needed when you do <i>not</i> use an MCM</b>, for example in a single cure point model that follows the trial curve until year X and then switches everyone to background mortality. That model forces the choice, and the choice moves the result (section 8, example 2).</li>
+    <li><b>Where a cure time is still useful:</b>
+      <ul>
+        <li>To <i>communicate</i>: "among patients event-free at 5 years, about 78% are expected to be cured".</li>
+        <li>To <i>validate</i>: compare the model's conditional survival with registry data from the same time.</li>
+        <li>To <i>stage</i> an excess-risk assumption, such as extra background hazard for survivors.</li>
+      </ul></li>
+    <li>Registry papers also define a "time to cure" with threshold rules of this type. The exact thresholds are analyst choices, and I did not verify specific published values.</li>
+  </ul>
+</section>
+
+<!-- ======================= 5. WHEN ======================= -->
+<section id="when">
+  <div class="eyebrow">5 · When to use it</div>
+  <h2>A decision process, not a checklist of reasons</h2>
+  <p>Ask these questions <b>in this order</b>. Each one can stop you. Earlier questions are about biology and are cheap; later ones are about data and are expensive.</p>
+
+  <ol class="steps">
+    <li><b>Is cure biologically believable for this disease and this treatment?</b><br>Ask a clinician. Good signs: durable complete remission after CAR-T, long-term responders on immunotherapy, cure after curative surgery. If clinicians say "everyone eventually progresses", <b>stop</b>. An MCM would invent a cure group that does not exist.</li>
+    <li><b>Does the KM curve really flatten?</b><br>Look at the tail. You want a long flat stretch with few events <i>and</i> enough patients still at risk in that stretch. Always plot the <b>numbers at risk</b> under the curve. A flat tail built on 6 patients is not a plateau.</li>
+    <li><b>Is follow-up long enough, compared with how fast the uncured have their events?</b><br>If the uncured typically have events within 2 years, a plateau that has lasted 5 years means something. If the uncured can relapse after 6 years, a plateau at year 5 proves nothing. The simulation in section 8 shows this.</li>
+    <li><b>Can you check π against outside evidence?</b><br>Registry survival, longer follow-up publications, or a documented clinician panel. If yes, fit the model freely and compare ("uninformed" approach). If the trial is too short, you can fix π from outside evidence ("informed" approach) and present it as a scenario.</li>
+    <li><b>Would the answer change the decision?</b><br>Run both a cure and a non-cure model and look at the ICER (incremental cost-effectiveness ratio: extra cost per extra quality-adjusted life-year, or QALY). If it barely moves, keep the simpler model.</li>
+  </ol>
+
+  <h3>What the answers mean</h3>
+  <div class="tw"><table>
+    <tr><th>Situation</th><th>What to do</th></tr>
+    <tr><td>Cure plausible, clear plateau, long follow-up, outside data agree</td><td>MCM as base case or main scenario.</td></tr>
+    <tr><td>Cure plausible, plateau visible, follow-up short</td><td>Informed MCM (π fixed or bounded from outside data) as a scenario. Keep a flexible spline or standard parametric model as comparator.</td></tr>
+    <tr><td>Flat-looking tail but biology unclear</td><td>Do not assume cure. Use splines (for example the normal scale) as a scenario and say why.</td></tr>
+    <tr><td>No plateau, or clinicians expect late relapses</td><td>No MCM. Use standard or spline models.</td></tr>
+    <tr><td>Cure can happen at any time during follow-up, not just early</td><td>Be careful. The two-group assumption may fit poorly (Felizzi et al. 2021).</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================= 3. DATA ======================= -->
+<section id="data">
+  <div class="eyebrow">6 · Data needed</div>
+  <h2>Surprisingly little data, but it must be mature</h2>
+  <p>Felizzi et al. note that "relatively few data are required". The catch is that the data must be <i>long enough</i>. Think of it in three layers.</p>
+
+  <div class="tw"><table>
+    <tr><th>Layer</th><th>Item</th><th>Why you need it</th></tr>
+    <tr><td rowspan="4"><b>Trial data</b> (one row per patient)</td><td>Time to event or censoring</td><td>The raw material for the likelihood.</td></tr>
+    <tr><td>Event indicator (1 = event, 0 = censored)</td><td>Tells the model who is still event-free.</td></tr>
+    <tr><td>Treatment arm and key covariates</td><td>Cure fraction and timing can differ by arm.</td></tr>
+    <tr><td>Age and sex at baseline, country, enrolment year</td><td>Needed to attach the right background mortality.</td></tr>
+    <tr><td rowspan="2"><b>Background data</b></td><td>Life tables by age, sex, country, year</td><td>Cured patients still die of other causes.</td></tr>
+    <tr><td>Age and sex mix of the target population</td><td>For projecting beyond the trial population.</td></tr>
+    <tr><td rowspan="2"><b>Outside evidence</b></td><td>Registry or long-term follow-up survival</td><td>To check that π and the tail are believable.</td></tr>
+    <tr><td>Documented clinician opinion on cure</td><td>To support or set π when trial follow-up is short.</td></tr>
+  </table></div>
+
+  <h3>What "mature" looks like</h3>
+  <ul>
+    <li>A flat tail that covers a <b>meaningful stretch of time</b>, not just the last few months.</li>
+    <li><b>Patients still at risk</b> inside that flat part.</li>
+    <li>Follow-up that is long compared with the uncured group's typical time to event. In my simulation the median time to event for the uncured was 2.2 years, and π was only reasonably pinned down after about 8 years. That is a rule of thumb from <i>one</i> simulated dataset, not a law.</li>
+  </ul>
+
+  <div class="callout warn"><span class="lbl">If you only have a published curve</span>
+    <p>You can rebuild approximate patient-level data from a digitised KM curve, but the tail is the weakest part of that process. Without the numbers at risk, you cannot tell a real plateau from a few lucky survivors. Treat any π from reconstructed data as a scenario that needs outside support.</p></div>
+</section>
+
+<!-- ======================= 4. HOW ======================= -->
+<section id="how">
+  <div class="eyebrow">7 · How to use it</div>
+  <h2>The workflow, then the code</h2>
+
+  <ol class="steps">
+    <li><b>Plot the KM curve with numbers at risk.</b> Confirm there is a plateau and that people are still at risk in it.</li>
+    <li><b>Fit standard models with no cure first.</b> These are your comparators. If they already reach near zero at a believable time, you may not need an MCM.</li>
+    <li><b>Pick several latency distributions.</b> Weibull, log-logistic and log-normal are the usual trio. The choice changes π.</li>
+    <li><b>Fit the MCM for each one</b> by <b>maximum likelihood</b> (choose the parameters that make the observed data most probable).</li>
+    <li><b>Compare.</b> Use AIC (a score that rewards fit and penalises extra parameters; lower is better), visual fit to the KM curve, the estimated π with its confidence interval, and the shape of the hazard.</li>
+    <li><b>Validate π and the tail</b> against registry or long-term data.</li>
+    <li><b>Add background mortality</b> and decide how cured patients are handled in the economic model.</li>
+    <li><b>Report</b> the choice, the alternatives, and a scenario analysis.</li>
+  </ol>
+
+  <h3>Code A: the package route in R</h3>
+  <p><b>High level:</b> fit a no-cure log-logistic and a log-logistic mixture cure model to the same data, compare them, then loop over three latency families.</p>
+<pre><code>library(survival)       # Surv() and survfit()
+library(flexsurv)       # flexsurvreg(): standard parametric models
+library(flexsurvcure)   # flexsurvcure(): mixture cure models
+
+# 1. Look at the data first
+km &lt;- survfit(Surv(time, status) ~ 1, data = df)
+plot(km, xlab = "Years", ylab = "Survival")
+
+# 2. Comparator with no cure
+fit_ll &lt;- flexsurvreg(Surv(time, status) ~ 1, data = df, dist = "llogis")
+
+# 3. Mixture cure model, same latency family
+fit_mcm &lt;- flexsurvcure(Surv(time, status) ~ 1, data = df,
+                        dist = "llogis", link = "logistic", mixture = TRUE)
+
+# 4. Read the results and compare
+fit_mcm                  # printed table: cure fraction is the row called theta
+AIC(fit_ll, fit_mcm)
+
+# 5. Extrapolate to 5, 10 and 20 years
+summary(fit_mcm, t = c(5, 10, 20), type = "survival")
+
+# 6. Try three latency families
+dists &lt;- c("weibull", "llogis", "lnorm")
+fits  &lt;- lapply(dists, function(d)
+  flexsurvcure(Surv(time, status) ~ 1, data = df, dist = d,
+               link = "logistic", mixture = TRUE))
+names(fits) &lt;- dists
+data.frame(dist = dists,
+           AIC  = sapply(fits, AIC),
+           cure = sapply(fits, function(f) f$res["theta", "est"]))</code></pre>
+  <div class="callout warn"><span class="lbl">Not run here</span>
+    <p>I could not install R in my workspace, so this block was checked against the package README but <b>not executed</b>. Please confirm two things on your machine: that the cure row is called <code>theta</code> (print <code>fit_mcm$res</code>), and how covariates reach the cure fraction (the README implies the main formula, see <code>?flexsurvcure</code>). Some examples online use <code>anc = list(cure = ~ treat)</code> and <code>coef(fit)["cure"]</code>, which I could not confirm.</p></div>
+  <p><b>Line by line:</b></p>
+  <ul>
+    <li><code>library(survival)</code>: loads the core survival tools. <code>Surv()</code> bundles time and event into one survival object.</li>
+    <li><code>library(flexsurv)</code>: gives <code>flexsurvreg()</code> for standard parametric models.</li>
+    <li><code>library(flexsurvcure)</code>: adds <code>flexsurvcure()</code>, built on flexsurv, for cure models.</li>
+    <li><code>survfit(Surv(time, status) ~ 1, data = df)</code>: the KM estimate for everyone together (the <code>~ 1</code> means "no grouping"). <code>plot(km)</code> draws it.</li>
+    <li><code>flexsurvreg(..., dist = "llogis")</code>: a log-logistic with no cure group. This is your comparator.</li>
+    <li><code>flexsurvcure(..., mixture = TRUE, link = "logistic")</code>: the same latency family plus a cure fraction. The logistic link keeps π between 0 and 1 by estimating it on the logit scale (logit(π) = log(π / (1 − π))).</li>
+    <li><code>AIC(fit_ll, fit_mcm)</code>: lower is better. A gap of more than about 2 means a real difference.</li>
+    <li><code>summary(fit_mcm, t = c(5, 10, 20), type = "survival")</code>: survival at the chosen years, including beyond the data. That is the extrapolation.</li>
+    <li>The <code>lapply</code> loop: refits the MCM for each family. <code>sapply(fits, AIC)</code> collects the AICs. <code>f$res["theta", "est"]</code> pulls the cure fraction estimate.</li>
+  </ul>
+
+  <h3>Code B: build the likelihood yourself (Python, run and tested)</h3>
+  <p><b>High level:</b> the MCM is just a likelihood with two kinds of patient contributions. Patients who had the event contribute the density f(t). Censored patients contribute the survival S(t). Maximise the sum of the logs. This is exactly what I ran for the simulation in section 8, and it is the code form of the log-likelihood ℓ in <a href="#getpi">section 2</a>.</p>
+<pre><code>import numpy as np
+from scipy.optimize import minimize
+
+def neg_loglik(p, time, event):
+    pi  = 1 / (1 + np.exp(-p[0]))                         # cure fraction, forced into (0, 1)
+    lam = np.exp(p[1])                                    # latency scale, forced positive
+    gam = np.exp(p[2])                                    # latency shape, forced positive
+    Su  = 1 / (1 + lam * time**gam)                       # survival of the uncured
+    fu  = lam * gam * time**(gam - 1) / (1 + lam * time**gam)**2   # density of the uncured
+    S   = pi + (1 - pi) * Su                              # overall survival
+    f   = (1 - pi) * fu                                   # overall density
+    ll  = event * np.log(f) + (1 - event) * np.log(S)     # events use f, censored use S
+    return -ll.sum()                                      # minimise the negative
+
+fit    = minimize(neg_loglik, x0=[0.0, -1.0, 0.4], args=(time, event), method="Nelder-Mead")
+pi_hat = 1 / (1 + np.exp(-fit.x[0]))</code></pre>
+  <p><b>Line by line:</b></p>
+  <ul>
+    <li><code>neg_loglik(p, time, event)</code>: takes three unconstrained numbers <code>p</code> and the data. The optimiser needs unconstrained inputs, so each parameter is transformed.</li>
+    <li><code>pi = 1/(1+exp(-p[0]))</code>: the inverse logit. Any real number becomes a valid probability.</li>
+    <li><code>lam = exp(p[1])</code>, <code>gam = exp(p[2])</code>: exponentials keep both parameters positive.</li>
+    <li><code>Su</code> and <code>fu</code>: the log-logistic survival and density for the uncured. The density is the derivative of 1 − S<sub>u</sub>.</li>
+    <li><code>S</code> and <code>f</code>: the mixture survival and the mixture density. The density gets the factor (1 − π) because cured patients never have an event.</li>
+    <li><code>ll</code>: <code>event</code> is 1 or 0, so each patient adds exactly one of the two log terms.</li>
+    <li><code>minimize(...)</code>: finds the p that makes the negative log-likelihood smallest. <code>x0</code> is the starting guess. In the full simulation I used several starting guesses and kept the best, because mixture likelihoods can be flat and have local bumps.</li>
+    <li><code>pi_hat</code>: converts the fitted first parameter back to a probability.</li>
+  </ul>
+  <p><b>The informed approach in one change:</b> to fix the cure fraction from outside evidence, hold <code>p[0]</code> at <code>logit(π<sub>external</sub>)</code> and optimise only the other two parameters. Run it for a range of π values and show the results as scenarios.</p>
+
+  <h3>Code C: semiparametric option</h3>
+<pre><code>library(smcure)
+fit_semi &lt;- smcure(Surv(time, status) ~ treat,   # latency part (Cox model)
+                   cureform = ~ treat,           # cure part (logistic model)
+                   data = df, model = "ph", Var = FALSE)
+printsmcure(fit_semi)</code></pre>
+  <ul>
+    <li><code>smcure()</code> fits a Cox proportional hazards model for the uncured and a logistic regression for the cure fraction, using the EM algorithm described in <a href="#defcured">section 3</a> (it alternates between guessing who is cured and refitting).</li>
+    <li><code>Var = FALSE</code> skips the slow bootstrap standard errors while you explore. Turn it on for the final run.</li>
+    <li>Good for exploring without picking a distribution. It is <b>not</b> what HTA usually wants, because a Cox model gives no clean parametric extrapolation beyond the data.</li>
+  </ul>
+
+  <div class="tw"><table>
+    <tr><th>Package</th><th>Latency model</th><th>Best for</th></tr>
+    <tr><td><code>flexsurvcure</code></td><td>Any flexsurv distribution</td><td>HTA submissions needing standard parametric forms</td></tr>
+    <tr><td><code>smcure</code></td><td>Cox, semiparametric</td><td>Exploration without a distribution assumption</td></tr>
+    <tr><td><code>cuRe</code></td><td>Relative survival framework</td><td>Registry data with background mortality built in</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================= 5. CALC ======================= -->
+<section id="calc">
+  <div class="eyebrow">8 · Worked calculation</div>
+  <h2>Three examples, from pencil to published</h2>
+
+  <h3>Example 1: the hand calculation</h3>
+  <p><b>Setup.</b> 1,000 patients. Suppose π = 0.45, so 450 are cured and 550 are uncured. The uncured follow a log-logistic latency:</p>
+  <div class="eq">S_u(t) = 1 / (1 + λ × t^γ)     with λ = 0.30, γ = 1.5
+S(t)   = 0.45 + 0.55 × S_u(t)</div>
+  <div class="callout fix"><span class="lbl">A note on the latency formula</span>
+    <p>Some texts write the log-logistic as S<sub>u</sub>(t) = 1 / (1 + (λ·t)<sup>γ</sup>). This page uses <b>1 / (1 + λ·t<sup>γ</sup>)</b>. At t = 1 it gives 0.300 (which is λ·t<sup>γ</sup>), whereas (λ·t)<sup>γ</sup> would give 0.164. State which form you use. These numbers are <i>illustrative</i>: they are not the cure fraction from NICE TA975, whose text reports no tisagenlecleucel value.</p></div>
+
+  <p><b>Step 1: one row, slowly (year 5).</b></p>
+  <ul>
+    <li>t<sup>γ</sup> = 5<sup>1.5</sup> = 11.18</li>
+    <li>λ·t<sup>γ</sup> = 0.30 × 11.18 = <b>3.354</b></li>
+    <li>S<sub>u</sub>(5) = 1 / (1 + 3.354) = 1 / 4.354 = <b>0.230</b> (23% of the uncured are still event-free)</li>
+    <li>S(5) = 0.45 + 0.55 × 0.230 = <b>0.576</b>, so about <b>576</b> of 1,000 are alive and event-free</li>
+    <li>P(cured | alive) = 0.45 / 0.576 = <b>78.1%</b></li>
+    <li>Hazard: f<sub>u</sub>(5) = 0.30 × 1.5 × 5<sup>0.5</sup> / 4.354<sup>2</sup> = 1.006 / 18.96 = 0.0531. Then h(5) = 0.55 × 0.0531 / 0.576 = <b>0.0506</b> per year.</li>
+  </ul>
+
+  <p><b>Step 2: the full table.</b> All values recomputed by me.</p>
+  <div class="tw"><table>
+    <tr><th class="n">Year</th><th class="n">λ·t<sup>γ</sup></th><th class="n">S<sub>u</sub>(t)</th><th class="n">S(t)</th><th class="n">Alive of 1,000</th><th class="n">P(cured | alive)</th><th class="n">Hazard h(t)</th></tr>
+    <tr><td class="n">0</td><td class="n">0.000</td><td class="n">1.000</td><td class="n">1.000</td><td class="n">1,000</td><td class="n">45.0%</td><td class="n">n/a</td></tr>
+    <tr><td class="n">1</td><td class="n">0.300</td><td class="n">0.769</td><td class="n">0.873</td><td class="n">873</td><td class="n">51.5%</td><td class="n">0.168</td></tr>
+    <tr><td class="n">2</td><td class="n">0.849</td><td class="n">0.541</td><td class="n">0.748</td><td class="n">748</td><td class="n">60.2%</td><td class="n">0.137</td></tr>
+    <tr><td class="n">3</td><td class="n">1.559</td><td class="n">0.391</td><td class="n">0.665</td><td class="n">665</td><td class="n">67.7%</td><td class="n">0.099</td></tr>
+    <tr><td class="n">5</td><td class="n">3.354</td><td class="n">0.230</td><td class="n">0.576</td><td class="n">576</td><td class="n">78.1%</td><td class="n">0.051</td></tr>
+    <tr><td class="n">7</td><td class="n">5.556</td><td class="n">0.153</td><td class="n">0.534</td><td class="n">534</td><td class="n">84.3%</td><td class="n">0.029</td></tr>
+    <tr><td class="n">10</td><td class="n">9.487</td><td class="n">0.095</td><td class="n">0.502</td><td class="n">502</td><td class="n">89.6%</td><td class="n">0.014</td></tr>
+    <tr><td class="n">15</td><td class="n">17.428</td><td class="n">0.054</td><td class="n">0.480</td><td class="n">480</td><td class="n">93.8%</td><td class="n">0.006</td></tr>
+    <tr><td class="n">20</td><td class="n">26.833</td><td class="n">0.036</td><td class="n">0.470</td><td class="n">470</td><td class="n">95.8%</td><td class="n">0.003</td></tr>
+    <tr><td class="n">∞</td><td class="n">∞</td><td class="n">0</td><td class="n"><b>0.450</b></td><td class="n"><b>450</b></td><td class="n">100%</td><td class="n">0</td></tr>
+  </table></div>
+
+  <p><b>How to read it:</b></p>
+  <ul>
+    <li>The 450 cured patients were cured <i>from day one</i>. What changes is our <b>certainty</b> about who is left. At year 0, 45% of the people present are cured. At year 10, nearly 90% are.</li>
+    <li>The hazard falls from 0.168 to 0.014 per year by year 10 with <b>no switch</b>. It falls because the pool is draining of uncured patients.</li>
+  </ul>
+
+  <h3>Example 2: why a hard "cure point" costs you</h3>
+  <p>A <b>single cure point</b> model follows the trial curve until a chosen year, then treats every survivor as cured. Suppose it is set at year 7.</p>
+  <ul>
+    <li>At year 7 there are 534 survivors. Only 450 are truly cured.</li>
+    <li>So <b>84</b> uncured patients (534 − 450) are wrongly handed a zero excess risk.</li>
+    <li>The MCM keeps their small leftover hazard (0.029 per year at year 7) and lets it die away smoothly.</li>
+  </ul>
+  <p>To see the money effect, add a small background death rate of 0.1% per year (a young population, illustrative) and a 40-year horizon:</p>
+  <div class="tw"><table>
+    <tr><th>Model</th><th class="n">S(10)</th><th class="n">S(40)</th><th class="n">Life-years (40y)</th><th class="n">Discounted at 3.5%</th></tr>
+    <tr><td>Mixture cure model</td><td class="n">0.497</td><td class="n">0.439</td><td class="n">20.02</td><td class="n">11.47</td></tr>
+    <tr><td>Single cure point at year 7</td><td class="n">0.529</td><td class="n">0.513</td><td class="n">21.98</td><td class="n">12.31</td></tr>
+    <tr><td><b>Overstatement</b></td><td class="n"></td><td class="n"></td><td class="n"><b>+1.97 (+9.8%)</b></td><td class="n"><b>+0.83 (+7.3%)</b></td></tr>
+  </table></div>
+  <p>Those extra life-years go straight into QALYs and then into the ICER. Same data, different structure, different decision.</p>
+
+  <h3>Example 3: fitting an MCM to simulated trial data</h3>
+  <p><b>Design.</b> I simulated 300 patients. The true cure fraction was <b>0.40</b> (113 of the 300 were cured by chance, so 0.377 in this sample). The uncured followed the same log-logistic (λ = 0.30, γ = 1.5). I then "stopped the trial" at six different follow-up lengths and refitted the MCM each time. This mimics what happens as a real trial matures. The <b>true survival at 20 years is 0.422</b>.</p>
+  <div class="box">
+    <svg class="chart" id="simsvg" viewBox="0 0 720 340" role="img" aria-label="Estimated cure fraction with 95 percent confidence interval at six follow-up lengths"></svg>
+  </div>
+  <div class="tw"><table>
+    <tr><th class="n">Follow-up (years)</th><th class="n">Events</th><th class="n">KM at end</th><th class="n">π̂ (95% CI)</th><th class="n">AIC gain of MCM*</th><th class="n">S(20): MCM</th><th class="n">S(20): no cure</th></tr>
+    <tr><td class="n">1.5</td><td class="n">61</td><td class="n">0.797</td><td class="n">0.48 (0.05 to 0.94)</td><td class="n">−1.6</td><td class="n">0.499</td><td class="n">0.145</td></tr>
+    <tr><td class="n">2</td><td class="n">79</td><td class="n">0.737</td><td class="n">0.39 (0.05 to 0.89)</td><td class="n">−1.5</td><td class="n">0.423</td><td class="n">0.150</td></tr>
+    <tr><td class="n">3</td><td class="n">110</td><td class="n">0.633</td><td class="n">0.03 (not estimable)</td><td class="n">−2.0</td><td class="n">0.169</td><td class="n">0.151</td></tr>
+    <tr><td class="n">5</td><td class="n">146</td><td class="n">0.513</td><td class="n">0.26 (0.10 to 0.53)</td><td class="n">+0.1</td><td class="n">0.318</td><td class="n">0.176</td></tr>
+    <tr><td class="n">8</td><td class="n">163</td><td class="n">0.457</td><td class="n">0.35 (0.27 to 0.45)</td><td class="n">+12.1</td><td class="n">0.384</td><td class="n">0.235</td></tr>
+    <tr><td class="n">15</td><td class="n">175</td><td class="n">0.417</td><td class="n">0.38 (0.32 to 0.45)</td><td class="n">+46.2</td><td class="n">0.405</td><td class="n">0.314</td></tr>
+  </table></div>
+  <p style="font-size:14px;color:var(--muted)">* AIC of the no-cure log-logistic minus AIC of the MCM. Positive means the MCM fits better. CIs are Wald intervals on the logit scale. This is <b>one</b> simulated dataset, so treat it as an illustration, not a power study.</p>
+
+  <p><b>What it teaches:</b></p>
+  <ul>
+    <li><b>Up to 3 years:</b> π̂ jumps around (0.48, 0.39, 0.03) and the intervals are huge. The MCM does <i>not</i> fit better than the no-cure model. The data simply cannot tell the two stories apart.</li>
+    <li>The 2-year S(20) of 0.423 looks perfect. It is <b>luck</b>: the interval for π̂ at that point runs from 0.05 to 0.89. Never trust a good-looking extrapolation without its uncertainty.</li>
+    <li><b>At 8 years</b> the MCM clearly wins (AIC gain 12) and the interval tightens. <b>At 15 years</b> the estimate lands on the truth.</li>
+    <li>The no-cure model is <b>too pessimistic at every stage</b>: it predicts 15% to 31% survival at 20 years against a truth of 42%.</li>
+    <li>This echoes the formal simulation by Kearns et al. (2021): with the shortest follow-up, none of the cure models extrapolated well.</li>
+  </ul>
+</section>
+
+<!-- ======================= 6. PUBLISHED ======================= -->
+<section id="published">
+  <div class="eyebrow">9 · Published examples</div>
+  <h2>What has actually been done</h2>
+  <p>Each row below was checked against its source (PubMed records, the NICE document, or the paper itself). Items I could not verify are marked.</p>
+
+  <div class="tw"><table>
+    <tr><th>Source</th><th>Setting</th><th>What they did and found</th></tr>
+    <tr><td><b>Othus et al. 2017</b><br><i>Value in Health</i> 20(4):705-709<br><a href="https://doi.org/10.1016/j.jval.2016.04.011">DOI</a></td><td>Advanced melanoma. Ipilimumab (n = 137) vs gp100 (n = 136).</td><td>MCM with background mortality. Cure fraction <b>21% vs 6%</b>. Mean OS in the uncured was 10 and 9 months; in the cured, 26 years. The ICER fell from <b>$324,000 to $113,000 per QALY</b> once cure was modelled.</td></tr>
+    <tr><td><b>NICE TA975</b> (final draft guidance, April 2024)<br><a href="https://www.nice.org.uk/guidance/ta975">NICE</a></td><td>Tisagenlecleucel, relapsed or refractory B-cell ALL, age 25 and under (review of TA554).</td><td>Company used an MCM for OS with a <b>log-logistic</b> latency, chosen for statistical and visual fit and agreement with clinician cure estimates. The EAG also chose log-logistic. Committee preferred the <b>pooled dataset</b> (trial plus real-world). It said a person is cured if free of a B-ALL event for around <b>7 years</b>, and that cure remained uncertain. No tisagenlecleucel cure fraction value appears in the text I read.</td></tr>
+    <tr><td><b>NICE TA554 and TA559</b><br>(ISPOR 2020 abstract)<br><a href="https://www.ispor.org/heor-resources/presentations-database/presentation/intl2020-3182/101565">ISPOR</a></td><td>CAR-T therapies. TA554 is tisagenlecleucel in ALL. TA559 is the earlier axicabtagene ciloleucel appraisal in DLBCL (later replaced by TA872; please confirm on NICE).</td><td>MCMs used for OS. Cured patients followed general population mortality. Committee found the method appropriate but the cure fraction "highly uncertain".</td></tr>
+    <tr><td><b>NICE TA567</b><br>(same abstract)</td><td>Tisagenlecleucel in DLBCL.</td><td>Not an MCM. Committee judged a <b>1-knot spline</b> appropriate and asked for more long-term data. A useful counter-example.</td></tr>
+    <tr><td><b>Felizzi et al. 2021</b><br><i>PharmacoEconomics Open</i><br><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8160049/">Full text</a></td><td>Tutorial with simulated vemurafenib-style trial data (BRIM-3, n = 675; coBRIM, n = 495).</td><td>Uninformed fit gave cure fractions of <b>13% to 18%</b> depending on distribution. Informed approach tried fixed cure values from 0% to 20%. Concluded that assuming no cure would likely underestimate mean survival.</td></tr>
+    <tr><td><b>Grant et al. 2020</b><br><i>PharmacoEconomics</i> 38:385-395<br><a href="https://doi.org/10.1007/s40273-019-00867-5">DOI</a></td><td>Case study of CAR-T and immuno-oncology NICE submissions with simulated trial-based data.</td><td>Cure modelling worked well when the events had time to occur. <b>Immature data gave unreliable extrapolation</b>, so support from additional evidence is advised.</td></tr>
+    <tr><td><b>Kearns et al. 2021</b><br><i>Value in Health</i> 24(11):1634-1642<br><a href="https://doi.org/10.1016/j.jval.2021.05.009">DOI</a></td><td>Simulation study, 9 scenarios of follow-up and sample size.</td><td>With the shortest follow-up no cure model extrapolated well. Models without a cure fraction did <b>markedly worse</b> when cure was real. A misspecified standard cure model (log-normal) stayed poor; flexible cure models were robust. Clinical knowledge is needed to choose between cure and non-cure models when data are immature.</td></tr>
+    <tr><td><b>Andersson et al. 2011</b><br><i>BMC Med Res Methodol</i> 11:96<br><a href="https://doi.org/10.1186/1471-2288-11-96">DOI</a></td><td>Colon cancer in Finland, registry data.</td><td>Extended flexible parametric (spline) models to estimate cure and the survival of the uncured without choosing a distribution.</td></tr>
+    <tr><td><b>Eloranta et al. 2014</b><br><i>Epidemiology</i> 25(5):742-748<br><a href="https://doi.org/10.1097/EDE.0000000000000130">DOI</a></td><td>Swedish registry: melanoma, colon cancer, acute myeloid leukaemia.</td><td>Combined cure models with competing risks to give the chance of dying of cancer vs other causes over time, and updated prognosis for survivors.</td></tr>
+  </table></div>
+
+  <h3>Classic method papers (for citations)</h3>
+  <ul>
+    <li>Boag JW (1949), <i>J R Stat Soc B</i> 11:15-53, and Berkson J, Gage RP (1952), <i>J Am Stat Assoc</i> 47:501-515: the origins of cure models in cancer. <i>Classic references, not retrieved from PubMed.</i></li>
+    <li>Farewell VT (1982), <i>Biometrics</i> 38:1041-1046 (PMID 7168793): mixture model with a logistic cure part.</li>
+    <li>Sy JP, Taylor JMG (2000), <i>Biometrics</i> 56:227-236 (PMID 10783800): semiparametric (Cox-type) mixture cure estimation.</li>
+    <li>Royston P, Parmar MKB (2002), <i>Stat Med</i> 21:2175-2197 (PMID 12210632): the spline models that cure models are usually compared with.</li>
+    <li><i>Statistics Surveys</i> vol. 18 (2024), DOI 10.1214/24-SS147, a recent review of MCM methodology. Not opened for this tutorial.</li>
+  </ul>
+</section>
+
+<!-- ======================= 7. USES ======================= -->
+<section id="uses">
+  <div class="eyebrow">10 · Use cases</div>
+  <h2>Where cure models fit, and where they do not</h2>
+  <div class="tw"><table>
+    <tr><th>Use case</th><th>Why a cure group is plausible</th><th>How the MCM is used</th></tr>
+    <tr><td><b>CAR-T cell therapy</b> in leukaemia and lymphoma</td><td>A share of patients stay in durable remission, and long-term data show a plateau.</td><td>Base-case OS extrapolation (TA975, TA554, TA559). Cure timing and π are the main scenarios.</td></tr>
+    <tr><td><b>Checkpoint immunotherapy</b> (for example ipilimumab in melanoma)</td><td>Responders can survive for many years.</td><td>Separates a small cured group with long survival from the many uncured with short survival. Changes mean OS, QALYs and the ICER a lot.</td></tr>
+    <tr><td><b>Curative-intent treatment</b> (surgery or chemotherapy in early disease)</td><td>After a few event-free years, risk returns to normal.</td><td>Informed MCM with π anchored to registry data.</td></tr>
+    <tr><td><b>Population cancer registries</b></td><td>Excess mortality over the general population returns to zero for some patients ("statistical cure").</td><td>Relative survival cure models, for example flexible cure models and the <code>cuRe</code> package.</td></tr>
+    <tr><td><b>Scenario analysis</b> next to a spline base case</td><td>Cure is possible but not proven.</td><td>Present the MCM as an alternative scenario, with π varied over a defensible range.</td></tr>
+    <tr><td><b>Where MCMs struggled</b></td><td>No reliable medical cure.</td><td>Felizzi et al. report non-convergence in registry analyses of breast cancer, prostate cancer and melanoma, and say an MCM would be conceptually inappropriate where there is no reliable cure.</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================= 8. PITFALLS ======================= -->
+<section id="pitfalls">
+  <div class="eyebrow">11 · Caveats and pitfalls</div>
+  <h2>How MCMs go wrong</h2>
+  <div class="tw"><table>
+    <tr><th>Pitfall</th><th>Why it happens</th><th>What to do</th></tr>
+    <tr><td><b>1. Follow-up too short</b></td><td>The model has to tell "cured" from "event not yet happened". With a short window both look identical, so π is nearly unconstrained (see the profile chart in section 2 and the simulation in section 8).</td><td>Show π̂ with its interval. Do not call the MCM base case unless the plateau is long. Use an informed scenario instead.</td></tr>
+    <tr><td><b>2. A flat tail caused by censoring</b></td><td>Late in a KM curve few patients are at risk, so one censoring or one event moves the curve a lot. A "plateau" can be only noise.</td><td>Always show numbers at risk. Check the confidence band, not just the line.</td></tr>
+    <tr><td><b>3. Latency distribution drives π</b></td><td>Each family explains the slowly falling tail in its own way, and part of that tail is "cure" in one family but "slow decline" in another. So π̂ moves with the family. In Felizzi et al., π̂ ranged from 13% to 18% across families fitted to the same simulated data.</td><td>Fit several families. Report the range of π̂ and the extrapolated survival from each.</td></tr>
+    <tr><td><b>4. Trusting AIC alone</b></td><td>AIC measures fit to the observed window. The tail you care about is outside it. Felizzi et al. warn that flat tails can make AIC less suitable.</td><td>Combine AIC with hazard plots, long-term external data and clinical opinion.</td></tr>
+    <tr><td><b>5. Forgetting background mortality</b></td><td>Without S<sub>b</sub>(t) the cured group never dies, which is wrong. Cured patients also may not match the general population exactly. One NICE appraisal assumed about 40% higher background hazard for cancer survivors (Felizzi et al.).</td><td>Use country, age, sex and year specific life tables. Test an excess-mortality multiplier as a scenario.</td></tr>
+    <tr><td><b>6. Reading "cure" too literally</b></td><td>The model is statistical. It does not prove biological cure, and some "cured" patients may relapse very late.</td><td>Say "long-term survivors" or "statistical cure" in the text and include a late-relapse scenario.</td></tr>
+    <tr><td><b>7. Two-group assumption breaks</b></td><td>If patients can be cured at any time, not only up front, a fixed split into two groups from time zero is a poor description.</td><td>Discuss with clinicians. Consider other structures or a spline scenario.</td></tr>
+    <tr><td><b>8. Covariates and treatment effect</b></td><td>The treatment can change π, or the timing among the uncured, or both. Mixing them up changes the long-term gain.</td><td>State which parameters differ by arm, and test both choices.</td></tr>
+    <tr><td><b>9. Parameter confusion</b></td><td>Software defines log-logistic differently. In flexsurv, S(t) = 1/(1 + (t/scale)<sup>shape</sup>), so the λ in this page equals scale<sup>−shape</sup>. Copying a λ from one tool to another gives wrong curves.</td><td>Write the formula you used and convert carefully.</td></tr>
+    <tr><td><b>10. Pooled data mismatch</b></td><td>Combining trial and real-world data (as in TA975) is helpful, but the populations may differ.</td><td>Compare baseline characteristics and show each source alongside the pooled fit.</td></tr>
+    <tr><td><b>11. Unvalidated π</b></td><td>A π that conflicts with registries gets rejected (for example 60% cure where registries show about 20% five-year survival).</td><td>Build the external check into the plan before you fit.</td></tr>
+    <tr><td><b>12. Choosing the cure point by habit</b></td><td>Using "year 7" or "year 5" because others did. The certainty at that time may be modest (84% at year 7 in the example in section 4).</td><td>State the rule (probability, hazard or clinical) and show the sensitivity.</td></tr>
+  </table></div>
+</section>
+
+<!-- ======================= 9. HTA ======================= -->
+<section id="hta">
+  <div class="eyebrow">12 · Use in HTA</div>
+  <h2>How an MCM is judged in a submission</h2>
+
+  <h3>Where it sits</h3>
+  <ul>
+    <li><b>Base case</b> when cure is clinically accepted and the data support it (TA975).</li>
+    <li><b>Scenario</b> when cure is possible but π cannot be confirmed. The standard parametric model or spline stays the base case.</li>
+    <li><b>Not at all</b> when clinicians expect late relapses and there is no plateau. TA567 stayed with a 1-knot spline.</li>
+  </ul>
+
+  <h3>Recommended workflow for a NICE-style submission</h3>
+  <ol class="steps">
+    <li><b>Check the KM curve</b> for a plateau, few events at the end, and a confidence band that allows a flat line.</li>
+    <li><b>Compare with standard models.</b> If they already drop to near zero at a believable time, an MCM may be unnecessary.</li>
+    <li><b>Fit MCMs across several latency families</b> (Weibull, log-logistic, log-normal at least). Compare AIC and the estimated π from each.</li>
+    <li><b>Validate π</b> against registry survival, long-term publications and a documented expert panel.</li>
+    <li><b>Choose the role</b> (base case or scenario) and write down why.</li>
+  </ol>
+
+  <h3>What the evidence review group will probably ask</h3>
+  <p>NICE's external group is now called the <b>EAG</b> (External Assessment Group). Older documents say <b>ERG</b>. Same idea.</p>
+  <ul>
+    <li>What <b>external data</b> support the cure fraction, and how closely does the model match them?</li>
+    <li>Who defined the <b>cure point</b> or the tail, and was that decided before looking at the results?</li>
+    <li>How <b>sensitive</b> are QALYs and the ICER to π, to the latency family and to the general population mortality used?</li>
+    <li>Were <b>trial and real-world data</b> pooled, and did you compare them?</li>
+    <li>How is <b>uncertainty</b> in π carried into the probabilistic sensitivity analysis (PSA: running the model many times with parameters drawn from their distributions)?</li>
+  </ul>
+
+  <h3>Linking it to the model</h3>
+  <ul>
+    <li>In a <b>partitioned survival model</b> (a model that splits time into states such as event-free, progressed, dead using fitted survival curves), the MCM supplies the OS or EFS curve. Cured patients then follow background mortality, ideally with an excess-risk option.</li>
+    <li><b>PSA draws:</b> take parameters on the estimation scale (logit for π, log for scales and shapes), draw from a multivariate normal using the covariance matrix of the fit, then back-transform. Check the object names in your package version.</li>
+    <li><b>Discounting:</b> in TA975 the committee did not accept the lower 1.5% discount rate, because uncertainty about cure meant the criteria were only partly met.</li>
+    <li><b>Reporting:</b> give the table of all fitted models, the π̂ and interval for each, the extrapolated survival and restricted mean survival time at the horizon, and the external comparison.</li>
+  </ul>
+
+  <div class="callout note"><span class="lbl">Other agencies</span>
+    <p>Some sources state that CADTH has "generally accepted" 1-knot splines or MCMs. I could not verify a CADTH-specific position, so this page makes no CADTH claim. NICE DSU TSD 21 on flexible survival methods is a good anchor, but please check the exact section on cure models before quoting it.</p></div>
+
+  <h3>Reporting checklist</h3>
+  <ul>
+    <li>KM curve with numbers at risk, plateau described in words.</li>
+    <li>Clinical justification for cure, with the name of the expert source.</li>
+    <li>All latency families fitted, with AIC, π̂ and interval.</li>
+    <li>External validation of π and of survival at 5 and 10 years.</li>
+    <li>Rule used for any cure point (probability, hazard or clinical) and its sensitivity.</li>
+    <li>Background mortality source and any excess-risk multiplier.</li>
+    <li>Scenario table: π low, base, high; alternative families; no-cure comparator.</li>
+    <li>ICER and QALY change for each scenario.</li>
+  </ul>
+</section>
+
+<!-- ======================= GLOSSARY / SOURCES ======================= -->
+<section id="glossary">
+  <div class="eyebrow">Glossary</div>
+  <h2>Terms in one line each</h2>
+  <details><summary>Open the glossary</summary>
+    <ul>
+      <li><b>AIC</b>: a score balancing fit against number of parameters. Lower is better.</li>
+      <li><b>Background mortality</b>: death rate of the general population of the same age and sex.</li>
+      <li><b>Bayes' rule</b>: a way to update a probability after seeing evidence. Used to get the chance a survivor is cured.</li>
+      <li><b>Censoring</b>: we only know a patient was event-free up to their last follow-up.</li>
+      <li><b>Cure fraction (π)</b>: share of patients who will never have the event from this disease.</li>
+      <li><b>EAG / ERG</b>: the independent group that reviews a company submission for NICE.</li>
+      <li><b>EM algorithm</b>: alternates between guessing hidden labels and refitting the model.</li>
+      <li><b>Hazard</b>: instantaneous risk of the event among those still event-free.</li>
+      <li><b>ICER</b>: extra cost per extra QALY gained.</li>
+      <li><b>Kaplan-Meier curve</b>: step-shaped estimate of the survival curve from data.</li>
+      <li><b>Latency distribution</b>: the curve of event times for the uncured patients.</li>
+      <li><b>Life table</b>: published death rates by age (and sex, country, year).</li>
+      <li><b>Logit</b>: log(p / (1 − p)), a way to keep a probability between 0 and 1.</li>
+      <li><b>Maximum likelihood</b>: choosing the parameters that make the observed data most probable.</li>
+      <li><b>Partitioned survival model</b>: a model that sets state occupancy using fitted survival curves.</li>
+      <li><b>Profile likelihood</b>: the likelihood of one parameter after optimising all others. Gives honest, lopsided intervals.</li>
+      <li><b>PSA</b>: running the model many times with parameters drawn from their uncertainty.</li>
+      <li><b>QALY</b>: quality-adjusted life-year.</li>
+      <li><b>Relative survival</b>: patient survival compared with the expected survival of the general population.</li>
+      <li><b>Statistical cure</b>: excess mortality has returned to zero, whether or not the disease is biologically gone.</li>
+    </ul>
+  </details>
+</section>
+
+<footer>
+  <div class="eyebrow" style="margin-bottom:10px">Sources</div>
+  <ul class="src">
+    <li>Felizzi F, Paracha N, Pöhlmann J, Ray J. Mixture cure models in oncology: a tutorial and practical guidance. <i>PharmacoEconomics Open</i> 2021. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8160049/">PMC8160049</a></li>
+    <li>NICE. Tisagenlecleucel for treating relapsed or refractory B-cell acute lymphoblastic leukaemia in people 25 years and under (TA975), final draft guidance. <a href="https://nice.org.uk/guidance/ta975/documents/674">nice.org.uk</a></li>
+    <li>ISPOR Europe 2020 abstract on NICE TA554, TA559 and TA567. <a href="https://www.ispor.org/heor-resources/presentations-database/presentation/intl2020-3182/101565">ispor.org</a></li>
+    <li>Grant TS et al. <i>PharmacoEconomics</i> 2020;38:385-395. <a href="https://doi.org/10.1007/s40273-019-00867-5">doi</a></li>
+    <li>flexsurvcure package README. <a href="https://github.com/jrdnmdhl/flexsurvcure">github.com/jrdnmdhl/flexsurvcure</a></li>
+    <li>Based on articles retrieved from PubMed: Othus M et al. <a href="https://doi.org/10.1016/j.jval.2016.04.011">10.1016/j.jval.2016.04.011</a>; Kearns B et al. <a href="https://doi.org/10.1016/j.jval.2021.05.009">10.1016/j.jval.2021.05.009</a>; Andersson TML et al. <a href="https://doi.org/10.1186/1471-2288-11-96">10.1186/1471-2288-11-96</a>; Eloranta S et al. <a href="https://doi.org/10.1097/EDE.0000000000000130">10.1097/EDE.0000000000000130</a>.</li>
+  </ul>
+  <p style="margin-top:14px">Numbers in sections 1 to 4 and 8 were computed for this page. The simulation used a fixed random seed and a single dataset. The R code in section 7 was not executed in my workspace.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var W=720,H=380,m={l:52,r:18,t:16,b:44},iw=W-m.l-m.r,ih=H-m.t-m.b,TMAX=20;
+  function X(t){return m.l+t/TMAX*iw} function Y(s){return m.t+(1-s)*ih}
+  function Su(t,l,g){return 1/(1+l*Math.pow(t,g))}
+  function fu(t,l,g){return l*g*Math.pow(t,g-1)/Math.pow(1+l*Math.pow(t,g),2)}
+  function f1(x){return x.toFixed(1)}
+  function pct(x){return (x*100).toFixed(1)+"%"}
+  function render(){
+    var pi=+$('pi').value,lam=+$('lam').value,gam=+$('gam').value,ts=+$('tsel').value,cp=+$('cp').value,showCP=$('showcp').checked;
+    $('pi_o').textContent=pi.toFixed(2);$('lam_o').textContent=lam.toFixed(2);$('gam_o').textContent=gam.toFixed(2);
+    $('tsel_o').textContent=ts.toFixed(1);$('cp_o').textContent=cp.toFixed(1);
+    var S=function(t){return pi+(1-pi)*Su(t,lam,gam)};
+    var pts=[],i;for(i=0;i<=200;i++){pts.push(i/10)}
+    var top=pts.map(function(t,k){return (k?"L":"M")+X(t).toFixed(1)+" "+Y(S(t)).toFixed(1)}).join(" ");
+    var back=pts.slice().reverse().map(function(t){return "L"+X(t).toFixed(1)+" "+Y(pi).toFixed(1)}).join(" ");
+    var s="";
+    var k;
+    for(k=0;k<=4;k++){var yv=k*0.25;s+='<line class="gl" x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+Y(yv)+'" y2="'+Y(yv)+'"/><text x="'+(m.l-8)+'" y="'+(Y(yv)+4)+'" text-anchor="end">'+yv.toFixed(2)+'</text>'}
+    for(k=0;k<=4;k++){var xv=k*5;s+='<text x="'+X(xv)+'" y="'+(H-m.b+20)+'" text-anchor="middle">'+xv+'</text>'}
+    s+='<text x="'+(m.l+iw/2)+'" y="'+(H-6)+'" text-anchor="middle">Years since start</text>';
+    s+='<text transform="rotate(-90)" x="'+(-(m.t+ih/2))+'" y="14" text-anchor="middle">Share event-free, S(t)</text>';
+    s+='<rect x="'+m.l+'" y="'+Y(pi)+'" width="'+iw+'" height="'+(Y(0)-Y(pi))+'" style="fill:var(--cured-soft)"/>';
+    s+='<path d="'+top+' '+back+' Z" style="fill:var(--uncured-soft)"/>';
+    s+='<line class="ax" x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+Y(0)+'" y2="'+Y(0)+'"/><line class="ax" x1="'+m.l+'" x2="'+m.l+'" y1="'+Y(1)+'" y2="'+Y(0)+'"/>';
+    s+='<line x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+Y(pi)+'" y2="'+Y(pi)+'" style="stroke:var(--cured);stroke-width:1.5;stroke-dasharray:5 4"/>';
+    if(pi>0.07){s+='<text x="'+(m.l+iw-8)+'" y="'+(Y(pi/2)+4)+'" text-anchor="end" style="fill:var(--cured);font-weight:700;font-size:13px">Cured: never have the event ('+pct(pi)+')</text>'}
+    s+='<rect x="'+(W-m.r-262)+'" y="'+(m.t+6)+'" width="12" height="12" style="fill:var(--cured-soft);stroke:var(--cured)"/><text x="'+(W-m.r-244)+'" y="'+(m.t+16)+'" style="fill:var(--fg)">Cured</text>';
+    s+='<rect x="'+(W-m.r-180)+'" y="'+(m.t+6)+'" width="12" height="12" style="fill:var(--uncured-soft);stroke:var(--uncured)"/><text x="'+(W-m.r-162)+'" y="'+(m.t+16)+'" style="fill:var(--fg)">Uncured, still event-free</text>';
+    if(showCP){
+      var scp=S(cp),d="M"+X(0)+" "+Y(1);
+      pts.forEach(function(t){if(t<=cp){d+=" L"+X(t).toFixed(1)+" "+Y(S(t)).toFixed(1)}});
+      d+=" L"+X(cp).toFixed(1)+" "+Y(scp).toFixed(1)+" L"+X(TMAX).toFixed(1)+" "+Y(scp).toFixed(1);
+      s+='<path d="'+d+'" fill="none" style="stroke:var(--cp);stroke-width:2;stroke-dasharray:7 5"/>';
+      s+='<text x="'+(X(TMAX)-6)+'" y="'+(Y(scp)-8)+'" text-anchor="end" style="fill:var(--cp);font-weight:700;font-size:12.5px">Single cure point at year '+cp.toFixed(1)+'</text>';
+    }
+    s+='<path d="'+top+'" fill="none" style="stroke:var(--fg);stroke-width:2.6"/>';
+    s+='<line x1="'+X(ts)+'" x2="'+X(ts)+'" y1="'+Y(1)+'" y2="'+Y(0)+'" style="stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3"/>';
+    s+='<circle cx="'+X(ts)+'" cy="'+Y(S(ts))+'" r="5" style="fill:var(--fg)"/>';
+    $('expsvg').innerHTML=s;
+    var St=S(ts),alive=1000*St,cured=1000*pi,unc=1000*(1-pi)*Su(ts,lam,gam);
+    var h=ts>0.01?(1-pi)*fu(ts,lam,gam)/St:NaN;
+    var mis=1000*(1-pi)*Su(cp,lam,gam);
+    var cards=[["Alive and event-free",Math.round(alive).toLocaleString()+" of 1,000"],["Cured among them",Math.round(cured).toLocaleString()],["Uncured among them",Math.round(unc).toLocaleString()],["P(cured | alive)",pct(pi/St)],["Hazard per year",isNaN(h)?"n/a":h.toFixed(3)],["Wrongly called cured at cure point",showCP?Math.round(mis).toLocaleString():"off"]];
+    $('readout').innerHTML=cards.map(function(c){return '<div><span>'+c[0]+'</span><b>'+c[1]+'</b></div>'}).join("");
+  }
+  ['pi','lam','gam','tsel','cp','showcp'].forEach(function(id){$(id).addEventListener('input',render)});
+  render();
+
+  /* simulation chart */
+  var rows=[[1.5,61,0.476,0.053,0.937],[2,79,0.389,0.049,0.886],[3,110,0.030,0.000,1.000],[5,146,0.261,0.101,0.526],[8,163,0.352,0.265,0.450],[15,175,0.381,0.320,0.445]];
+  var W2=720,H2=340,n={l:52,r:18,t:16,b:60},iw2=W2-n.l-n.r,ih2=H2-n.t-n.b;
+  function Y2(v){return n.t+(1-v)*ih2}
+  function X2(i){return n.l+(i+0.5)/rows.length*iw2}
+  var o="",j;
+  for(j=0;j<=4;j++){var v=j*0.25;o+='<line class="gl" x1="'+n.l+'" x2="'+(W2-n.r)+'" y1="'+Y2(v)+'" y2="'+Y2(v)+'"/><text x="'+(n.l-8)+'" y="'+(Y2(v)+4)+'" text-anchor="end">'+v.toFixed(2)+'</text>'}
+  o+='<line x1="'+n.l+'" x2="'+(W2-n.r)+'" y1="'+Y2(0.40)+'" y2="'+Y2(0.40)+'" style="stroke:var(--cured);stroke-width:2;stroke-dasharray:6 4"/>';
+  o+='<text x="'+(W2-n.r-4)+'" y="'+(Y2(0.96))+'" text-anchor="end" style="fill:var(--cured);font-weight:700">Dashed line: true cure fraction 0.40</text>';
+  rows.forEach(function(r,i){
+    var x=X2(i),wide=(r[4]-r[3])>0.9;
+    o+='<line x1="'+x+'" x2="'+x+'" y1="'+Y2(r[4])+'" y2="'+Y2(r[3])+'" style="stroke:var(--fg);stroke-width:'+(wide?1.5:2.4)+';'+(wide?'stroke-dasharray:3 3;':'')+'"/>';
+    o+='<line x1="'+(x-7)+'" x2="'+(x+7)+'" y1="'+Y2(r[4])+'" y2="'+Y2(r[4])+'" style="stroke:var(--fg);stroke-width:2"/><line x1="'+(x-7)+'" x2="'+(x+7)+'" y1="'+Y2(r[3])+'" y2="'+Y2(r[3])+'" style="stroke:var(--fg);stroke-width:2"/>';
+    o+='<circle cx="'+x+'" cy="'+Y2(r[2])+'" r="6" style="fill:var(--uncured);stroke:var(--fg);stroke-width:1.5"/>';
+    o+='<text x="'+x+'" y="'+(H2-n.b+22)+'" text-anchor="middle" style="fill:var(--fg);font-weight:700;font-size:13px">'+r[0]+' y</text>';
+    o+='<text x="'+x+'" y="'+(H2-n.b+39)+'" text-anchor="middle">'+r[1]+' events</text>';
+  });
+  o+='<text transform="rotate(-90)" x="'+(-(n.t+ih2/2))+'" y="14" text-anchor="middle">Estimated cure fraction (95% CI)</text>';
+  o+='<text x="'+(n.l+iw2/2)+'" y="'+(H2-4)+'" text-anchor="middle">Length of follow-up</text>';
+  $('simsvg').innerHTML=o;
+
+  /* toy three-patient likelihood */
+  (function(){
+    var L=0.30,G=1.5;
+    function terms(p){var f1=(1-p)*L*G/Math.pow(1+L,2),su5=1/(1+L*Math.pow(5,G)),su10=1/(1+L*Math.pow(10,G));
+      var s5=p+(1-p)*su5,s10=p+(1-p)*su10;return [f1,s5,s10,Math.log(f1)+Math.log(s5)+Math.log(s10)]}
+    var a={l:56,r:18,t:16,b:44},Wt=720,Ht=250,iwt=Wt-a.l-a.r,iht=Ht-a.t-a.b,lo=-5.5,hi=-3.0,PM=0.95;
+    function Xt(p){return a.l+p/PM*iwt} function Yt(v){return a.t+(hi-v)/(hi-lo)*iht}
+    var grid=[],k,best=0,bl=-1e9;
+    for(k=0;k<=95;k++){var p=k/100,ll=terms(p)[3];grid.push([p,ll]);if(ll>bl){bl=ll;best=p}}
+    function draw(){
+      var p=+$('tpi').value,t=terms(p),s="",j;
+      $('tpi_o').textContent=p.toFixed(2);
+      for(j=0;j<=5;j++){var v=lo+j*0.5;s+='<line class="gl" x1="'+a.l+'" x2="'+(Wt-a.r)+'" y1="'+Yt(v)+'" y2="'+Yt(v)+'"/><text x="'+(a.l-8)+'" y="'+(Yt(v)+4)+'" text-anchor="end">'+v.toFixed(1)+'</text>'}
+      for(j=0;j<=4;j++){var xv=j*0.2;s+='<text x="'+Xt(xv)+'" y="'+(Ht-a.b+20)+'" text-anchor="middle">'+xv.toFixed(1)+'</text>'}
+      s+='<text x="'+(a.l+iwt/2)+'" y="'+(Ht-6)+'" text-anchor="middle">Candidate cure fraction π</text>';
+      s+='<text transform="rotate(-90)" x="'+(-(a.t+iht/2))+'" y="14" text-anchor="middle">Log-likelihood ℓ</text>';
+      s+='<line class="ax" x1="'+a.l+'" x2="'+(Wt-a.r)+'" y1="'+Yt(lo)+'" y2="'+Yt(lo)+'"/><line class="ax" x1="'+a.l+'" x2="'+a.l+'" y1="'+Yt(hi)+'" y2="'+Yt(lo)+'"/>';
+      s+='<path d="'+grid.map(function(g,i){return (i?"L":"M")+Xt(g[0]).toFixed(1)+" "+Yt(g[1]).toFixed(1)}).join(" ")+'" fill="none" style="stroke:var(--fg);stroke-width:2.4"/>';
+      s+='<line x1="'+Xt(best)+'" x2="'+Xt(best)+'" y1="'+Yt(hi)+'" y2="'+Yt(lo)+'" style="stroke:var(--cured);stroke-width:1.5;stroke-dasharray:5 4"/>';
+      s+='<text x="'+(Xt(best)+8)+'" y="'+(Yt(lo)-8)+'" style="fill:var(--cured);font-weight:700">Peak near π = '+best.toFixed(2)+'</text>';
+      s+='<line x1="'+Xt(p)+'" x2="'+Xt(p)+'" y1="'+Yt(t[3])+'" y2="'+Yt(lo)+'" style="stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3"/>';
+      s+='<circle cx="'+Xt(p)+'" cy="'+Yt(t[3])+'" r="5.5" style="fill:var(--uncured);stroke:var(--fg);stroke-width:1.5"/>';
+      $('toysvg').innerHTML=s;
+      var c=[["Event at year 1",t[0].toFixed(4)],["Censored at 5: S(5)",t[1].toFixed(4)],["Censored at 10: S(10)",t[2].toFixed(4)],["Log-likelihood ℓ",t[3].toFixed(3)]];
+      $('toyread').innerHTML=c.map(function(x){return '<div><span>'+x[0]+'</span><b>'+x[1]+'</b></div>'}).join("");
+    }
+    $('tpi').addEventListener('input',draw);draw();
+  })();
+
+  /* profile likelihood chart */
+  (function(){
+    var PG=[0.02, 0.0402, 0.0605, 0.0807, 0.101, 0.1212, 0.1415, 0.1617, 0.182, 0.2022, 0.2224, 0.2427, 0.2629, 0.2832, 0.3034, 0.3237, 0.3439, 0.3641, 0.3844, 0.4046, 0.4249, 0.4451, 0.4654, 0.4856, 0.5059, 0.5261, 0.5463, 0.5666, 0.5868, 0.6071, 0.6273, 0.6476, 0.6678, 0.688, 0.7083, 0.7285, 0.7488, 0.769, 0.7893, 0.8095, 0.8298, 0.85],PR={"3":[0.0, -0.0, -0.002, -0.005, -0.011, -0.02, -0.032, -0.047, -0.067, -0.093, -0.124, -0.164, -0.212, -0.271, -0.343, -0.431, -0.537, -0.668, -0.826, -1.02, -1.256, -1.544, -1.897, -2.33, -2.86, -3.508, -4.299, -5.262, -6.429, -7.836, -9.522, -11.533, -13.917, -16.729, -20.032, -23.899, -28.419, -33.698, -39.873, -47.116, -55.66, -65.822],"8":[-6.67, -6.293, -5.9, -5.49, -5.062, -4.616, -4.154, -3.676, -3.186, -2.686, -2.184, -1.69, -1.217, -0.784, -0.417, -0.144, 0.0, -0.022, -0.244, -0.701, -1.423, -2.436, -3.765, -5.433, -7.461, -9.871, -12.688, -15.935, -19.643, -23.844, -28.577, -33.886, -39.826, -46.461, -53.869, -62.145, -71.409, -81.811, -93.542, -106.854, -122.085, -139.702],"15":[-23.26, -22.337, -21.345, -20.278, -19.126, -17.879, -16.526, -15.057, -13.462, -11.74, -9.904, -7.999, -6.108, -4.339, -2.794, -1.549, -0.651, -0.13, 0.0, -0.271, -0.949, -2.04, -3.55, -5.488, -7.863, -10.688, -13.981, -17.761, -22.056, -26.894, -32.315, -38.364, -45.095, -52.578, -60.892, -70.142, -80.452, -91.983, -104.941, -119.595, -136.307, -155.578]};
+    var a={l:56,r:18,t:16,b:50},Wt=720,Ht=340,iwt=Wt-a.l-a.r,iht=Ht-a.t-a.b,lo=-8,hi=0.4,XM=0.86;
+    function Xp(p){return a.l+p/XM*iwt} function Yp(v){return a.t+(hi-v)/(hi-lo)*iht}
+    var s='<defs><clipPath id="pclip"><rect x="'+a.l+'" y="'+a.t+'" width="'+iwt+'" height="'+iht+'"/></clipPath></defs>',j;
+    for(j=0;j<=4;j++){var v=-j*2;s+='<line class="gl" x1="'+a.l+'" x2="'+(Wt-a.r)+'" y1="'+Yp(v)+'" y2="'+Yp(v)+'"/><text x="'+(a.l-8)+'" y="'+(Yp(v)+4)+'" text-anchor="end">'+v+'</text>'}
+    for(j=0;j<=4;j++){var xv=j*0.2;s+='<text x="'+Xp(xv)+'" y="'+(Ht-a.b+20)+'" text-anchor="middle">'+xv.toFixed(1)+'</text>'}
+    s+='<text x="'+(a.l+iwt/2)+'" y="'+(Ht-8)+'" text-anchor="middle">Candidate cure fraction π</text>';
+    s+='<text transform="rotate(-90)" x="'+(-(a.t+iht/2))+'" y="14" text-anchor="middle">Log-likelihood (relative to its maximum)</text>';
+    s+='<line class="ax" x1="'+a.l+'" x2="'+(Wt-a.r)+'" y1="'+Yp(lo)+'" y2="'+Yp(lo)+'"/><line class="ax" x1="'+a.l+'" x2="'+a.l+'" y1="'+Yp(hi)+'" y2="'+Yp(lo)+'"/>';
+    s+='<line x1="'+a.l+'" x2="'+(Wt-a.r)+'" y1="'+Yp(-1.92)+'" y2="'+Yp(-1.92)+'" style="stroke:var(--muted);stroke-width:1.2;stroke-dasharray:2 3"/>';
+    s+='<text x="'+(Wt-a.r-4)+'" y="'+(Yp(-1.92)-5)+'" text-anchor="end">95% cut-off (−1.92)</text>';
+    s+='<line x1="'+Xp(0.40)+'" x2="'+Xp(0.40)+'" y1="'+Yp(hi)+'" y2="'+Yp(lo)+'" style="stroke:var(--cured);stroke-width:1.4;stroke-dasharray:5 4"/>';
+    s+='<text x="'+(Xp(0.40)+6)+'" y="'+(Yp(hi)+14)+'" style="fill:var(--cured);font-weight:700">True π = 0.40</text>';
+    var defs=[["3","var(--uncured)","3 years of follow-up"],["8","var(--cured)","8 years of follow-up"],["15","var(--fg)","15 years of follow-up"]];
+    defs.forEach(function(d,i){
+      var path=PG.map(function(p,k){return (k?"L":"M")+Xp(p).toFixed(1)+" "+Yp(PR[d[0]][k]).toFixed(1)}).join(" ");
+      s+='<path d="'+path+'" fill="none" clip-path="url(#pclip)" style="stroke:'+d[1]+';stroke-width:2.6"/>';
+      var ly=Yp(-3.4)+i*22;
+      s+='<line x1="'+Xp(0.64)+'" x2="'+(Xp(0.64)+24)+'" y1="'+(ly-4)+'" y2="'+(ly-4)+'" style="stroke:'+d[1]+';stroke-width:3"/><text x="'+(Xp(0.64)+30)+'" y="'+ly+'" style="fill:var(--fg)">'+d[2]+'</text>';
+    });
+    $('profsvg').innerHTML=s;
+  })();
+
+  /* background mortality explorer */
+  (function(){
+    var T=40,c={l:52,r:18,t:16,b:44},Wc=720,Hc=340,iwc=Wc-c.l-c.r,ihc=Hc-c.t-c.b;
+    function Xc(t){return c.l+t/T*iwc} function Yc(v){return c.t+(1-v)*ihc}
+    function path(f,pts){return pts.map(function(t,i){return (i?"L":"M")+Xc(t).toFixed(1)+" "+Yc(f(t)).toFixed(1)}).join(" ")}
+    function draw(){
+      var pi=+$('pi').value,lam=+$('lam').value,gam=+$('gam').value,hb=+$('hb').value;
+      $('hb_o').textContent=(hb*100).toFixed(1)+"%";
+      var Sb=function(t){return Math.exp(-hb*t)}, S=function(t){return pi+(1-pi)/(1+lam*Math.pow(t,gam))};
+      var So=function(t){return Sb(t)*S(t)}, Ca=function(t){return pi*Sb(t)};
+      var pts=[],k;for(k=0;k<=160;k++){pts.push(k*0.25)}
+      var s="";
+      for(k=0;k<=4;k++){var v=k*0.25;s+='<line class="gl" x1="'+c.l+'" x2="'+(Wc-c.r)+'" y1="'+Yc(v)+'" y2="'+Yc(v)+'"/><text x="'+(c.l-8)+'" y="'+(Yc(v)+4)+'" text-anchor="end">'+v.toFixed(2)+'</text>'}
+      for(k=0;k<=4;k++){var xv=k*10;s+='<text x="'+Xc(xv)+'" y="'+(Hc-c.b+20)+'" text-anchor="middle">'+xv+'</text>'}
+      s+='<text x="'+(c.l+iwc/2)+'" y="'+(Hc-6)+'" text-anchor="middle">Years since start</text>';
+      s+='<text transform="rotate(-90)" x="'+(-(c.t+ihc/2))+'" y="14" text-anchor="middle">Share alive and event-free</text>';
+      s+='<line class="ax" x1="'+c.l+'" x2="'+(Wc-c.r)+'" y1="'+Yc(0)+'" y2="'+Yc(0)+'"/><line class="ax" x1="'+c.l+'" x2="'+c.l+'" y1="'+Yc(1)+'" y2="'+Yc(0)+'"/>';
+      s+='<line x1="'+c.l+'" x2="'+(Wc-c.r)+'" y1="'+Yc(pi)+'" y2="'+Yc(pi)+'" style="stroke:var(--cured);stroke-width:1;opacity:.7"/>';
+      s+='<path d="'+path(Sb,pts)+'" fill="none" style="stroke:var(--muted);stroke-width:1.6;stroke-dasharray:8 3 2 3"/>';
+      s+='<path d="'+path(S,pts)+'" fill="none" style="stroke:var(--uncured);stroke-width:2.2;stroke-dasharray:7 4"/>';
+      s+='<path d="'+path(Ca,pts)+'" fill="none" style="stroke:var(--cured);stroke-width:2;stroke-dasharray:2 4"/>';
+      s+='<path d="'+path(So,pts)+'" fill="none" style="stroke:var(--fg);stroke-width:2.8"/>';
+      s+='<line x1="'+Xc(30)+'" x2="'+Xc(30)+'" y1="'+Yc(1)+'" y2="'+Yc(0)+'" style="stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3"/>';
+      s+='<circle cx="'+Xc(30)+'" cy="'+Yc(So(30))+'" r="5" style="fill:var(--fg)"/>';
+      s+='<text x="'+(Xc(30)-8)+'" y="'+(Yc(0)-8)+'" text-anchor="end">Year 30</text>';
+      $('bgsvg').innerHTML=s;
+      var d=So(30)-pi;
+      var cards=[["True π",pi.toFixed(2)],["Observed curve at year 30",So(30).toFixed(3)],["Naive plateau read minus true π",(d<0?"−":"+")+Math.abs(d).toFixed(3)],["Relative survival S_o / S_b at year 30",S(30).toFixed(3)]];
+      $('bgread').innerHTML=cards.map(function(x){return '<div><span>'+x[0]+'</span><b>'+x[1]+'</b></div>'}).join("");
+    }
+    ['pi','lam','gam','hb'].forEach(function(id){$(id).addEventListener('input',draw)});
+    draw();
+  })();
+
+  /* cure point calculator */
+  (function(){
+    var T=60,c={l:52,r:18,t:16,b:44},Wc=720,Hc=340,iwc=Wc-c.l-c.r,ihc=Hc-c.t-c.b;
+    function pct1(x){return (x*100).toFixed(1)+"%"}
+    function draw(){
+      var pi=+$('pi').value,lam=+$('lam').value,gam=+$('gam').value,q=+$('q').value;
+      $('q_o').textContent=Math.round(q*100)+"%";
+      var S=function(t){return pi+(1-pi)/(1+lam*Math.pow(t,gam))};
+      var ymin=Math.max(0,Math.round((Math.floor(pi*5)/5-0.2)*10)/10);
+      function Xc(t){return c.l+t/T*iwc} function Yc(p){return c.t+(1-(p-ymin)/(1-ymin))*ihc}
+      var ts=null,txt;
+      if(pi<=0){txt="none (π = 0)"}
+      else if(pi>=q){ts=0;txt="0 years"}
+      else{var suS=pi*(1/q-1)/(1-pi);ts=Math.pow((1/suS-1)/lam,1/gam);txt=ts>T?"over 60 years":ts.toFixed(1)+" years"}
+      var s="",k;
+      for(k=0;ymin+k*0.2<=1.0001;k++){var pv=ymin+k*0.2;s+='<line class="gl" x1="'+c.l+'" x2="'+(Wc-c.r)+'" y1="'+Yc(pv)+'" y2="'+Yc(pv)+'"/><text x="'+(c.l-8)+'" y="'+(Yc(pv)+4)+'" text-anchor="end">'+Math.round(pv*100)+'%</text>'}
+      for(k=0;k<=6;k++){var xv=k*10;s+='<text x="'+Xc(xv)+'" y="'+(Hc-c.b+20)+'" text-anchor="middle">'+xv+'</text>'}
+      s+='<text x="'+(c.l+iwc/2)+'" y="'+(Hc-6)+'" text-anchor="middle">Years since start</text>';
+      s+='<text transform="rotate(-90)" x="'+(-(c.t+ihc/2))+'" y="14" text-anchor="middle">P(cured | still event-free)</text>';
+      s+='<line class="ax" x1="'+c.l+'" x2="'+(Wc-c.r)+'" y1="'+Yc(ymin)+'" y2="'+Yc(ymin)+'"/><line class="ax" x1="'+c.l+'" x2="'+c.l+'" y1="'+Yc(1)+'" y2="'+Yc(ymin)+'"/>';
+      var pts=[];for(k=0;k<=120;k++){pts.push(k*0.5)}
+      s+='<path d="'+pts.map(function(t,i){return (i?"L":"M")+Xc(t).toFixed(1)+" "+Yc(pi/S(t)).toFixed(1)}).join(" ")+'" fill="none" style="stroke:var(--cured);stroke-width:2.8"/>';
+      s+='<line x1="'+c.l+'" x2="'+(Wc-c.r)+'" y1="'+Yc(q)+'" y2="'+Yc(q)+'" style="stroke:var(--cp);stroke-width:1.3;stroke-dasharray:4 4"/>';
+      s+='<text x="'+(Wc-c.r-4)+'" y="'+(Yc(q)-6)+'" text-anchor="end" style="fill:var(--cp);font-weight:700">Level q = '+Math.round(q*100)+'%</text>';
+      if(ts!==null&&ts<=T){
+        var right=Xc(ts)>Wc*0.7;
+        s+='<line x1="'+Xc(ts)+'" x2="'+Xc(ts)+'" y1="'+Yc(ymin)+'" y2="'+Yc(q)+'" style="stroke:var(--cp);stroke-width:1.5;stroke-dasharray:4 4"/>';
+        s+='<circle cx="'+Xc(ts)+'" cy="'+Yc(q)+'" r="5.5" style="fill:var(--cp)"/>';
+        s+='<text x="'+(Xc(ts)+(right?-9:9))+'" y="'+(Yc(ymin)-8)+'" text-anchor="'+(right?"end":"start")+'" style="fill:var(--cp);font-weight:700">Cure point t* = '+ts.toFixed(1)+' y</text>';
+      }
+      var p7=pi/S(7);
+      s+='<line x1="'+Xc(7)+'" x2="'+Xc(7)+'" y1="'+Yc(1)+'" y2="'+Yc(ymin)+'" style="stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3"/>';
+      s+='<text x="'+(Xc(7)+6)+'" y="'+(Yc(ymin+0.5*(1-ymin)))+'">Year 7 (TA975 rule): '+pct1(p7)+'</text>';
+      $('cpsvg').innerHTML=s;
+      var mis=1000*(1-pi)/(1+lam*Math.pow(7,gam)),alive7=1000*S(7);
+      var cards=[["Cure point t* at "+Math.round(q*100)+"%",txt],["Certainty at year 7",pct1(p7)],["Uncured among survivors at year 7",Math.round(mis).toLocaleString()+" of "+Math.round(alive7).toLocaleString()]];
+      $('cpread').innerHTML=cards.map(function(x){return '<div><span>'+x[0]+'</span><b>'+x[1]+'</b></div>'}).join("");
+    }
+    ['pi','lam','gam','q'].forEach(function(id){$(id).addEventListener('input',draw)});
+    draw();
+  })();
+})();
+</script>
+</body>
+</html>
