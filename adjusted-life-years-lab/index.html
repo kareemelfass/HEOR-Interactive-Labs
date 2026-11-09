@@ -297,13 +297,131 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 </div>
 </section>
 <section class="module" id="haly">
-<h2>3. HALY · Explore a family of population health scores</h2><p class="sub"><b>Learning message:</b> In the supplied 2023 framework, the parameter \(\alpha\) controls the importance of reference lifetime. It is a mathematical family, not another standard standalone HEOR endpoint.</p>
-<div class="panel"><h3>Start with the concept · What does HALY mean?</h3>
-<p><b>Health-adjusted life-years (HALYs)</b> is a broad label for life-years adjusted for health. It is not always one uniquely specified endpoint. In the supplied <b>Moreno-Ternero et al. (2023)</b> paper, the important contribution is a theoretical family of <b>population health evaluation functions</b>, meaning mathematical rules that assign one overall score to a population's health profile.</p>
-<p>That family combines <b>attained quality-adjusted lifetime</b> with a penalty for <b>reference lifetime</b>. A reference lifetime is an explicitly defined benchmark for how long life might ideally extend. The parameter \(\alpha\) determines how strongly that benchmark enters the social score.</p>
-<div class="math">\[P_{\alpha}=\sum_i(q_it_i-\alpha r_i)\]</div>
-<div class="result"><b>Worked example:</b> One person lives 4 years at health weight 0.8 with a reference of 5 years. Attained health: \(4\times0.8=3.2\). At \(\alpha=0.4\), score = \(3.2-0.4\times5=1.2\). At \(\alpha=0\), the score is 3.2 QALY-like attained years. At \(\alpha=1\), it is \(3.2-5=-1.8\): the <b>negative shortfall score</b>, not a positive DALY count.</div>
-<p><b>Meaning:</b> the parameter reveals which normative reference matters, and whether different population comparisons change when that reference changes. The paper's bounded-health-weight setting does not automatically cover negative QALY utilities.</p></div><div class="math">\[P_\alpha=\sum_{i=1}^n \left(q_i t_i-\alpha r_i\right),\qquad 0\leq\alpha\leq 1\]</div>
+<h2>3. HALYs · Why the reference lifetime changes what we are measuring</h2>
+<p class="sub"><b>Learning message:</b> HALY is not an additional clinical outcome that you calculate by choosing α. The 2023 paper offers a <em>mathematical family of ways to value population health</em>. It unifies two questions: how much health did people attain, and how much healthy life is missing relative to a reference? Build those two quantities first, then introduce α.</p>
+<div class="panel">
+<h3>3.1. Why does HALY need more explanation than “time × weight”?</h3>
+<p>Start by recognising two different uses of the same label. In practical public-health research, <b>health-adjusted life-years (HALYs)</b> is an umbrella expression for summary outcomes that combine survival and health states. Authors may use it to describe a particular health-adjusted measure in an applied study. In <b>Moreno-Ternero, Platz and Østerdal (2023)</b>, HALY has a more specific role: it names a <b>family of population health evaluation functions</b>.</p>
+<p>A <b>population health evaluation function</b> is simply a rule that turns all the health histories of people in a population into one number so that we can compare two population profiles. You can think of it as an evaluation rule. Such a rule embodies judgments about what counts as better population health, even when its formula looks mathematically simple.</p>
+<p><b>Why is a family needed?</b> Consider a policymaker facing two possible ways of describing the same population. One approach asks “How much health does the population experience?” A second asks “How much health is the population missing compared with what it could ideally have experienced?” Both are intelligible questions, but they do not always rank <em>different populations</em> in the same order. The 2023 paper asks what social preferences and reference choices lead to the first rule, the second rule, or combinations of them. [R2]</p>
+<div class="callout"><strong>The distinction:</strong> The QALY endpoint and the DALY burden calculation you already know are useful applied measures. The 2023 HALY family is primarily a framework for understanding their common mathematical structure and their underlying normative assumptions. It is not a routine instruction that every HEOR model should estimate α.</div>
+</div>
+<div class="panel">
+<h3>3.2. Build the two quantities before seeing a new formula</h3>
+<p>Use a single illustrative health history throughout. A person lives <b>6 years</b>. Their health state is represented by a constant weight <b>0.75</b>. Their benchmark or <b>reference lifetime</b> is <b>10 years</b>. That reference is not a survival prediction made by treatment. It is an ideal against which missing lifetime is assessed.</p>
+<p><b>First question: how much health was attained?</b> Count only the years they actually lived, and multiply by the value of those years:</p>
+<div class="math">\[\text{Attained health}=tq=6(0.75)=4.5\]</div>
+<p>The person lives six calendar years and accumulates 4.5 health-adjusted years. If we care only about the amount attained, the ten-year reference has no role in this calculation.</p>
+<p><b>Second question: how far is the person from the ten-year, full-health ideal?</b> Decompose the shortfall into two components:</p>
+<div class="math">\[\underbrace{(r-t)}_{\text{time missing after death}}+\underbrace{t(1-q)}_{\text{health missing while alive}}\]\[=(10-6)+6(1-0.75)=4+1.5=5.5\]</div>
+<p>We are not inventing additional years. The ten-year reference is composed of <b>4.5 healthy-year equivalents attained</b>, <b>1.5 health-adjusted years lost while living</b>, and <b>4 years not lived</b>. They add to ten.</p>
+<div class="math">\[\text{Reference healthy years}=r=\underbrace{tq}_{\text{attained}}+\underbrace{t(1-q)}_{\text{nonfatal shortfall}}+\underbrace{(r-t)}_{\text{mortality shortfall}}\]</div>
+<p>Rearrange the same identity. The health shortfall is the ideal minus the attained health:</p>
+<div class="math">\[B=(r-t)+t(1-q)=r-tq=10-4.5=5.5\]</div>
+<p>This derivation is the bridge. In the <em>special matched-weight setting of the theoretical paper</em>, the positive health shortfall \(B\) has a DALY-style decomposition into a mortality gap and a quality gap. In an actual GBD calculation, YLL and YLD have their own reference-life-table and disability-weight methods, so the identity cannot simply be applied to unrelated data sources.</p>
+</div>
+<div class="panel">
+<h3>3.3. An interactive health budget for one person</h3>
+<p>Change the years alive, health weight, reference lifetime and α. The coloured bar always reconciles to the chosen reference: attained health plus health missing while alive plus life-years missing after death. The α-based score is shown separately because it is <em>an evaluation rule</em>, not a fourth physical category of years.</p>
+<div class="grid">
+<div class="box">
+<div class="control"><label for="h-ind-t">Years actually lived <output id="h-ind-t-o"></output></label><input id="h-ind-t" type="range" min="1" max="10" step="1" value="6"></div>
+<div class="control"><label for="h-ind-q">Health weight while alive <output id="h-ind-q-o"></output></label><input id="h-ind-q" type="range" min="0" max="1" step=".05" value=".75"></div>
+<div class="control"><label for="h-ind-r">Reference lifetime, years <output id="h-ind-r-o"></output></label><input id="h-ind-r" type="range" min="10" max="15" step="1" value="10"></div>
+<div class="control"><label for="h-ind-a">Reference importance α <output id="h-ind-a-o"></output></label><input id="h-ind-a" type="range" min="0" max="1" step=".05" value=".5"></div>
+<div class="controls"><button type="button" id="h-ind-reset">Restore 6 years, 0.75 weight, 10-year reference</button></div>
+</div>
+<div class="box">
+<div class="grid"><div class="metric"><label>Attained health, Q</label><div class="val" id="h-ind-qval">4.50</div></div><div class="metric"><label>Missing health, B</label><div class="val" id="h-ind-bval">5.50</div></div><div class="metric"><label>Health lost while alive</label><div class="val" id="h-ind-morb">1.50</div></div><div class="metric"><label>Lifetime gap</label><div class="val" id="h-ind-yll">4.00</div></div></div>
+<div class="metric"><label>Evaluation function at selected α</label><div class="val" id="h-ind-score">-0.50</div><div class="desc">A signed population-evaluation score, not another observed outcome.</div></div>
+</div>
+</div>
+<div style="display:flex;overflow:hidden;border-radius:9px;height:44px;margin:18px 0 8px;background:#e8edf1" role="img" aria-label="Partition of the illustrative reference lifetime into health attained, nonfatal shortfall and mortality shortfall">
+<div id="h-ind-bar-q" style="width:45%;background:#2469b3"></div><div id="h-ind-bar-d" style="width:15%;background:#dcad57"></div><div id="h-ind-bar-y" style="width:40%;background:#b9c6d0"></div>
+</div>
+<div class="legend"><span><i class="dot qdot"></i>Health attained</span><span><i class="dot" style="background:#dcad57"></i>Missing health while alive</span><span><i class="dot" style="background:#b9c6d0"></i>Reference years not lived</span></div>
+<div class="result" id="h-ind-steps" aria-live="polite">Attained = 6 × 0.75 = 4.50. Missing while alive = 6 × 0.25 = 1.50. Mortality gap = 10 − 6 = 4.00. Shortfall = 5.50. Pα = 4.50 − 0.50 × 10 = −0.50.</div>
+<p class="tiny">This interactive example deliberately restricts weights to 0–1 and requires \(r\geq t\), consistent with the framework in [R2]. The shortfall is a constructed health-gap measure, not an estimate using official GBD disability weights or life tables.</p>
+</div>
+<div class="panel">
+<h3>3.4. Now α has a meaning: how much does the reference count?</h3>
+<p>We have two numbers: \(Q=tq\), the health attained, and \(B=r-tq\), the health missing. We can define an evaluation rule that emphasises the amount attained, the <em>negative</em> amount missing, or a mixture:</p>
+<div class="math">\[P_{\alpha}=(1-\alpha)Q+\alpha(-B)\]</div>
+<p>Why use \(-B\) rather than \(B\)? Because the evaluation score should be <b>higher for a better health profile</b>. A smaller burden is better, so its negative has the desired direction. At α = 1, a person with 2 lost years scores −2, which is higher (better) than −5 for a person with 5 lost years.</p>
+<p>Substitute the shortfall \(B=r-Q\):</p>
+<div class="math">\[\begin{aligned}P_{\alpha}&=(1-\alpha)Q-\alpha(r-Q)\\&=(1-\alpha)Q-\alpha r+\alpha Q\\&=\underbrace{Q}_{qt}-\alpha r.\end{aligned}\]</div>
+<p><b>That is exactly where the formula comes from.</b> It is not an unexplained new health outcome. It is a single family connecting an <em>attainment-based evaluation</em> with a <em>loss-based evaluation</em>. The paper's population formulation sums this score over people:</p>
+<div class="math">\[P_{\alpha}=\sum_{i=1}^{n}(q_i t_i-\alpha r_i),\qquad 0\leq\alpha\leq1\]</div>
+<p><b>α = 0:</b> Ignore the reference. \(P_0=Q\). This is the attained-QALY pole.</p>
+<p><b>α = 1:</b> Compare with the entire reference. \(P_1=Q-r=-B\). This is the <em>negative</em> health-shortfall pole, called the DALY evaluation function in the paper.</p>
+<p><b>Between 0 and 1:</b> Give partial importance to the reference when evaluating the population. It does <em>not</em> mean that a treatment's clinical effect is “50% QALY and 50% DALY” in a conventional economic evaluation. It means the social evaluation rule has been specified with a different reference dependence.</p>
+</div>
+<div class="panel">
+<h3>3.5. Use one unchanging person to see what α actually changes</h3>
+<p>Keep our patient's health exactly the same: six years, utility 0.75, reference ten years. Only the evaluation rule changes. Notice that neither survival nor utility changes when α changes.</p>
+<div class="tablewrap"><table><thead><tr><th>α</th><th>Calculation</th><th>Evaluation score</th><th>What changed?</th></tr></thead><tbody>
+<tr><td>0</td><td>4.5 − 0 × 10</td><td>4.5</td><td>Full attention to attained health</td></tr>
+<tr><td>0.25</td><td>4.5 − 0.25 × 10</td><td>2.0</td><td>The reference contributes a 2.5-point subtraction</td></tr>
+<tr><td>0.50</td><td>4.5 − 0.50 × 10</td><td>−0.5</td><td>Half the reference enters the score</td></tr>
+<tr><td>0.75</td><td>4.5 − 0.75 × 10</td><td>−3.0</td><td>The reference contributes a 7.5-point subtraction</td></tr>
+<tr class="total"><td>1.00</td><td>4.5 − 1 × 10</td><td>−5.5</td><td>Negative of the entire health shortfall</td></tr></tbody></table></div>
+<p><b>A common misinterpretation:</b> A score that falls from 4.5 to −5.5 as α increases does <em>not</em> mean the person becomes less healthy. You have changed the mathematical yardstick while keeping the health profile fixed. Comparing raw scores calculated with <em>different</em> α values has no direct policy meaning. What matters is how <b>two health profiles are ranked under the same specified α</b>.</p>
+</div>
+<div class="panel">
+<h3>3.6. Compare two treatments for the <em>same</em> people: α cannot change the incremental result</h3>
+<p>Assume the same patient could experience one of two health outcomes. The reference lifetime is ten years under <b>both</b> strategies because it is a common normative benchmark, not a treatment benefit.</p>
+<div class="tablewrap"><table><thead><tr><th>Input</th><th>Comparator</th><th>Treatment</th></tr></thead><tbody>
+<tr><td>Years alive</td><td>6</td><td>8</td></tr>
+<tr><td>Health weight</td><td>0.75</td><td>0.70</td></tr>
+<tr><td>Health attained (Q)</td><td>\(6(0.75)=4.50\)</td><td>\(8(0.70)=5.60\)</td></tr>
+<tr><td>Reference (R)</td><td>10</td><td>10</td></tr>
+<tr><td>Health shortfall (B)</td><td>\(10-4.5=5.50\)</td><td>\(10-5.6=4.40\)</td></tr>
+</tbody></table></div>
+<p>The treatment prolongs survival by two years, but those years are weighted at a somewhat lower utility. Overall, it generates <b>1.10 more QALYs</b>. It also reduces the matched health shortfall by <b>1.10</b>.</p>
+<div class="math">\[\Delta P_{\alpha}=(Q_T-\alpha R_T)-(Q_C-\alpha R_C)\]\[\Delta P_{\alpha}=5.6-4.5-\alpha(10-10)=1.10\]</div>
+<p><b>α cancels.</b> No matter whether α is 0, 0.5 or 1, the incremental score is +1.10, because both alternatives use the <em>same reference lifetime</em>. This is a key result of the 2023 paper's time-linear formulation: if references are fixed, QALY and negative DALY-shortfall evaluations contain equivalent information for comparing the profiles. [R2]</p>
+<p>If a tutorial shows the treatment suddenly becoming worse merely because α changes, check whether it secretly assigned <em>different reference lifetimes</em> to the two arms. A treatment does not, by itself, justify changing the normative reference lifespan.</p>
+</div>
+<div class="panel">
+<h3>3.7. When can α change a ranking? Compare profiles with different references</h3>
+<p>To make α matter, the reference difference must matter. Now consider a <b>different question</b>: not two treatments for the same patient, but two population profiles with different reference-lifetime totals. For simplicity, consider one representative profile each:</p>
+<div class="tablewrap"><table><thead><tr><th>Measure</th><th>Profile A</th><th>Profile B</th></tr></thead><tbody>
+<tr><td>Attained quality-adjusted lifetime</td><td>4.50</td><td>5.60</td></tr><tr><td>Reference lifetime</td><td>10.00</td><td>12.00</td></tr><tr><td>Health shortfall</td><td>10−4.5 = 5.50</td><td>12−5.6 = 6.40</td></tr></tbody></table></div>
+<p>Profile B has <b>more health attained</b> (5.6 versus 4.5), but also <b>more health missing relative to its own longer reference</b> (6.4 versus 5.5). Thus the attainment and shortfall perspectives no longer point in the same direction. That is precisely where the chosen evaluation rule matters.</p>
+<div class="math">\[\Delta P_{\alpha}=P_B-P_A=(5.6-12\alpha)-(4.5-10\alpha)=1.10-2\alpha\]</div>
+<div class="tablewrap"><table><thead><tr><th>α</th><th>Difference B − A</th><th>Which profile scores higher?</th></tr></thead><tbody>
+<tr><td>0.00</td><td>+1.10</td><td>B, because it has higher attainment</td></tr>
+<tr><td>0.25</td><td>+0.60</td><td>B</td></tr>
+<tr><td>0.50</td><td>+0.10</td><td>B, but only narrowly</td></tr>
+<tr class="total"><td>0.55</td><td>0.00</td><td>Exactly tied</td></tr>
+<tr><td>0.75</td><td>−0.40</td><td>A</td></tr>
+<tr><td>1.00</td><td>−0.90</td><td>A, because it has less reference-based loss</td></tr></tbody></table></div>
+<p><b>Read this very carefully:</b> We have not shown an intervention turning harmful as α rises. We have shown two <em>population profiles assessed against different references</em> being ranked differently by alternative social evaluation rules. Whether those different references are ethically and methodologically defensible is itself a substantive choice.</p>
+<p>The tipping point is easy to calculate: set \(1.10-2\alpha=0\). Therefore \(\alpha=1.10/2=0.55\). The ranking changes because the difference in reference totals (2 years) receives increasing weight, not because anything changes clinically.</p>
+</div>
+<div class="panel">
+<h3>3.8. Why does the original paper discuss axioms?</h3>
+<p>An <b>axiom</b> is a proposed principle about which comparisons a policymaker should find reasonable. The authors do not simply announce the formula; they ask what principles make particular population evaluation rules mathematically consistent.</p>
+<p><b>Anonymity:</b> If you swap the identity labels of two people while leaving their health histories unchanged, the population score should not change. Who is called Person 1 or Person 2 should not matter.</p>
+<p><b>Separability:</b> If a treatment changes only one subgroup's health and the other subgroup is identical under both options, the unchanged subgroup should not alter the relative comparison. This helps explain why common elements cancel in an incremental comparison.</p>
+<p><b>Continuity and full-health superiority:</b> Small changes in duration or reference should not create wild changes in the evaluation, and replacing an ill-health state with full health should not make a population worse.</p>
+<p><b>Independence of reference lifetime at full health:</b> An attainment-only evaluation does not care whether the reference lifetime is ten or twelve if the realised health history is unchanged. This leads to the QALY pole in the authors' characterisation.</p>
+<p><b>Gap invariance at full health:</b> A gap-based evaluation focuses on the difference between reference and actual lifetime. If both increase by the same amount while that gap stays fixed, the reference-shortfall component stays the same. This corresponds to the DALY pole under the paper's other conditions.</p>
+<p><b>What is being demonstrated?</b> QALYs and DALYs share many assumptions, yet they rest on distinct judgments concerning reference lifetime. The authors characterise which combinations of assumptions identify the broader HALY family and its endpoints. These are normative foundations, not a new clinical trial estimator. [R2]</p>
+</div>
+<div class="panel">
+<h3>3.9. Important limits before using the family in applied HEOR</h3>
+<p><b>Do not confuse the name with the estimator:</b> A published economic evaluation may report “HALYs gained” using health-adjusted survival from a life-table model. That does not establish that it estimated α or compared the 2023 population evaluation functions. The Australian sodium-reduction study below is such an applied health-adjusted outcome example; it does not operationalise this theoretical family.</p>
+<p><b>The theory has assumptions:</b> The paper's time-linear equations restrict its quality weights to the range 0–1 and aggregate individual scores without additional equity weights. A conventional QALY data set may include states valued worse than death. Those negative utilities cannot be inserted without checking whether the paper's assumptions still hold.</p>
+<p><b>Equal-reference invariance is not an empirical finding:</b> It is an algebraic property of \(P_\alpha=Q-\alpha R\). If R is identical in two alternatives, changing α cannot alter their increment. It is not evidence that disability weights and utility weights are equal in practice.</p>
+<p><b>α is not estimated from the patient's response:</b> It represents the social evaluator's chosen importance of the reference. It is not a hazard ratio, utility coefficient, efficacy parameter or probabilistic treatment effect.</p>
+</div>
+<div class="panel">
+<h3>3.10. The interactive population explorer: move from one person to 100 people</h3>
+<p>Now that the components are clear, use the calculator below. It fixes two illustrative population profiles at 300.30 and 357.75 attained quality-adjusted years. By default, both have a total reference of 500 years. You can change α and verify that the incremental score remains +57.45 at every position. This is the <b>same-reference case</b>.</p>
+<p>Next select <b>Different populations</b>. The second profile's reference becomes 600 years. Its larger reference creates a larger shortfall penalty as α increases. This is a <b>different-reference thought experiment</b>, not a treatment being assigned additional life expectancy by assumption. The graph shows the two population scores as α changes.</p>
+<p><b>What to check:</b> Before moving α, write down \(\Delta Q=57.45\). If references are equal, that must be the difference throughout. If references differ by 100, the difference must be \(57.45-100\alpha\). You should be able to predict the slider's answer before touching it.</p>
+</div>
 <div class="grid">
 <div class="panel">
 <h3>Change how reference life is valued</h3>
