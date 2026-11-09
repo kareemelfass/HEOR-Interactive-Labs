@@ -998,6 +998,7 @@ In the 2025 review [R3], working-age bounds differ considerably across studies, 
 A cohort approach does not automatically mean an individual-level simulation. It can be implemented as deterministic population counts by age and health status.
 
 ### 17.6 Discounting PALYs
+
 For $PALY_j$ occurring around the midpoint of cycle $j$:
 
 $$PALYs^{disc}=\sum_j\frac{PALY_j}{(1+r_p)^{j-0.5}},$$
