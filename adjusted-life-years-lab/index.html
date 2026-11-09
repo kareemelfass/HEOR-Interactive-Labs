@@ -75,7 +75,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <g><rect x="122" y="27" width="261" height="18" rx="3" fill="#2469b3"/><rect x="122" y="69" width="145" height="18" rx="3" fill="#2469b3"/><rect x="122" y="111" width="232" height="18" rx="3" fill="#007b75"/><rect x="122" y="153" width="87" height="18" rx="3" fill="#007b75"/></g>
 <g font-family="system-ui" font-size="12" fill="#14283e" font-weight="700"><text x="390" y="41">3.6</text><text x="275" y="83">2.0</text><text x="362" y="125">3.2</text><text x="217" y="167">1.2</text></g></svg></div></div>
 </div>
-</section>
+
 
 <div class="panel">
 <h3>First principles · A calendar year is not always a full health or productivity year</h3>
@@ -103,6 +103,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <div class="box"><h3>How to read a result correctly</h3><p><b>Higher QALYs:</b> more attained health. <b>Higher DALY burden:</b> more health lost. <b>Higher DALYs averted:</b> more burden prevented. <b>Higher PALYs:</b> more productive life-years. The sign of the 2023 HALY population score must be interpreted separately.</p></div>
 <div class="box"><h3>Three misconceptions to discard</h3><p><b>Utility 0.5 is not 50% survival.</b> Someone can be alive with utility 0.5. <b>Disability weight 0.5 is not 50% of people disabled.</b> It is a severity weight. <b>Productivity 0.5 is not worth half as much as a person.</b> It describes measured productive activity under a defined model.</p></div>
 </div>
+</section>
 <section class="module" id="qaly">
 <h2>1. QALY · Build health-adjusted time</h2><p class="sub"><b>Learning message:</b> Each interval contributes its duration multiplied by health utility. The total is the sum of those contributions.</p>
 <div class="panel">
@@ -125,7 +126,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <p><b>With variable health:</b> split follow-up into intervals and sum each interval's \(\Delta t\times u\). Where utility is measured at successive times, a trapezoidal area approximation may be used, subject to the measurement assumptions.</p></div></div>
 <details><summary>Why does a 0.08 utility improvement create QALYs even if survival does not change?</summary><p>For 100 people alive throughout one year, moving utility from 0.70 to 0.78 creates \(100(0.78-0.70)=8\) additional QALYs without adding one life-year. A QALY benefit need not be smaller than the <em>incremental</em> life-year benefit.</p></details>
 <details><summary>Where should utilities come from?</summary><p>Use preference-based weights from appropriate instruments and value sets, such as EQ-5D. Patient-reported symptom scales and raw visual analogue scores are not automatically anchored utilities. Country-specific values, age norms, and states worse than death require explicit consideration. [R1]</p></details>
-</section>
+
 
 <div class="grid">
 <div class="panel"><h3>Use in HEOR · Published Egyptian pneumococcal-vaccination model</h3>
@@ -146,6 +147,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <li><b>Interpret the gain, not just the total:</b> 7 QALYs in the treated arm does not mean 7 QALYs gained by treatment.</li>
 </ul><p class="tiny">Methodological context: Turner et al. [R1].</p>
 </div></div>
+</section>
 <section class="module" id="daly">
 <h2>2. DALY · Separate premature death from disability</h2><p class="sub"><b>Learning message:</b> Conventional DALY burden combines YLL (life-years lost against a reference life table) and YLD (years lived with disability).</p>
 <div class="panel"><h3>Start with the concept · What is a DALY?</h3>
@@ -176,7 +178,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <p>Suppose an intervention reduces DALY burden from 250 to 190. It averts \(250-190=60\) DALYs. It does <em>not</em> avert 190 DALYs.</p>
 <div class="callout caution"><strong>GBD versus economic evaluation:</strong> Current GBD burden estimates do not apply historical age weighting or time discounting. Economic evaluations may discount DALYs averted according to their appraisal guidelines. This is a change in use and methodology, not a contradiction. [R1]</div>
 </div>
-</section>
+
 
 <div class="grid">
 <div class="panel"><h3>Use in HEOR · Published Egyptian PCV13 economic analysis</h3>
@@ -198,6 +200,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <li><b>Check overlapping disease states:</b> comorbidities may require a justified combined disability-weight rule.</li>
 </ul><p class="tiny">Methodological context: Turner et al. [R1].</p></div>
 </div>
+</section>
 <section class="module" id="haly">
 <h2>3. HALY · Explore a family of population health scores</h2><p class="sub"><b>Learning message:</b> In the supplied 2023 framework, the parameter \(\alpha\) controls the importance of reference lifetime. It is a mathematical family, not another standard standalone HEOR endpoint.</p>
 <div class="panel"><h3>Start with the concept · What does HALY mean?</h3>
@@ -219,7 +222,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 </div>
 <svg id="h-chart" viewBox="0 0 720 240" class="chart" role="img" aria-label="HALY treatment and comparator population health scores across alpha values"></svg>
 <p class="tiny">The displayed reference shift is a thought experiment about normative assumptions. It is not evidence that a treatment changes people's standard reference lifespan. The authors' framework assumes nonnegative time and health weights bounded by 0 and 1. [R2]</p>
-</section>
+
 
 <div class="grid">
 <div class="panel"><h3>Use in HEOR · Published health-adjusted life-year modelling</h3>
@@ -240,6 +243,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <li><b>Identical references cancel in increments:</b> apparent α-sensitivity should be checked for changes in the reference convention rather than claimed as a clinical benefit.</li>
 </ul><p class="tiny">Methodological context: Moreno-Ternero et al. [R2].</p></div>
 </div>
+</section>
 <section class="module" id="paly">
 <h2>4. PALY · Construct the productivity index</h2><p class="sub"><b>Learning message:</b> Paid-work productivity combines how much work is performed, how effective work is, and, if included, workforce participation. It is not a health utility.</p>
 <div class="panel"><h3>Start with the concept · What is a PALY?</h3>
@@ -262,7 +266,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <p class="tiny">This example adopts a multiplicative combination of absence, impairment when present and participation to keep denominator definitions explicit. Other published models construct the index differently. The participation factor must match the target population and must not be applied twice.</p>
 </div></div>
 <div class="callout caution"><strong>Avoid double counting:</strong> PALYs usually capture paid work and are often monetised using GDP per full-time worker or wage-based methods. If productivity gains also enter the cost side, do not add their monetary value again as independent benefits. Ademi et al. (2021) specifically caution against treating cost per PALY as a routine ratio because of PALYs' inherent monetary valuation. [R3–R4]</div>
-</section>
+
 
 <div class="grid">
 <div class="panel"><h3>Use in HEOR · Published hypertension productivity burden</h3>
@@ -283,6 +287,7 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <li><b>Do not use PALYs to rank people's worth:</b> low observed productivity does not mean a life has low health value.</li>
 </ul><p class="tiny">Methodological context: Ademi et al. [R3, R4].</p></div>
 </div>
+</section>
 <section class="module" id="cohort">
 <h2>5. One intervention, four perspectives · Full cohort calculator</h2>
 <p class="sub"><b>Learning message:</b> Use <em>the same survival cohort</em> for all outcomes. First compute exposure to life, then apply utility, disability or productivity weights. Keep DALY reference conventions explicit.</p>
