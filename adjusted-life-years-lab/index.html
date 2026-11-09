@@ -424,16 +424,16 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 </div>
 <div class="grid">
 <div class="panel">
-<h3>Change how reference life is valued</h3>
+<h3>Two profiles: a common reference or different population references</h3>
 <div class="control"><label for="h-alpha">Reference weight α <output id="h-alpha-o"></output></label><input id="h-alpha" type="range" min="0" max="1" step=".05" value=".5"></div>
-<div class="control"><label for="h-ref-c">Comparator reference total R<sub>C</sub> <output id="h-ref-c-o"></output></label><input id="h-ref-c" type="range" min="300" max="700" step="10" value="500"></div>
-<div class="control"><label for="h-ref-t">Treatment reference total R<sub>T</sub> <output id="h-ref-t-o"></output></label><input id="h-ref-t" type="range" min="300" max="700" step="10" value="500"></div>
-<div class="controls"><button type="button" id="h-same">Reset to equal references</button><button type="button" id="h-diff">Show unequal-reference example</button></div>
-<p class="tiny">Health attainments are fixed at Q<sub>C</sub> = 300.30 and Q<sub>T</sub> = 357.75, from the same 100-person, five-year example below.</p>
+<div class="control"><label for="h-ref-c">Profile A reference R<sub>A</sub> <output id="h-ref-c-o"></output></label><input id="h-ref-c" type="range" min="300" max="700" step="10" value="500"></div>
+<div class="control"><label for="h-ref-t">Profile B reference R<sub>B</sub> <output id="h-ref-t-o"></output></label><input id="h-ref-t" type="range" min="300" max="700" step="10" value="500"></div>
+<div class="controls"><button type="button" id="h-same">Same-population reference</button><button type="button" id="h-diff">Different-population references</button></div>
+<p class="tiny">Attained health is fixed at Q<sub>A</sub> = 300.30 and Q<sub>B</sub> = 357.75. With equal references, these can be the comparator and treatment for the same 100-person cohort. With unequal references, treat them as different population profiles, not a causal treatment comparison.</p>
 </div>
-<div class="panel"><h3>The calculation</h3><div class="grid3"><div class="metric"><label>Comparator score</label><div class="val" id="h-c"></div></div><div class="metric"><label>Treatment score</label><div class="val" id="h-t"></div></div><div class="metric"><label>Incremental score</label><div class="val" id="h-diff-val"></div></div></div><div class="result" id="h-steps" aria-live="polite"></div><p><b>At α = 0:</b> QALY attainment score. <b>At α = 1:</b> negative health-shortfall score, not positive reported DALY burden. With identical reference totals, \(\Delta P_\alpha=\Delta Q\) for all α.</p></div>
+<div class="panel"><h3>The calculation</h3><div class="grid3"><div class="metric"><label>Profile A score</label><div class="val" id="h-c"></div></div><div class="metric"><label>Profile B score</label><div class="val" id="h-t"></div></div><div class="metric"><label>Difference B − A</label><div class="val" id="h-diff-val"></div></div></div><div class="result" id="h-steps" aria-live="polite"></div><p><b>At α = 0:</b> QALY attainment score. <b>At α = 1:</b> negative health-shortfall score, not positive reported DALY burden. With identical reference totals, \(\Delta P_\alpha=\Delta Q\) for all α.</p></div>
 </div>
-<svg id="h-chart" viewBox="0 0 720 240" class="chart" role="img" aria-label="HALY treatment and comparator population health scores across alpha values"></svg>
+<svg id="h-chart" viewBox="0 0 720 240" class="chart" role="img" aria-label="HALY population profile A and B scores across alpha values"></svg>
 <p class="tiny">The displayed reference shift is a thought experiment about normative assumptions. It is not evidence that a treatment changes people's standard reference lifespan. The authors' framework assumes nonnegative time and health weights bounded by 0 and 1. [R2]</p>
 
 
@@ -649,14 +649,28 @@ set('d-yld',prev?'Annual prevalence-based YLD = '+fmt(v('d-cases'))+' prevalent 
 ['d-deaths','d-le','d-cases','d-weight','d-duration'].forEach(id=>$(id).addEventListener('input',daly));
 function mode(pre){prev=pre;$('d-inc').setAttribute('aria-pressed',String(!pre));$('d-prev').setAttribute('aria-pressed',String(pre));$('d-duration-block').hidden=pre;set('d-cases-label',pre?'Prevalent persons in a year':'New cases');daly()}
 $('d-inc').addEventListener('click',()=>mode(false));$('d-prev').addEventListener('click',()=>mode(true));mode(false);
+function halyIndividual(){
+outputs(['h-ind-t','h-ind-q','h-ind-r','h-ind-a']);
+const t=v('h-ind-t'),q=v('h-ind-q'),r=v('h-ind-r'),a=v('h-ind-a');
+const attained=t*q,morb=t*(1-q),mort=r-t,burden=morb+mort,score=attained-a*r;
+set('h-ind-qval',f(attained,2));set('h-ind-bval',f(burden,2));set('h-ind-morb',f(morb,2));
+set('h-ind-yll',f(mort,2));set('h-ind-score',f(score,2));
+$('h-ind-bar-q').style.width=100*attained/r+'%';
+$('h-ind-bar-d').style.width=100*morb/r+'%';
+$('h-ind-bar-y').style.width=100*mort/r+'%';
+set('h-ind-steps','1. Attained health = '+t+' × '+f(q,2)+' = '+f(attained,2)+'. 2. Health missing while alive = '+t+' × (1 − '+f(q,2)+') = '+f(morb,2)+'. 3. Reference years not lived = '+r+' − '+t+' = '+f(mort,2)+'. 4. Total shortfall = '+f(morb,2)+' + '+f(mort,2)+' = '+f(burden,2)+'. Check: '+f(attained,2)+' + '+f(burden,2)+' = '+r+'. 5. Evaluation score Pα = '+f(attained,2)+' − '+f(a,2)+' × '+r+' = '+f(score,2)+'.');
+}
+['h-ind-t','h-ind-q','h-ind-r','h-ind-a'].forEach(id=>$(id).addEventListener('input',halyIndividual));
+$('h-ind-reset').addEventListener('click',()=>{[['h-ind-t',6],['h-ind-q',.75],['h-ind-r',10],['h-ind-a',.5]].forEach(([id,value])=>$(id).value=value);halyIndividual()});
+halyIndividual();
 function haly(){
 outputs(['h-alpha','h-ref-c','h-ref-t']);let a=v('h-alpha'),rc=v('h-ref-c'),rt=v('h-ref-t'),qc=300.30,qt=357.75,pc=qc-a*rc,pt=qt-a*rt,d=pt-pc;
 set('h-c',f(pc,2));set('h-t',f(pt,2));set('h-diff-val',f(d,2));
-set('h-steps','Comparator = 300.30 − '+f(a,2)+' × '+rc+' = '+f(pc,2)+'. Treatment = 357.75 − '+f(a,2)+' × '+rt+' = '+f(pt,2)+'. Increment = 57.45 − '+f(a,2)+' × ('+rt+' − '+rc+') = '+f(d,2)+'. '+(rc===rt?'The reference terms cancel because they are identical.':'Different reference totals can change the incremental ranking.'));
+set('h-steps','Profile A = 300.30 − '+f(a,2)+' × '+rc+' = '+f(pc,2)+'. Profile B = 357.75 − '+f(a,2)+' × '+rt+' = '+f(pt,2)+'. Difference B − A = 57.45 − '+f(a,2)+' × ('+rt+' − '+rc+') = '+f(d,2)+'. '+(rc===rt?'Identical reference totals cancel, so changing α does not change the 57.45 difference.':'Different references produce a different population-comparison problem. Do not reinterpret this as a treatment changing the reference lifetime.'));
 let svg=$('h-chart');svg.replaceChildren();const yval=z=>200-(z+440)*170/880;for(let i=0;i<=4;i++){let y=200-i*170/4;shape(svg,'line',{x1:65,y1:y,x2:682,y2:y,stroke:'#e2eaf0'});label(svg,57,y+4,String(-440+i*220),'end',11)}shape(svg,'line',{x1:65,y1:25,x2:65,y2:200,stroke:'#8198a7'});shape(svg,'line',{x1:65,y1:200,x2:682,y2:200,stroke:'#8198a7'});
 for(let i=0;i<=4;i++)label(svg,65+600*i/4,222,f(i/4,2),'middle',11);
 function path(q,r){return [0,1].map((a,i)=>(i?'L':'M')+(65+600*a)+','+yval(q-a*r)).join(' ')}
-shape(svg,'path',{d:path(qc,rc),stroke:'#2469b3','stroke-width':3,fill:'none'});shape(svg,'path',{d:path(qt,rt),stroke:'#007b75','stroke-width':3,fill:'none'});let x=65+600*a;shape(svg,'circle',{cx:x,cy:yval(pc),r:5,fill:'#2469b3'});shape(svg,'circle',{cx:x,cy:yval(pt),r:5,fill:'#007b75'});label(svg,660,27,'Treatment', 'end',13,'#007b75');label(svg,660,43,'Comparator','end',13,'#2469b3');label(svg,360,237,'α reference weight','middle',11);
+shape(svg,'path',{d:path(qc,rc),stroke:'#2469b3','stroke-width':3,fill:'none'});shape(svg,'path',{d:path(qt,rt),stroke:'#007b75','stroke-width':3,fill:'none'});let x=65+600*a;shape(svg,'circle',{cx:x,cy:yval(pc),r:5,fill:'#2469b3'});shape(svg,'circle',{cx:x,cy:yval(pt),r:5,fill:'#007b75'});label(svg,660,27,'Profile B', 'end',13,'#007b75');label(svg,660,43,'Profile A','end',13,'#2469b3');label(svg,360,237,'α reference weight','middle',11);
 }
 ['h-alpha','h-ref-c','h-ref-t'].forEach(id=>$(id).addEventListener('input',haly));$('h-same').addEventListener('click',()=>{$('h-ref-c').value=500;$('h-ref-t').value=500;haly()});$('h-diff').addEventListener('click',()=>{$('h-ref-c').value=500;$('h-ref-t').value=600;haly()});haly();
 function paly(){
@@ -699,6 +713,9 @@ const csv=[keys.join(',')].concat(currentRows.map(o=>keys.map(k=>o[k]).join(',')
 const a=document.createElement('a'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.href=url;a.download='heor_adjusted_life_years_cohort.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
 });cohort();
 const questions=[
+{q:'In the 2023 HALY family, a patient has Q=4.5 and reference R=10. What does Pα=-5.5 at α=1 represent?',o:['The patient has −5.5 clinical QALYs','The negative of the 5.5 reference health shortfall','The 10-year survival probability'],a:1,why:'P1 = Q − R = −(R−Q). It is a signed health-shortfall evaluation, not a clinical utility gain or an extra type of observed year.'},
+{q:'Treatment and comparator involve the same people and both use the same reference R. What happens when α changes?',o:['The incremental HALY-family score is unchanged','Treatment automatically gains extra reference years','The treatment effect changes sign whenever α exceeds 0.5'],a:0,why:'ΔPα = (QT − QC) − α(RT − RC). If RT = RC, the reference term cancels and ΔPα = ΔQ for every α.'},
+
 {q:'A person lives four years at utility 0.75. How many undiscounted QALYs?',o:['0.75','3.0','4.75'],a:1,why:'Multiply time by preference-based utility: 4 × 0.75 = 3 QALYs.'},
 {q:'A patient dies aged 45. Which reference is appropriate for standard YLL?',o:['Average life expectancy at birth minus 45','Remaining reference life expectancy at age 45','The QALY utility measured before death'],a:1,why:'A YLL calculation needs remaining life expectancy conditional on reaching 45, using the chosen reference table.'},
 {q:'In a GBD burden estimate, a larger DALY total indicates:',o:['More health loss','More health attained','Higher workforce output'],a:0,why:'DALYs quantify lost healthy life. DALYs averted quantify reductions in that loss.'},
