@@ -138,12 +138,43 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="module" id="qaly">
 <h2>1. QALY · Build health-adjusted time</h2><p class="sub"><b>Learning message:</b> Each interval contributes its duration multiplied by health utility. The total is the sum of those contributions.</p>
 <div class="panel">
-<h3>Start with the concept · What is a QALY?</h3>
-<p>A <b>quality-adjusted life-year (QALY)</b> combines how long someone lives with how their health during those years is valued. One year at full health (utility 1) yields 1 QALY. A year at utility 0.5 yields 0.5 QALYs, even though the person lives for the full year.</p>
-<p><b>Calculation:</b> Multiply time lived in each health state by its preference-based utility, then add the intervals. <b>Interpretation:</b> More QALYs means more total preferred health over the specified horizon. An intervention's QALY gain is the <em>difference</em> between intervention and comparator totals.</p>
-<div class="math">\[QALYs = \sum_j \Delta t_j\,u_j, \qquad \Delta Q = Q_T-Q_C\]</div>
-<div class="result"><b>Worked example:</b> Year 1 at utility 0.90 and year 2 at utility 0.60: \(1(0.90)+1(0.60)=1.50\) QALYs. Two calendar years do <b>not</b> imply two QALYs. If another treatment gives 1.70 QALYs, its incremental benefit is \(1.70-1.50=0.20\) QALYs.</div>
-<p class="tiny">The next calculator assumes a constant utility over the chosen duration. For changing health states, break the timeline into intervals; for time-varying observed utility, use a justified area-under-the-utility-curve method.</p></div>
+<h3>1.1. What does a QALY mean, in plain language?</h3>
+<p>A QALY is a way to <b>count the years lived while recognising that a year in severe illness is different from a year in excellent health</b>. A standard life-year counts all years alive equally. A quality-adjusted life-year multiplies each period by the value assigned to the health experienced during that period.</p>
+<p>To make that concrete, imagine somebody lives one year with substantial pain and limited mobility. A preference-based study assigns that state a utility of 0.60. The patient <b>lived one full year</b>. The QALY method records <b>0.60 adjusted years</b>, because that year is worth 60% of a year in full health under the specified valuation system. This is an accounting convention, not a statement that 40% of the person or their life is missing.</p>
+<p>The health utility is not an opinion entered by the analyst at will. Ideally it comes from a preference-based instrument and a relevant value set, such as EQ-5D valued with a particular population's preferences. Death has utility 0 by definition; full health is anchored at 1. Some states are considered worse than death and can have negative utility.</p>
+<div class="math">\[\text{QALYs in an interval}=\underbrace{\text{years alive}}_{\text{duration}}\times\underbrace{\text{utility of health state}}_{\text{value of those years}}\]</div>
+</div>
+<div class="panel">
+<h3>1.2. From one year to a changing health trajectory</h3>
+<p>The same person can pass through several health states. You must split follow-up into pieces when utility changes. <b>Do not apply the final utility to every year</b>, and do not simply average utilities without accounting for how long each health state lasts.</p>
+<div class="tablewrap"><table><thead><tr><th>Period</th><th>Time alive</th><th>Utility</th><th>QALY calculation</th><th>QALYs accrued</th></tr></thead><tbody>
+<tr><td>Year 1</td><td>1 year</td><td>0.80</td><td>1 × 0.80</td><td>0.80</td></tr>
+<tr><td>Years 2 and 3</td><td>2 years</td><td>0.65</td><td>2 × 0.65</td><td>1.30</td></tr>
+<tr><td>Year 4</td><td>1 year</td><td>0.40</td><td>1 × 0.40</td><td>0.40</td></tr>
+<tr class="total"><td>Total</td><td>4 years</td><td>Not a single constant weight</td><td>0.80 + 1.30 + 0.40</td><td>2.50 QALYs</td></tr></tbody></table></div>
+<p><b>How to interpret 2.50:</b> Over four calendar years, the person experiences a total valued-health amount equivalent to 2.50 full-health years on the utility scale. They did not die at 2.50 years, and they did not spend exactly 2.50 years in perfect health. This is the <em>area under their utility-over-time curve</em>.</p>
+<div class="math">\[Q=\sum_j u_j\Delta t_j \qquad \text{or in continuous time} \qquad Q=\int_0^T u(t)S(t)\,dt\]</div>
+<p>In the integral, \(u(t)\) is utility conditional on being alive and \(S(t)\) is the probability of being alive. For a known individual who is alive throughout an interval, the survival indicator is effectively one over that interval. In a cohort model, survival probabilities weight the expected time alive. The two formulations are related but must not be mixed without checking the level of analysis.</p>
+</div>
+<div class="panel">
+<h3>1.3. What exactly is a QALY <em>gain</em>?</h3>
+<p>Consider a comparator and treatment for the same target patient over four years. The comparator provides three years of survival; treatment provides four. Treatment also improves utilities in the years both arms survive.</p>
+<div class="tablewrap"><table><thead><tr><th>Period</th><th>Comparator</th><th>Treatment</th><th>Incremental contribution</th></tr></thead><tbody>
+<tr><td>Year 1</td><td>1 × 0.70 = 0.70</td><td>1 × 0.80 = 0.80</td><td>+0.10</td></tr>
+<tr><td>Years 2–3</td><td>2 × 0.60 = 1.20</td><td>2 × 0.75 = 1.50</td><td>+0.30</td></tr>
+<tr><td>Year 4</td><td>Dead: 0</td><td>1 × 0.50 = 0.50</td><td>+0.50</td></tr>
+<tr class="total"><td>Total</td><td>1.90 QALYs</td><td>2.80 QALYs</td><td>+0.90 QALYs</td></tr></tbody></table></div>
+<p>The <b>0.90 QALY gain</b> has two components. The first 0.40 comes from living with better health during years already survived under both strategies. The remaining 0.50 comes from surviving an additional year at utility 0.50. Therefore a QALY gain is not synonymous with a life-year gain. It can arise from quality, quantity, or both.</p>
+<div class="math">\[\Delta Q=Q_T-Q_C=2.80-1.90=0.90\]</div>
+<p>For an incremental cost-effectiveness ratio (ICER), that <b>0.90 is the denominator</b> if the modelled unit is one patient and these are the relevant incremental outcomes. The treatment's total 2.80 QALYs is <em>not</em> the gain caused by the intervention.</p>
+</div>
+<div class="panel">
+<h3>1.4. How to think about utility, rather than memorise numbers</h3>
+<p>A utility is a preference-based valuation, not a symptom count. The number 0.75 should be interpreted as the value assigned to a described health state relative to the death and full-health anchors <em>under a particular instrument and valuation procedure</em>. It cannot be read as “the patient has 75% of normal physical ability” or “a 75% probability of surviving”.</p>
+<p><b>Why the health state matters:</b> Two people may have the same clinical diagnosis but different mobility, pain, functioning and emotional impacts. A diagnosis-specific label does not, by itself, determine utility. The same health state can also receive different valuations from different instruments or value sets.</p>
+<p><b>HEOR implication:</b> When a treatment extends survival into old age, those additional years may have lower background utility than the utilities of younger adults. Applying utility 1.0 to all extra years may overstate QALYs. Conversely, if the clinical outcome is measured with a non-preference-based questionnaire, its score cannot be inserted into the QALY formula merely because it is a number between 0 and 100. [R1]</p>
+<p>The next calculator allows a constant health weight, a duration and an outcome discount rate to be changed. Afterwards, interpret the calculator result using the exact four-year example above rather than treating it as a black box.</p>
+</div>
 <div class="grid">
 <div class="panel"><h3>Change the health trajectory</h3>
 <div class="control"><label for="q-duration">Time spent in state, years <output id="q-duration-o"></output></label><input id="q-duration" type="range" min="0.5" max="10" step=".5" value="4"></div>
@@ -181,12 +212,45 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 </section>
 <section class="module" id="daly">
 <h2>2. DALY · Separate premature death from disability</h2><p class="sub"><b>Learning message:</b> Conventional DALY burden combines YLL (life-years lost against a reference life table) and YLD (years lived with disability).</p>
-<div class="panel"><h3>Start with the concept · What is a DALY?</h3>
-<p>A <b>disability-adjusted life-year (DALY)</b> is a year of full health lost. Unlike QALYs, which generally measure health attained, DALYs count <em>loss</em>. Two things cause loss: <b>premature death</b> contributes years of life lost (YLL), while <b>living with illness</b> contributes years lived with disability (YLD).</p>
-<div class="math">\[DALY=YLL+YLD,\qquad YLL=D\times e^*(a),\qquad YLD\approx \text{duration}\times\text{disability weight}\]</div>
-<p><b>Meaning:</b> More DALYs indicate more burden. A treatment is beneficial when it averts DALYs: \(DALY_{comparator}-DALY_{treatment}\).</p>
-<div class="result"><b>Worked example:</b> One death causes 23 YLL when the assumed remaining reference expectancy at death is 23 years. Four separate illness episodes lasting 0.5 years each at disability weight 0.25 contribute \(4\times0.5\times0.25=0.5\) YLD. Total = <b>23.5 DALYs</b>. The reference lifespan and disability weight are illustrative, not GBD inputs.</div>
-<p class="tiny">YLL and YLD do not have to arise in the same person. The DALY burden from a population is aggregated across people and relevant disease sequelae.</p></div><div class="grid">
+<div class="panel">
+<h3>2.1. DALY means burden of lost healthy life, not time spent ill</h3>
+<p>Suppose a public health planner asks: <b>How much healthy life is society losing because of this condition?</b> The loss comes from two different pathways. First, illness may shorten people's lives. Second, people may remain alive but experience health limitations. The DALY combines these two pathways into a common unit: <b>healthy life-years lost</b>.</p>
+<p><b>Years of life lost (YLL)</b> is the mortality component. A person dies at a certain age; we compare that death with the remaining years in a chosen reference life table. <b>Years lived with disability (YLD)</b> is the nonfatal component. We multiply the duration of illness by a severity weight, or use prevalence and disability weights for the burden occurring during a calendar year.</p>
+<div class="math">\[DALY=YLL+YLD\]</div>
+<p>One DALY is therefore <b>one healthy-year equivalent lost</b>. It does not necessarily mean one person died, one person was unable to function, or that someone lived exactly one year with disability. It is a summary burden measure across deaths, illnesses and people.</p>
+</div>
+<div class="panel">
+<h3>2.2. Build DALYs using the same health history as the foundations chapter</h3>
+<p>Take our illustrative patient who lives <b>six years</b> rather than an ideal reference of ten years, with constant health value 0.75. For this one teaching example, assume the disability weight is exactly \(1-0.75=0.25\). That convenient equality is <b>not a general property of published utility and GBD disability weights</b>.</p>
+<div class="tablewrap"><table><thead><tr><th>Step</th><th>Logic</th><th>Calculation</th><th>Loss</th></tr></thead><tbody>
+<tr><td>1. Lived time</td><td>The patient is alive for six years</td><td>\(t=6\)</td><td>No loss calculated yet</td></tr>
+<tr><td>2. Disability during life</td><td>Each of those years loses 0.25 of its ideal health</td><td>\(YLD=6(0.25)\)</td><td>1.5 healthy-year equivalents lost</td></tr>
+<tr><td>3. Premature mortality</td><td>The person does not live the last four ideal-reference years</td><td>\(YLL=10-6\)</td><td>4 years lost</td></tr>
+<tr class="total"><td>4. Total burden</td><td>Combine the two sources of loss</td><td>\(4+1.5\)</td><td>5.5 DALY-like loss years</td></tr></tbody></table></div>
+<p>The word <em>DALY-like</em> is deliberate: this is a transparent ten-year accounting exercise, not a fully specified GBD incidence or prevalence estimate. In real GBD YLL calculations, the mortality reference is the standard <b>remaining life expectancy at the age at death</b>, not automatically “ten minus the observed six”. [R1]</p>
+<p><b>Why the total makes sense:</b> The patient attained 4.5 QALYs on the assumed health scale. The chosen ten-year ideal contains ten full-health years. Since the same complement weights and reference were used, \(10-4.5=5.5\). We will use this equality to understand the HALY paper. You must not assume it holds with independently sourced QALY utility values and GBD disability weights.</p>
+</div>
+<div class="panel">
+<h3>2.3. Why YLD can rise even when treatment helps</h3>
+<p>Assume treatment improves the patient enough to survive eight years, with disability weight 0.20 for each of those years. The comparator remains six years at disability weight 0.25. Keep the same ten-year ideal reference solely for this worked comparison.</p>
+<div class="tablewrap"><table><thead><tr><th>Component</th><th>Comparator</th><th>Treatment</th></tr></thead><tbody>
+<tr><td>Survival</td><td>6 years</td><td>8 years</td></tr>
+<tr><td>Disability weight</td><td>0.25</td><td>0.20</td></tr>
+<tr><td>YLD</td><td>6 × 0.25 = 1.50</td><td>8 × 0.20 = 1.60</td></tr>
+<tr><td>YLL</td><td>10 − 6 = 4.00</td><td>10 − 8 = 2.00</td></tr>
+<tr class="total"><td>Total lost healthy years</td><td>5.50</td><td>3.60</td></tr>
+</tbody></table></div>
+<p><b>The surprising result:</b> YLD increases slightly, from 1.50 to 1.60, even though disability severity decreases. That happens because treatment keeps the person alive for two additional years with some disability. The increase in YLD is more than offset by the reduction in years lost from premature death. Total burden falls by \(5.50-3.60=1.90\).</p>
+<p>Under the special matched-weight convention, QALYs rise from \(6(0.75)=4.50\) to \(8(0.80)=6.40\), a gain of 1.90. This is an <em>illustration of an algebraic complement</em>, not proof of equivalence between real-world DALYs averted and QALYs gained.</p>
+</div>
+<div class="panel">
+<h3>2.4. YLL uses age at death; YLD uses disease severity and time</h3>
+<p><b>YLL in population analysis:</b> Suppose three patients die at a given age, and the selected reference table assigns 36 remaining years at that age. Then \(YLL=3(36)=108\). Another death at a different age must use the <em>remaining reference years for that different age</em>. You cannot apply one reference figure indiscriminately across a population.</p>
+<p><b>YLD for an acute disease:</b> If 100 new cases each last 30 days at disability weight 0.30, the total future duration-weighted YLD for those cases is \(100(30/365)(0.30)=2.466\). Attributing all that loss to the year cases began is an incidence-based convention.</p>
+<p><b>YLD for disease present during a year:</b> If 100 people are prevalent cases throughout a complete calendar year at disability weight 0.30, the burden during that year is \(100(0.30)=30\) YLD. Here “100” means 100 full patient-years of prevalence, not merely 100 people who each experienced a brief episode. [R1]</p>
+<p>The calculator below switches between these two YLD accounting conventions. When you switch, notice that the result changes because the <em>time represented by a case</em> changes, not because disability weight itself has changed.</p>
+</div>
+<div class="grid">
 <div class="panel"><h3>A. Mortality · Years of life lost (YLL)</h3>
 <div class="math">\[\mathrm{YLL}=D(a)\times e^*(a)\]</div>
 <div class="control"><label for="d-deaths">Deaths at the specified age <output id="d-deaths-o"></output></label><input id="d-deaths" type="range" min="0" max="30" step="1" value="3"></div>
@@ -277,12 +341,37 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 </section>
 <section class="module" id="paly">
 <h2>4. PALY · Construct the productivity index</h2><p class="sub"><b>Learning message:</b> Paid-work productivity combines how much work is performed, how effective work is, and, if included, workforce participation. It is not a health utility.</p>
-<div class="panel"><h3>Start with the concept · What is a PALY?</h3>
-<p>A <b>productivity-adjusted life-year (PALY)</b> combines how many years a person is alive during the relevant productive period with how much of their potential productive activity is realised. Productivity loss may arise from <b>absenteeism</b> (missing work), <b>presenteeism</b> (reduced output while present), early workforce exit or changes in workforce participation.</p>
-<div class="math">\[PALYs=\sum_j \text{years lived}_j\times\text{productivity index}_j\]</div>
-<p><b>Meaning:</b> a PALY is a full-productivity-equivalent year under the chosen productivity definition. It does not measure quality of life and does not imply that someone who is not in paid employment has no worth or no social contribution.</p>
-<div class="result"><b>Worked example:</b> With 240 nominal annual workdays, 24 days missed, and 20% impairment when present, the productive fraction while participating is \((240-24)/240\times(1-0.20)=0.90\times0.80=0.72\). If the analysis also appropriately applies 85% participation, the combined index becomes \(0.72\times0.85=0.612\), yielding <b>3.06 PALYs over five years</b> at the same index.</div>
-<p class="tiny">The product here is a clearly specified illustration. Actual PALY studies vary in the use of employment, absenteeism, presenteeism, mortality and the value of unpaid work.</p></div><div class="grid">
+<div class="panel">
+<h3>4.1. PALYs count productive time, not healthy time</h3>
+<p>Consider someone who lives for five years while of working age. A conventional life-year calculation asks whether the person survives. A QALY calculation asks how those years are valued as health. <b>A productivity-adjusted life-year (PALY) asks what proportion of full productive activity is achieved during the years lived.</b></p>
+<p>Illness can reduce productive output without causing death. It may lead to missed days at work, reduced effectiveness on days worked, fewer hours, early retirement or leaving the workforce. A productivity index condenses relevant loss mechanisms into one number between zero and one.</p>
+<p>A year with productivity index 0.70 contributes <b>0.70 PALYs</b>. That does <em>not</em> mean the person's health utility is 0.70; it does not say they lived for only 0.70 calendar years; and it must never be used as a measure of anyone's worth or social importance.</p>
+<div class="math">\[PALY=\sum_j\underbrace{(\text{time alive in period }j)}_{\text{survival}}\times\underbrace{PI_j}_{\text{measured productivity}}\]</div>
+</div>
+<div class="panel">
+<h3>4.2. What happens at work: absenteeism versus presenteeism</h3>
+<p><b>Absenteeism</b> means not being at work for scheduled time because of illness. <b>Presenteeism</b> means being at work but less effective because of illness. They represent different parts of work loss and cannot always be summed as raw percentages.</p>
+<p>Suppose a full-time worker is scheduled for 240 days, misses 24 due to illness and works at 80% efficiency on each remaining day. The correct conceptual sequence is:</p>
+<div class="tablewrap"><table><thead><tr><th>Step</th><th>Question</th><th>Calculation</th><th>Interpretation</th></tr></thead><tbody>
+<tr><td>1</td><td>How much scheduled time is actually worked?</td><td>\((240-24)/240=0.90\)</td><td>90% attendance</td></tr>
+<tr><td>2</td><td>How effective is the time spent at work?</td><td>\(1-0.20=0.80\)</td><td>80% output while present</td></tr>
+<tr><td>3</td><td>What fraction of full productive capacity is achieved?</td><td>\(0.90(0.80)=0.72\)</td><td>72% effective productive year</td></tr>
+<tr class="total"><td>4</td><td>How much productivity over five similar years?</td><td>\(5(0.72)=3.60\)</td><td>3.60 PALYs</td></tr></tbody></table></div>
+<p><b>Why not 1 − 0.10 − 0.20 = 0.70?</b> The 20% presenteeism loss was defined for days <em>actually worked</em>, which comprise only 90% of the year. Thus the total loss is \(0.10 + 0.90(0.20)=0.28\), and effective productivity is 0.72. Adding 10% and 20% directly incorrectly applies the presenteeism loss to days absent as well.</p>
+</div>
+<div class="panel">
+<h3>4.3. Workforce participation and the level of analysis</h3>
+<p>Now imagine the analyst begins with the whole working-age population, not a cohort already known to be employed. If 85% participate in relevant productive activity under the modelling convention, an analyst <em>might</em> apply a participation factor of 0.85: \(0.72(0.85)=0.612\), giving \(5(0.612)=3.06\) expected PALYs.</p>
+<p>But if the cohort was <b>restricted to employed people to begin with</b>, another 0.85 participation multiplier may count nonparticipation twice. If a model also counts nonemployment as an explicit state, the same warning applies. Your productivity index must be consistent with the people represented by the denominator.</p>
+<p>PALY studies often value one fully productive year using GDP per full-time-equivalent worker or earnings. That creates a <b>monetary estimate of production associated with productivity loss</b>, not a certain cash saving to a public payer or employer. It is especially important not to add that valuation twice when a societal cost-effectiveness analysis already includes productivity-related indirect costs. [R3, R4]</p>
+</div>
+<div class="panel">
+<h3>4.4. Two patients can have equal QALYs and different PALYs</h3>
+<p>Suppose two people survive five years with exactly the same utility, 0.75. Both accumulate \(5(0.75)=3.75\) QALYs. One has productivity index 0.90 during the relevant working-age period, and the other has an index of 0.50. Their PALYs are \(5(0.90)=4.50\) and \(5(0.50)=2.50\), respectively.</p>
+<p>Nothing contradictory has happened. The QALY weights describe <b>health preference valuation</b>, while the PALY indices describe <b>productive output</b>. The latter may also reflect working conditions, employment systems and social barriers that are not adequately captured by an individual's health state.</p>
+<p><b>HEOR implication:</b> A treatment may reduce work absences without showing a large change on a generic utility instrument. That can improve PALYs more than QALYs. Conversely, treating severe symptoms in a retired patient may generate substantial QALYs while having no effect on conventional paid-work PALYs. Neither outcome makes the other invalid; they are answering different policy questions.</p>
+</div>
+<div class="grid">
 <div class="panel"><h3>Build a productive year</h3>
 <div class="control"><label for="p-days">Nominal working days/year <output id="p-days-o"></output></label><input id="p-days" type="range" min="150" max="300" step="5" value="240"></div>
 <div class="control"><label for="p-abs">Days absent for health reasons <output id="p-abs-o"></output></label><input id="p-abs" type="range" min="0" max="100" step="1" value="24"></div>
