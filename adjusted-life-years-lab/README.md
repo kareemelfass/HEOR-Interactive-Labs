@@ -2,7 +2,7 @@
 
 **Live site:** https://kareemelfass.github.io/HEOR-Interactive-Labs/adjusted-life-years-lab/
 
-A standalone, browser-based companion to the comprehensive Markdown tutorial of 9 November 2026. The site is hosted with the parent repository's GitHub Pages workflow and does not require a build step or back-end.
+A standalone, browser-based companion to the [full 26-chapter Markdown tutorial](./comprehensive-tutorial.md) of 9 November 2026. The site is hosted with the parent repository's GitHub Pages workflow and does not require a build step or back-end.
 
 ## What the learner can do
 
