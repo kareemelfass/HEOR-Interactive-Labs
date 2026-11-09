@@ -4,6 +4,25 @@ A growing collection of interactive, browser-based learning tools for **health e
 
 The focus is **learning by seeing and doing**: change model assumptions, follow calculations, inspect fitted and extrapolated curves, and see how methodological choices affect health economic models.
 
+## Featured: QALYs, DALYs, HALYs and PALYs Interactive Tutorial
+
+**[Open the QALY, DALY, HALY and PALY interactive tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/adjusted-life-years-lab/)**
+
+A calculation-first learning environment based on the detailed tutorial and four methodological papers (Turner et al. 2026; Moreno-Ternero et al. 2023; Ademi et al. 2021 and 2025).
+
+- Change health utility, duration and discounting to calculate QALYs
+- Calculate YLL, YLD and DALY burden from explicit mortality and disability assumptions
+- Vary HALY parameter α and reference lifetimes to see when rankings change
+- Build PALY productivity indices from absenteeism, presenteeism and workforce participation
+- Recreate the same five-year 100-person cohort and compare all outcomes
+- Inspect every annual calculation, full equation and health-loss reconciliation
+- Export the cohort to CSV and check learning with explained quiz answers
+- All data are illustrative, with the explicit distinction between finite-horizon shortfall and standard reference-based YLL
+
+**[Browse the source](https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/adjusted-life-years-lab)**
+
+---
+
 ## Featured: RMST and AFT Interactive Lab
 
 **[Open the RMST and Accelerated Failure Time tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/rmst-aft-lab/)**
