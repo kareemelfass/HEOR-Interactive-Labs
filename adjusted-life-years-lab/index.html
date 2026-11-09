@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102744">
+<meta name="description" content="An interactive, calculation-first tutorial on quality-adjusted, disability-adjusted, health-adjusted and productivity-adjusted life years.">
+<title>QALY · DALY · HALY · PALY | HEOR Interactive Labs</title>
+<style>
+:root{--ink:#14283e;--muted:#52677b;--navy:#102b4b;--blue:#2469b3;--teal:#007b75;--gold:#bc8524;--bg:#f5f8fb;--card:#fff;--line:#d9e5ec;--soft:#e8f3f3;--red:#b14e42;--shadow:0 10px 32px rgba(16,43,75,.075)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:#1260a4}a:hover{text-decoration-thickness:2px}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #eba83d;outline-offset:3px}
+header{background:linear-gradient(118deg,#102744 0%,#194f72 70%,#087570 100%);color:#fff;padding:38px max(22px,calc((100% - 1220px)/2))}
+header .eyebrow{color:#b9e8de;text-transform:uppercase;font-weight:800;letter-spacing:.14em;font-size:.75rem}
+header h1{font-size:clamp(2.1rem,5vw,4rem);line-height:1.12;margin:12px 0 14px;letter-spacing:-.04em}header p{max-width:930px;color:#e1ebf1;font-size:1.06rem;margin:0 0 19px}
+.header-links{display:flex;gap:12px;flex-wrap:wrap}.header-links a{border:1px solid #ffffff62;color:white;padding:8px 14px;border-radius:10px;text-decoration:none;font-weight:650;font-size:.9rem}.header-links a:hover{background:#ffffff20}
+nav{position:sticky;top:0;z-index:10;display:flex;gap:7px;align-items:center;overflow-x:auto;background:#fff;padding:10px max(12px,calc((100% - 1200px)/2));border-bottom:1px solid var(--line);box-shadow:0 4px 12px #16345012;scrollbar-width:thin}
+nav a{white-space:nowrap;text-decoration:none;font-size:.86rem;font-weight:700;color:#36516a;padding:9px 12px;border-radius:9px}nav a:hover,nav a.active{background:#e4f2f1;color:#0e665f}
+main{max-width:1200px;margin:0 auto;padding:27px 20px 90px}section.module{scroll-margin-top:86px;margin-bottom:38px}
+h2{font-size:clamp(1.52rem,3vw,2rem);line-height:1.22;letter-spacing:-.025em;color:#143a5e;margin:0 0 8px}
+h3{font-size:1.14rem;color:#163e61;line-height:1.35;margin:0 0 9px}.sub{color:var(--muted);margin:0 0 18px}
+.box,.panel,.metric,.callout,.question{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.panel{padding:23px;margin:14px 0}.box{padding:19px}.callout{padding:16px 19px;background:#eef7f6;border-color:#cce5e0;box-shadow:none}
+.callout strong{color:#09635b}.caution{background:#fff7e8;border-color:#efd9ad}.caution strong{color:#8a5e14}.tiny{font-size:.84rem;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.metric{padding:18px;box-shadow:none}.metric label{display:block;color:var(--muted);font-size:.8rem;font-weight:750;text-transform:uppercase;letter-spacing:.055em}.metric .val{font-size:clamp(1.3rem,2.6vw,1.95rem);font-weight:800;font-variant-numeric:tabular-nums;color:var(--navy)}.metric .desc{font-size:.8rem;color:var(--muted)}
+.control{padding:9px 0}.control label{display:flex;align-items:center;justify-content:space-between;gap:14px;font-weight:650;font-size:.92rem}.control output{background:#e8f2fb;border-radius:7px;padding:2px 8px;color:#184a79;font-variant-numeric:tabular-nums;min-width:46px;text-align:right}
+input[type=range]{width:100%;accent-color:var(--teal);cursor:pointer;min-height:23px}input[type=number],select{background:white;border:1px solid #adbfce;border-radius:8px;padding:8px 10px;width:100%;max-width:180px;font:inherit;color:var(--ink)}
+button{border:1px solid #97b9ca;background:#fff;color:var(--navy);padding:9px 15px;border-radius:9px;cursor:pointer;font-weight:750;font:inherit}button:hover{background:#eaf2f8}button.primary{background:var(--teal);border-color:var(--teal);color:white}button.primary:hover{background:#006761}
+.controls{display:flex;flex-wrap:wrap;gap:10px}.pill{display:inline-block;background:#e2f0ef;color:#0d625d;border-radius:999px;font-size:.77rem;font-weight:750;padding:3px 10px;margin-bottom:10px}
+.math{border-left:3px solid #45a49b;padding:9px 14px;background:#f4faf9;overflow-x:auto;margin:10px 0 16px}.math code{font-size:.9rem}
+.tablewrap{width:100%;overflow:auto;margin:12px 0;border:1px solid var(--line);border-radius:12px;background:white}table{border-collapse:collapse;width:100%;min-width:600px;font-variant-numeric:tabular-nums}th,td{border-bottom:1px solid #e4ebf0;padding:10px 12px;vertical-align:top;text-align:right;font-size:.86rem}th:first-child,td:first-child{text-align:left}th{background:#e9f1f7;color:#25445e;font-size:.78rem;white-space:nowrap}tbody tr:nth-child(even){background:#f8fafc}tbody tr:last-child td{border-bottom:0}tr.total{font-weight:800;background:#e8f3f0!important}
+.chart{width:100%;height:auto;max-height:330px;min-height:220px;display:block;border:1px solid #edf0f3;border-radius:12px;background:#fff}
+.legend{display:flex;gap:18px;flex-wrap:wrap;color:var(--muted);font-size:.82rem}.dot{display:inline-block;width:10px;height:10px;border-radius:99px;margin-right:6px}.qdot{background:var(--blue)}.tdot{background:var(--teal)}.rdot{background:var(--gold)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.tabs button[aria-pressed=true]{background:#103e68;color:white;border-color:#103e68}
+.step{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.step b{color:#0f5e5c}
+.result{background:#f0f8fa;border:1px solid #c9e1e9;border-radius:10px;padding:14px;margin:12px 0;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+details{background:white;border:1px solid var(--line);border-radius:12px;margin:10px 0;padding:11px 15px}summary{cursor:pointer;font-weight:750;color:#224663}details p{margin:10px 0}
+.question{padding:17px;margin:12px 0;box-shadow:none}.question strong{display:block;margin-bottom:8px}.question label{display:block;padding:5px 0;cursor:pointer}.feedback{font-weight:750;min-height:22px;padding-top:5px}.correct{color:#08745c}.incorrect{color:#ab4f31}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+footer{background:#102744;color:#d3e0ec;padding:22px;text-align:center;font-size:.85rem}footer a{color:#c6e7ff}
+@media(max-width:760px){.grid,.grid3,.grid4{grid-template-columns:1fr}.panel{padding:16px}.box{padding:16px}header{padding:30px 20px}nav{padding:8px 10px}main{padding:17px 13px 50px}h2{font-size:1.5rem}th,td{padding:8px 9px;font-size:.78rem}}
+@media print{nav,.controls,button{display:none!important}body{background:white}.panel,.box,.metric{box-shadow:none;break-inside:avoid}section.module{break-before:page}header{color:#102744;background:white}}
+</style>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+<header>
+<div class="eyebrow">HEOR Interactive Labs · Methodology masterclass</div>
+<h1>QALYs · DALYs · HALYs · PALYs</h1>
+<p>Four lenses on survival, health loss and productive time. Change the assumptions, rebuild every calculation and see exactly why the results do or do not agree.</p>
+<div class="header-links"><a href="../">← HEOR Lab home</a><a href="#cohort">Start with the integrated cohort</a><a href="#references">Sources and limitations</a></div>
+</header>
+<nav aria-label="Tutorial chapters" id="topnav">
+<a href="#start">Start here</a><a href="#qaly">1 · QALY</a><a href="#daly">2 · DALY</a><a href="#haly">3 · HALY</a><a href="#paly">4 · PALY</a><a href="#cohort">5 · Same cohort</a><a href="#compare">6 · Compare</a><a href="#quiz">7 · Exercises</a><a href="#references">8 · References</a>
+</nav>
+<main>
+<div class="callout"><strong>Reading note:</strong> All interactive clinical, utility, disability, productivity, life-expectancy and cost inputs are <em>illustrative teaching assumptions</em>, not estimates from a particular study. Formulas, interpretation and methodological caveats follow the four supplied publications. Some calculators deliberately distinguish finite-horizon shortfalls from conventional GBD DALYs.</div>
+<section class="module" id="start">
+<h2>Start here · One life-year, four questions</h2><p class="sub">The same survival history can be valued in different ways. The weight you attach to time is the key difference.</p>
+<div class="grid4">
+<div class="box"><span class="pill">QALY</span><h3>How much preferred health?</h3><p><b>Life lived × health utility.</b> A year at utility 0.8 accrues 0.8 QALYs.</p></div>
+<div class="box"><span class="pill">DALY</span><h3>How much healthy life lost?</h3><p><b>YLL + YLD.</b> Mortality shortfall plus years lived with disability. Higher burden is worse.</p></div>
+<div class="box"><span class="pill">HALY</span><h3>How does the reference matter?</h3><p>A <b>family</b> of health-adjusted population evaluations. QALY and negative DALY loss are polar cases in Moreno-Ternero et al.</p></div>
+<div class="box"><span class="pill">PALY</span><h3>How much productive life?</h3><p><b>Life lived × productivity index.</b> Productivity reflects work time and effectiveness, not health utility.</p></div>
+</div>
+<div class="panel">
+<h3>Visual intuition · Four years, different weights</h3>
+<div class="grid"><div><p>Person A and Person B each live for <b>four years</b>. A has utility 0.9 and productivity 0.8. B has utility 0.5 and productivity 0.3.</p><div class="math">\[Q_A=4(0.90)=3.60,\quad Q_B=4(0.50)=2.00\]\[P_A=4(0.80)=3.20,\quad P_B=4(0.30)=1.20\]</div><p class="tiny">Neither a utility of 0.5 nor a productivity index of 0.5 means a 50% survival probability.</p></div>
+<div><svg viewBox="0 0 440 212" class="chart" role="img" aria-label="Comparison of QALYs and PALYs for two people who live four years">
+<g font-family="system-ui" font-size="12" fill="#53657b"><text x="12" y="41">Person A QALY</text><text x="12" y="83">Person B QALY</text><text x="12" y="125">Person A PALY</text><text x="12" y="167">Person B PALY</text></g>
+<g><rect x="122" y="27" width="261" height="18" rx="3" fill="#2469b3"/><rect x="122" y="69" width="145" height="18" rx="3" fill="#2469b3"/><rect x="122" y="111" width="232" height="18" rx="3" fill="#007b75"/><rect x="122" y="153" width="87" height="18" rx="3" fill="#007b75"/></g>
+<g font-family="system-ui" font-size="12" fill="#14283e" font-weight="700"><text x="390" y="41">3.6</text><text x="275" y="83">2.0</text><text x="362" y="125">3.2</text><text x="217" y="167">1.2</text></g></svg></div></div>
+</div>
+</section>
+<section class="module" id="qaly">
+<h2>1. QALY · Build health-adjusted time</h2><p class="sub"><b>Learning message:</b> Each interval contributes its duration multiplied by health utility. The total is the sum of those contributions.</p>
+<div class="grid">
+<div class="panel"><h3>Change the health trajectory</h3>
+<div class="control"><label for="q-duration">Time spent in state, years <output id="q-duration-o"></output></label><input id="q-duration" type="range" min="0.5" max="10" step=".5" value="4"></div>
+<div class="control"><label for="q-utility">Health utility <output id="q-utility-o"></output></label><input id="q-utility" type="range" min="-0.3" max="1" step=".05" value=".75"></div>
+<div class="control"><label for="q-discount">Annual discount rate <output id="q-discount-o"></output></label><input id="q-discount" type="range" min="0" max=".08" step=".01" value=".03"></div>
+<div class="callout"><strong>Interpretation:</strong> A negative QALY utility is possible for states valued worse than death. This is not a negative probability. For a constant state, utility is applied to the entire time lived in that state.</div>
+</div>
+<div class="panel"><h3>Rebuild the arithmetic</h3>
+<div class="grid"><div class="metric"><label>Undiscounted QALYs</label><div class="val" id="q-raw"></div></div><div class="metric"><label>Discounted QALYs</label><div class="val" id="q-disc"></div></div></div>
+<div class="result" id="q-steps" aria-live="polite"></div>
+<p><b>With variable health:</b> split follow-up into intervals and sum each interval's \(\Delta t\times u\). Where utility is measured at successive times, a trapezoidal area approximation may be used, subject to the measurement assumptions.</p></div></div>
+<details><summary>Why does a 0.08 utility improvement create QALYs even if survival does not change?</summary><p>For 100 people alive throughout one year, moving utility from 0.70 to 0.78 creates \(100(0.78-0.70)=8\) additional QALYs without adding one life-year. A QALY benefit need not be smaller than the <em>incremental</em> life-year benefit.</p></details>
+<details><summary>Where should utilities come from?</summary><p>Use preference-based weights from appropriate instruments and value sets, such as EQ-5D. Patient-reported symptom scales and raw visual analogue scores are not automatically anchored utilities. Country-specific values, age norms, and states worse than death require explicit consideration. [R1]</p></details>
+</section>
+<section class="module" id="daly">
+<h2>2. DALY · Separate premature death from disability</h2><p class="sub"><b>Learning message:</b> Conventional DALY burden combines YLL (life-years lost against a reference life table) and YLD (years lived with disability).</p>
+<div class="grid">
+<div class="panel"><h3>A. Mortality · Years of life lost (YLL)</h3>
+<div class="math">\[\mathrm{YLL}=D(a)\times e^*(a)\]</div>
+<div class="control"><label for="d-deaths">Deaths at the specified age <output id="d-deaths-o"></output></label><input id="d-deaths" type="range" min="0" max="30" step="1" value="3"></div>
+<div class="control"><label for="d-le">Reference remaining life expectancy, years <output id="d-le-o"></output></label><input id="d-le" type="range" min="0" max="60" step="1" value="36"></div>
+<div class="result" id="d-yll" aria-live="polite"></div>
+<p class="tiny">Use remaining life expectancy <em>conditional on reaching the age at death</em>. Do not subtract age at death from life expectancy at birth. In a real GBD analysis, obtain an actual standard reference life table.</p>
+</div>
+<div class="panel"><h3>B. Morbidity · Years lived with disability (YLD)</h3>
+<div class="tabs" role="group" aria-label="YLD method"><button id="d-inc" aria-pressed="true" type="button">Incidence duration example</button><button id="d-prev" aria-pressed="false" type="button">Prevalence-year example</button></div>
+<div class="control"><label for="d-cases"><span id="d-cases-label">New cases</span> <output id="d-cases-o"></output></label><input id="d-cases" type="range" min="0" max="500" step="5" value="100"></div>
+<div class="control"><label for="d-weight">Disability weight <output id="d-weight-o"></output></label><input id="d-weight" type="range" min="0" max="1" step=".05" value=".3"></div>
+<div class="control" id="d-duration-block"><label for="d-duration">Episode duration, days <output id="d-duration-o"></output></label><input id="d-duration" type="range" min="1" max="365" step="1" value="30"></div>
+<div class="result" id="d-yld" aria-live="polite"></div>
+<p class="tiny">For incidence, this represents duration-weighted cases with a single episode. For prevalence, multiply prevalent cases during the year by disability weight, under the stated person-year convention. These are not interchangeable attribution methods.</p>
+</div>
+</div>
+<div class="panel"><h3>C. Add them, then compare strategies</h3>
+<div class="grid3"><div class="metric"><label>YLL</label><div class="val" id="d-yll-v"></div></div><div class="metric"><label>YLD</label><div class="val" id="d-yld-v"></div></div><div class="metric"><label>DALY burden</label><div class="val" id="d-total"></div></div></div>
+<div class="math">\[\mathrm{DALY}=\mathrm{YLL}+\mathrm{YLD}\qquad \mathrm{DALYs\ averted}=B_C-B_T\]</div>
+<p>Suppose an intervention reduces DALY burden from 250 to 190. It averts \(250-190=60\) DALYs. It does <em>not</em> avert 190 DALYs.</p>
+<div class="callout caution"><strong>GBD versus economic evaluation:</strong> Current GBD burden estimates do not apply historical age weighting or time discounting. Economic evaluations may discount DALYs averted according to their appraisal guidelines. This is a change in use and methodology, not a contradiction. [R1]</div>
+</div>
+</section>
+<section class="module" id="haly">
+<h2>3. HALY · Explore a family of population health scores</h2><p class="sub"><b>Learning message:</b> In the supplied 2023 framework, the parameter \(\alpha\) controls the importance of reference lifetime. It is a mathematical family, not another standard standalone HEOR endpoint.</p>
+<div class="math">\[P_\alpha=\sum_{i=1}^n \left(q_i t_i-\alpha r_i\right),\qquad 0\leq\alpha\leq 1\]</div>
+<div class="grid">
+<div class="panel">
+<h3>Change how reference life is valued</h3>
+<div class="control"><label for="h-alpha">Reference weight α <output id="h-alpha-o"></output></label><input id="h-alpha" type="range" min="0" max="1" step=".05" value=".5"></div>
+<div class="control"><label for="h-ref-c">Comparator reference total R<sub>C</sub> <output id="h-ref-c-o"></output></label><input id="h-ref-c" type="range" min="300" max="700" step="10" value="500"></div>
+<div class="control"><label for="h-ref-t">Treatment reference total R<sub>T</sub> <output id="h-ref-t-o"></output></label><input id="h-ref-t" type="range" min="300" max="700" step="10" value="500"></div>
+<div class="controls"><button type="button" id="h-same">Reset to equal references</button><button type="button" id="h-diff">Show unequal-reference example</button></div>
+<p class="tiny">Health attainments are fixed at Q<sub>C</sub> = 300.30 and Q<sub>T</sub> = 357.75, from the same 100-person, five-year example below.</p>
+</div>
+<div class="panel"><h3>The calculation</h3><div class="grid3"><div class="metric"><label>Comparator score</label><div class="val" id="h-c"></div></div><div class="metric"><label>Treatment score</label><div class="val" id="h-t"></div></div><div class="metric"><label>Incremental score</label><div class="val" id="h-diff-val"></div></div></div><div class="result" id="h-steps" aria-live="polite"></div><p><b>At α = 0:</b> QALY attainment score. <b>At α = 1:</b> negative health-shortfall score, not positive reported DALY burden. With identical reference totals, \(\Delta P_\alpha=\Delta Q\) for all α.</p></div>
+</div>
+<svg id="h-chart" viewBox="0 0 720 240" class="chart" role="img" aria-label="HALY treatment and comparator population health scores across alpha values"></svg>
+<p class="tiny">The displayed reference shift is a thought experiment about normative assumptions. It is not evidence that a treatment changes people's standard reference lifespan. The authors' framework assumes nonnegative time and health weights bounded by 0 and 1. [R2]</p>
+</section>
+<section class="module" id="paly">
+<h2>4. PALY · Construct the productivity index</h2><p class="sub"><b>Learning message:</b> Paid-work productivity combines how much work is performed, how effective work is, and, if included, workforce participation. It is not a health utility.</p>
+<div class="grid">
+<div class="panel"><h3>Build a productive year</h3>
+<div class="control"><label for="p-days">Nominal working days/year <output id="p-days-o"></output></label><input id="p-days" type="range" min="150" max="300" step="5" value="240"></div>
+<div class="control"><label for="p-abs">Days absent for health reasons <output id="p-abs-o"></output></label><input id="p-abs" type="range" min="0" max="100" step="1" value="24"></div>
+<div class="control"><label for="p-pres">Impairment while present <output id="p-pres-o"></output></label><input id="p-pres" type="range" min="0" max=".7" step=".05" value=".2"></div>
+<div class="control"><label for="p-part">Participation factor <output id="p-part-o"></output></label><input id="p-part" type="range" min="0" max="1" step=".05" value=".85"></div>
+<div class="control"><label for="p-years">Years lived during working-age horizon <output id="p-years-o"></output></label><input id="p-years" type="range" min=".5" max="20" step=".5" value="5"></div>
+<div class="control"><label for="p-value">GDP-based value per full PALY, US$ <output id="p-value-o"></output></label><input id="p-value" type="range" min="10000" max="200000" step="5000" value="80000"></div>
+</div>
+<div class="panel"><h3>Calculate and interpret</h3><div class="grid"><div class="metric"><label>Productivity index</label><div class="val" id="p-index"></div></div><div class="metric"><label>PALYs accrued</label><div class="val" id="p-palys"></div></div></div>
+<div class="result" id="p-steps" aria-live="polite"></div>
+<div class="metric"><label>Illustrative gross output associated with those PALYs</label><div class="val" id="p-money"></div><div class="desc">Not a verified payer saving or a causal GDP estimate.</div></div>
+<p class="tiny">This example adopts a multiplicative combination of absence, impairment when present and participation to keep denominator definitions explicit. Other published models construct the index differently. The participation factor must match the target population and must not be applied twice.</p>
+</div></div>
+<div class="callout caution"><strong>Avoid double counting:</strong> PALYs usually capture paid work and are often monetised using GDP per full-time worker or wage-based methods. If productivity gains also enter the cost side, do not add their monetary value again as independent benefits. Ademi et al. (2021) specifically caution against treating cost per PALY as a routine ratio because of PALYs' inherent monetary valuation. [R3–R4]</div>
+</section>
+<section class="module" id="cohort">
+<h2>5. One intervention, four perspectives · Full cohort calculator</h2>
+<p class="sub"><b>Learning message:</b> Use <em>the same survival cohort</em> for all outcomes. First compute exposure to life, then apply utility, disability or productivity weights. Keep DALY reference conventions explicit.</p>
+<div class="callout"><strong>Base case from the supplied Markdown tutorial:</strong> 100 adults aged 40, five one-year cycles. With the default treatment survival and weight improvements, results reproduce +30 life-years, +57.45 QALYs, +65.625 PALYs and 526.45 conventional-reference illustrative DALYs averted per 100 starting adults, all undiscounted. The latter includes YLL beyond the five-year horizon and is <em>not directly comparable</em> with the five-year QALYs gained.</div>
+<div class="grid">
+<div class="panel">
+<h3>Change the intervention</h3>
+<div class="control"><label for="c-surv">Survival improvement scale <output id="c-surv-o"></output></label><input id="c-surv" type="range" min="0" max="1.5" step=".1" value="1"></div><p class="tiny">0 = same survival as comparator; 1 = original treatment survival; 1.5 = stronger improvement than original.</p>
+<div class="control"><label for="c-util">Treatment utility improvement each year <output id="c-util-o"></output></label><input id="c-util" type="range" min="0" max=".15" step=".01" value=".08"></div>
+<div class="control"><label for="c-prod">Treatment productivity improvement each year <output id="c-prod-o"></output></label><input id="c-prod" type="range" min="0" max=".2" step=".01" value=".10"></div>
+<div class="control"><label for="c-r">Annual discount rate <output id="c-r-o"></output></label><input id="c-r" type="range" min="0" max=".08" step=".01" value="0"></div>
+<div class="control"><label for="c-alpha">HALY α <output id="c-alpha-o"></output></label><input id="c-alpha" type="range" min="0" max="1" step=".05" value=".50"></div>
+<div class="controls"><button type="button" id="c-reset" class="primary">Reset to tutorial base case</button><button type="button" id="c-csv">Download calculation CSV</button></div>
+</div>
+<div class="panel">
+<h3>Live results · Per 100 initial people</h3>
+<div class="grid">
+<div class="metric"><label>Δ Life-years</label><div class="val" id="c-ly"></div></div>
+<div class="metric"><label>Δ QALYs</label><div class="val" id="c-q"></div></div>
+<div class="metric"><label>Finite-window shortfall averted</label><div class="val" id="c-finite"></div></div>
+<div class="metric"><label>Δ PALYs</label><div class="val" id="c-p"></div></div>
+<div class="metric"><label>Reference DALYs averted*</label><div class="val" id="c-refd"></div></div>
+<div class="metric"><label>Δ HALY-family score</label><div class="val" id="c-h"></div></div>
+</div>
+<div class="result" id="c-interpret" aria-live="polite"></div>
+<p class="tiny">*Reference DALY illustration is undiscounted, using invented remaining life expectancies [38, 37, 36, 35, 34]. It is calculated as reference YLL + within-horizon constructed YLD and attributed to deaths in the five observed years. Other result cards follow the selected outcome discount rate.</p>
+</div></div>
+<div class="panel"><h3>Step 1 · Cohort survival and person-years</h3><p>A year's average number alive is \((N_{\mathrm{start}}+N_{\mathrm{end}})/2\). For a one-year cycle, that value equals approximate person-years lived in that interval.</p>
+<svg id="c-survival-chart" viewBox="0 0 720 270" class="chart" role="img" aria-label="Survival counts during the five-year cohort follow-up"></svg><div class="legend"><span><i class="dot qdot"></i>Standard care</span><span><i class="dot tdot"></i>Treatment</span></div>
+<div class="tablewrap"><table><thead><tr><th>Year</th><th>Start alive C</th><th>End alive C</th><th>Deaths C</th><th>Mean alive C</th><th>Start alive T</th><th>End alive T</th><th>Deaths T</th><th>Mean alive T</th></tr></thead><tbody id="c-surv-body"></tbody></table></div>
+</div>
+<div class="panel"><h3>Step 2 · Apply weights to exposure</h3><p>Every annual number is reconstructed as <b>mean alive × weight × discount factor</b>. We show the actual arithmetic, not only the totals.</p>
+<div class="tablewrap"><table><thead><tr><th>Year</th><th>Utility C / T</th><th>Productivity C / T</th><th>Discount factor</th><th>QALYs C = alive × u × DF</th><th>QALYs T = alive × u × DF</th><th>PALYs C = alive × p × DF</th><th>PALYs T = alive × p × DF</th></tr></thead><tbody id="c-weight-body"></tbody><tfoot id="c-weight-foot"></tfoot></table></div>
+</div>
+<div class="panel"><h3>Step 3 · Reconcile three different health-loss conventions</h3>
+<div class="grid3"><div class="box"><h3>Within-horizon YLD</h3><p id="c-yld"></p><p class="tiny">Constructed \(d=1-u\) for illustration only; real GBD disability weights are separate.</p></div>
+<div class="box"><h3>Finite-window health shortfall</h3><p id="c-short"></p><p class="tiny">Reference = 500 undiscounted ideal person-years, or consistently discounted equivalent; includes missing years inside the window.</p></div>
+<div class="box"><h3>Reference-age YLL and DALY</h3><p id="c-yll"></p><p class="tiny">Death counts × invented future reference years, including years beyond model follow-up.</p></div></div>
+<div class="tablewrap"><table><thead><tr><th>Year</th><th>Assumed remaining life expectancy</th><th>Deaths C</th><th>YLL C = deaths × reference</th><th>Deaths T</th><th>YLL T = deaths × reference</th></tr></thead><tbody id="c-yll-body"></tbody></table></div>
+<div class="callout caution"><strong>Critical distinction:</strong> Finite-window shortfall is exactly the complement of QALYs only because the exercise sets \(d=1-u\) and uses a fixed reference and aligned discounting. The separate <em>reference-based</em> YLL approach counts years lost after premature deaths, potentially well beyond five years. Therefore 526.45 DALYs averted and 57.45 QALYs gained are <em>not rival estimates of the same five-year gain</em>.</div>
+</div>
+</section>
+<section class="module" id="compare">
+<h2>6. What changes the answer? · Comparison and decision process</h2><p class="sub">The measure must follow the decision question, the valuation framework and the available evidence.</p>
+<div class="tablewrap"><table><thead><tr><th>Measure</th><th>Primary question</th><th>Key weight</th><th>Mortality concept</th><th>Interpretation of a higher value</th></tr></thead><tbody>
+<tr><td><b>QALY</b></td><td>How much preference-weighted health is accrued?</td><td>Health utility, potentially below zero</td><td>Time alive, zero after death</td><td>More attained health is better</td></tr>
+<tr><td><b>DALY</b></td><td>How much healthy life is lost?</td><td>Disability weight, typically 0 to 1</td><td>YLL based on age-specific reference remaining life</td><td>More burden is worse; more DALYs averted is better</td></tr>
+<tr><td><b>HALY family</b></td><td>How does reference health and lifetime enter social evaluation?</td><td>Health state weight and α reference weight</td><td>Actual life and reference life jointly</td><td>Higher population score is better</td></tr>
+<tr><td><b>PALY</b></td><td>How much productive life is achieved or lost?</td><td>Productivity index, typically 0 to 1</td><td>Productive exposure during working-age horizon</td><td>More productive time is better</td></tr>
+</tbody></table></div>
+<div class="grid">
+<div class="panel"><h3>How to select a measure</h3>
+<p><b>First:</b> Is the objective health attainment in an intervention appraisal, the burden of disease relative to a normative reference, or productive output lost?</p>
+<p><b>Second:</b> What population and horizon are relevant? Explicitly state whether you follow living patients, count deaths and lost lifetime from a standard reference, or consider only working years.</p>
+<p><b>Third:</b> Which valid weights and reference data exist, and what do the applicable HTA or public-health guidelines require?</p>
+<p><b>Finally:</b> Audit the denominator, sign, comparator, discounting and potential double counting before interpreting an incremental ratio.</p></div>
+<div class="panel"><h3>Testable equivalence condition</h3>
+<div class="math">\[B=R-Q,\qquad \Delta B_{\mathrm{averted}}=B_C-B_T=Q_T-Q_C\]</div>
+<p>This identity requires a <b>common reference \(R\)</b> and a <b>consistent complement convention</b> for the weight. It does not generally hold for reported GBD DALYs because those may use different disability weights, reference lifetimes and attribution horizons.</p>
+<p><b>PALYs are not QALYs:</b> Better productivity is not evidence of equivalent health preference gains, particularly for unpaid work, retired people, informal employment and work outside the formal labour market.</p></div>
+</div>
+</section>
+<section class="module" id="quiz">
+<h2>7. Check your understanding</h2><p class="sub">Choose an answer and receive an explanation of the mechanism, not merely a score.</p>
+<div id="quiz-root"></div><div class="controls"><button type="button" class="primary" id="quiz-check">Check answers</button><button type="button" id="quiz-reset">Reset quiz</button></div><div class="result" id="quiz-score" aria-live="polite">Select an answer for each question, then check your reasoning.</div>
+</section>
+<section class="module" id="references">
+<h2>8. Primary sources, assumptions and further reading</h2>
+<div class="panel">
+<h3>Four foundation papers</h3>
+<ol>
+<li id="r1"><b>[R1] Turner HC et al. (2026).</b> <em>Quality-Adjusted and Disability-Adjusted Life Years (QALYs and DALYs): An Overview and Guide to Calculations.</em> PharmacoEconomics - Open. <a href="https://doi.org/10.1007/s41669-026-00678-3" target="_blank" rel="noopener">DOI</a>. Definitions, equations, GBD changes, discounting, frequent errors and practical applications.</li>
+<li id="r2"><b>[R2] Moreno-Ternero JD, Platz TT, Østerdal LP. (2023).</b> <em>QALYs, DALYs, and HALYs: A unifying framework for the evaluation of population health.</em> Journal of Health Economics 87:102714. <a href="https://doi.org/10.1016/j.jhealeco.2022.102714" target="_blank" rel="noopener">DOI</a>. HALY one-parameter family, evaluation functions and axioms.</li>
+<li id="r3"><b>[R3] Ademi Z et al. (2025).</b> <em>Scoping Review of Productivity-Adjusted Life Years (PALYs): Methods, Applications and Policy Implications.</em> PharmacoEconomics. <a href="https://doi.org/10.1007/s40273-025-01544-6" target="_blank" rel="noopener">DOI</a>. Review of 41 studies, index variation, model choices, unpaid work and policy uses.</li>
+<li id="r4"><b>[R4] Ademi Z, Ackerman IN, Zomer E, Liew D. (2021).</b> <em>Productivity-Adjusted Life-Years: A New Metric for Quantifying Disease Burden.</em> PharmacoEconomics 39:271–273. <a href="https://doi.org/10.1007/s40273-020-00999-z" target="_blank" rel="noopener">DOI</a>. PALY definition, productivity index, GDP valuation and double-counting caution.</li>
+</ol>
+<p><b>What is constructed?</b> The 100-person five-year cohort, survival counts, utilities, productivity indices, reference years and prices are invented for teaching. The weight equality \(d=1-u\) is used only where expressly noted to show an algebraic identity. No invented values are attributed to the four papers.</p>
+<p><b>Methodological boundaries:</b> This is not a validated GBD burden-of-disease engine, a jurisdiction-specific submission model or a real-world evidence source. The HALY family is based on bounded nonnegative quality weights, whereas the separate QALY calculator permits negative utilities. A direct substitution of a negative utility in the bounded HALY theorem is not justified.</p>
+<p><b>Technical:</b> Static HTML, CSS and JavaScript with MathJax loaded from a public CDN. Calculators, tables, quiz and SVG visualisations run locally in-browser without server, login or analytics. Mathematical notation falls back to its source text if the CDN is unavailable.</p>
+</div>
+<div class="controls"><a href="../" class="primary">← HEOR Interactive Labs home</a><a href="#start">↑ Back to start</a></div>
+</section>
+</main>
+<footer>HEOR Interactive Labs · Interactive teaching reference · Last updated November 2026 · Calculations illustrative unless stated otherwise</footer>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const v=id=>Number($(id).value);
+const f=(x,n=2)=>Number.isFinite(x)?x.toFixed(n):'–';
+const fmt=x=>Number(x).toLocaleString('en-US',{maximumFractionDigits:2});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function set(id,s){$(id).textContent=String(s)}
+function slider(id,cb,show){const x=$(id);x.addEventListener('input',cb);if(show){x.dataset.show=show}cb()}
+function outputs(ids){ids.forEach(id=>{const el=$(id);let value=v(id),t=el.dataset.show||'';set(id+'-o',t==='pct'?(100*value).toFixed(value===0?0:1)+'%':t==='money'?'$'+fmt(value):t==='dec'?f(value,2):fmt(value))})}
+function svgEl(n,attrs){const e=document.createElementNS('http://www.w3.org/2000/svg',n);for(const k in attrs)e.setAttribute(k,attrs[k]);return e}
+function shape(parent,n,a){let e=svgEl(n,a);parent.appendChild(e);return e}
+function label(parent,x,y,s,anchor='start',size=12,color='#53677b'){const e=shape(parent,'text',{x,y,'text-anchor':anchor,'font-size':size,fill:color,'font-family':'system-ui'});e.textContent=s;return e}
+function axes(svg,max=100){svg.replaceChildren();shape(svg,'line',{x1:64,y1:210,x2:686,y2:210,stroke:'#98acba'});shape(svg,'line',{x1:64,y1:24,x2:64,y2:210,stroke:'#98acba'});for(let i=0;i<=4;i++){let y=210-170*i/4;shape(svg,'line',{x1:64,y1:y,x2:686,y2:y,stroke:'#e3ebf1'});label(svg,57,y+4,f(max*i/4,0),'end',11)}}
+function qaly(){
+outputs(['q-duration','q-utility','q-discount']);
+let T=v('q-duration'),u=v('q-utility'),r=v('q-discount'),raw=T*u,df=r===0?T:Math.log(1+r)>0?(1-Math.pow(1+r,-T))/Math.log(1+r):T,disc=u*df;
+set('q-raw',f(raw,3));set('q-disc',f(disc,3));
+$('q-steps').textContent='Undiscounted: '+f(T,1)+' years × '+f(u,2)+' = '+f(raw,3)+' QALYs. Continuously accrued with annual effective discount r = '+f(100*r,0)+'%: Q = u × [1 − (1+r)^(−T)] / ln(1+r) = '+f(disc,3)+'. '+(r===0?'When r = 0, the expression reduces to u × T.':'This continuous-time integral assumes the same utility throughout the interval.');
+}
+['q-duration','q-utility','q-discount'].forEach(id=>$(id).addEventListener('input',qaly));qaly();
+let prev=false;
+function daly(){
+outputs(['d-deaths','d-le','d-cases','d-weight','d-duration']);
+let yll=v('d-deaths')*v('d-le'),yld=v('d-cases')*v('d-weight')*(prev?1:v('d-duration')/365);
+set('d-yll-v',f(yll,2));set('d-yld-v',f(yld,2));set('d-total',f(yll+yld,2));
+set('d-yll', 'YLL = '+fmt(v('d-deaths'))+' deaths × '+fmt(v('d-le'))+' remaining reference years = '+f(yll,2)+'.');
+set('d-yld',prev?'Annual prevalence-based YLD = '+fmt(v('d-cases'))+' prevalent persons × '+f(v('d-weight'),2)+' disability weight = '+f(yld,2)+' person-years of disability within the year.':'Incident-episode YLD = '+fmt(v('d-cases'))+' cases × '+f(v('d-weight'),2)+' × '+fmt(v('d-duration'))+'/365 years = '+f(yld,3)+'.');
+}
+['d-deaths','d-le','d-cases','d-weight','d-duration'].forEach(id=>$(id).addEventListener('input',daly));
+function mode(pre){prev=pre;$('d-inc').setAttribute('aria-pressed',String(!pre));$('d-prev').setAttribute('aria-pressed',String(pre));$('d-duration-block').hidden=pre;set('d-cases-label',pre?'Prevalent persons in a year':'New cases');daly()}
+$('d-inc').addEventListener('click',()=>mode(false));$('d-prev').addEventListener('click',()=>mode(true));mode(false);
+function haly(){
+outputs(['h-alpha','h-ref-c','h-ref-t']);let a=v('h-alpha'),rc=v('h-ref-c'),rt=v('h-ref-t'),qc=300.30,qt=357.75,pc=qc-a*rc,pt=qt-a*rt,d=pt-pc;
+set('h-c',f(pc,2));set('h-t',f(pt,2));set('h-diff-val',f(d,2));
+set('h-steps','Comparator = 300.30 − '+f(a,2)+' × '+rc+' = '+f(pc,2)+'. Treatment = 357.75 − '+f(a,2)+' × '+rt+' = '+f(pt,2)+'. Increment = 57.45 − '+f(a,2)+' × ('+rt+' − '+rc+') = '+f(d,2)+'. '+(rc===rt?'The reference terms cancel because they are identical.':'Different reference totals can change the incremental ranking.'));
+let svg=$('h-chart');svg.replaceChildren();const yval=z=>200-(z+440)/3.35;for(let i=0;i<=4;i++){let y=200-i*44;shape(svg,'line',{x1:65,y1:y,x2:682,y2:y,stroke:'#e2eaf0'});label(svg,57,y+4,String(-440+i*147),'end',11)}shape(svg,'line',{x1:65,y1:25,x2:65,y2:200,stroke:'#8198a7'});shape(svg,'line',{x1:65,y1:200,x2:682,y2:200,stroke:'#8198a7'});
+for(let i=0;i<=4;i++)label(svg,65+600*i/4,222,f(i/4,2),'middle',11);
+function path(q,r){return [0,1].map((a,i)=>(i?'L':'M')+(65+600*a)+','+yval(q-a*r)).join(' ')}
+shape(svg,'path',{d:path(qc,rc),stroke:'#2469b3','stroke-width':3,fill:'none'});shape(svg,'path',{d:path(qt,rt),stroke:'#007b75','stroke-width':3,fill:'none'});let x=65+600*a;shape(svg,'circle',{cx:x,cy:yval(pc),r:5,fill:'#2469b3'});shape(svg,'circle',{cx:x,cy:yval(pt),r:5,fill:'#007b75'});label(svg,660,27,'Treatment', 'end',13,'#007b75');label(svg,660,43,'Comparator','end',13,'#2469b3');label(svg,360,237,'α reference weight','middle',11);
+}
+['h-alpha','h-ref-c','h-ref-t'].forEach(id=>$(id).addEventListener('input',haly));$('h-same').addEventListener('click',()=>{$('h-ref-c').value=500;$('h-ref-t').value=500;haly()});$('h-diff').addEventListener('click',()=>{$('h-ref-c').value=500;$('h-ref-t').value=600;haly()});haly();
+function paly(){
+outputs(['p-days','p-abs','p-pres','p-part','p-years','p-value']);
+let days=v('p-days'),abs=Math.min(v('p-abs'),days),pr=v('p-pres'),lfp=v('p-part'),t=v('p-years'),idx=(1-abs/days)*(1-pr)*lfp,pa=idx*t,money=pa*v('p-value');
+set('p-index',f(idx,4));set('p-palys',f(pa,3));set('p-money','$'+fmt(money));
+set('p-steps','Days actually present = '+days+' − '+abs+' = '+(days-abs)+'. Attendance fraction = '+(days-abs)+'/'+days+' = '+f(1-abs/days,4)+'. Productive fraction when present = 1 − '+f(pr,2)+' = '+f(1-pr,2)+'. Participation = '+f(lfp,2)+'. Index = '+f(1-abs/days,4)+' × '+f(1-pr,2)+' × '+f(lfp,2)+' = '+f(idx,4)+'. PALYs = '+f(t,1)+' × '+f(idx,4)+' = '+f(pa,3)+'.');
+}
+['p-days','p-abs','p-pres','p-part','p-years','p-value'].forEach(id=>$(id).addEventListener('input',paly));paly();
+const baseC=[100,96,92,86,80,72],baseT=[100,98,96,93,90,86],uC=[.72,.70,.68,.66,.64],pC=[.65,.64,.63,.62,.61],e=[38,37,36,35,34];
+let currentRows=[];
+function cohort(){
+outputs(['c-surv','c-util','c-prod','c-r','c-alpha']);
+let sc=v('c-surv'),du=v('c-util'),dp=v('c-prod'),r=v('c-r'),alpha=v('c-alpha'),tS=baseC.map((n,j)=>n+sc*(baseT[j]-n)),tot={lyC:0,lyT:0,qC:0,qT:0,pC:0,pT:0,yldC:0,yldT:0,yllC:0,yllT:0,ref:0},surv='',weighted='',yll='',rows=[];
+for(let j=0;j<5;j++){
+let n0=baseC[j],n1=baseC[j+1],m0=tS[j],m1=tS[j+1],c=(n0+n1)/2,t=(m0+m1)/2,dc=n0-n1,dt=m0-m1,uc=uC[j],ut=uc+du,pc=pC[j],pt=pc+dp,df=Math.pow(1+r,-(j+.5)),qc=c*uc*df,qt=t*ut*df,pcv=c*pc*df,ptv=t*pt*df;
+tot.lyC+=c*df;tot.lyT+=t*df;tot.qC+=qc;tot.qT+=qt;tot.pC+=pcv;tot.pT+=ptv;tot.yldC+=c*(1-uc)*df;tot.yldT+=t*(1-ut)*df;tot.yllC+=dc*e[j];tot.yllT+=dt*e[j];tot.ref+=100*df;
+surv+='<tr><td>'+ (j+1)+'</td><td>'+f(n0,1)+'</td><td>'+f(n1,1)+'</td><td>'+f(dc,1)+'</td><td>('+f(n0,1)+'+'+f(n1,1)+')/2='+f(c,1)+'</td><td>'+f(m0,1)+'</td><td>'+f(m1,1)+'</td><td>'+f(dt,1)+'</td><td>('+f(m0,1)+'+'+f(m1,1)+')/2='+f(t,1)+'</td></tr>';
+weighted+='<tr><td>'+ (j+1)+'</td><td>'+f(uc,2)+' / '+f(ut,2)+'</td><td>'+f(pc,2)+' / '+f(pt,2)+'</td><td>'+f(df,5)+'</td><td>'+f(c,1)+'×'+f(uc,2)+'×'+f(df,3)+' = <b>'+f(qc,3)+'</b></td><td>'+f(t,1)+'×'+f(ut,2)+'×'+f(df,3)+' = <b>'+f(qt,3)+'</b></td><td>'+f(c,1)+'×'+f(pc,2)+'×'+f(df,3)+' = <b>'+f(pcv,3)+'</b></td><td>'+f(t,1)+'×'+f(pt,2)+'×'+f(df,3)+' = <b>'+f(ptv,3)+'</b></td></tr>';
+yll+='<tr><td>'+ (j+1)+'</td><td>'+e[j]+'</td><td>'+f(dc,1)+'</td><td>'+f(dc,1)+'×'+e[j]+'='+f(dc*e[j],2)+'</td><td>'+f(dt,1)+'</td><td>'+f(dt,1)+'×'+e[j]+'='+f(dt*e[j],2)+'</td></tr>';
+rows.push({year:j+1,c_start:n0,c_end:n1,c_mean:c,t_start:m0,t_end:m1,t_mean:t,death_c:dc,death_t:dt,utility_c:uc,utility_t:ut,prod_c:pc,prod_t:pt,df,qaly_c:qc,qaly_t:qt,paly_c:pcv,paly_t:ptv,yll_c:dc*e[j],yll_t:dt*e[j]});
+}
+currentRows=rows;$('c-surv-body').innerHTML=surv;$('c-weight-body').innerHTML=weighted;$('c-yll-body').innerHTML=yll;$('c-weight-foot').innerHTML='<tr class="total"><td>Totals</td><td></td><td></td><td></td><td>'+f(tot.qC,3)+'</td><td>'+f(tot.qT,3)+'</td><td>'+f(tot.pC,3)+'</td><td>'+f(tot.pT,3)+'</td></tr>';
+let dq=tot.qT-tot.qC,dly=tot.lyT-tot.lyC,dpa=tot.pT-tot.pC,bC=tot.ref-tot.qC,bT=tot.ref-tot.qT,dyld=tot.yldC-tot.yldT,refd=(tot.yllC+rows.reduce((a,z)=>a+z.c_mean*(1-z.utility_c),0))-(tot.yllT+rows.reduce((a,z)=>a+z.t_mean*(1-z.utility_t),0));
+set('c-ly',f(dly,3));set('c-q',f(dq,3));set('c-p',f(dpa,3));set('c-finite',f(bC-bT,3));set('c-h',f(dq,3));set('c-refd',f(refd,3));
+set('c-interpret','QALY gain = '+f(tot.qT,3)+' − '+f(tot.qC,3)+' = '+f(dq,3)+'. PALY gain = '+f(tot.pT,3)+' − '+f(tot.pC,3)+' = '+f(dpa,3)+'. Equal HALY reference: (Q_T − αR) − (Q_C − αR) = '+f(dq,3)+', irrespective of α. '+(r?'Outcome discounting uses midyear factors.':'Undiscounted base case.'));
+set('c-yld','YLD C = '+f(tot.yldC,3)+'; T = '+f(tot.yldT,3)+'. Averted = '+f(dyld,3)+'.');
+set('c-short','Ideal reference = '+f(tot.ref,3)+'. Shortfall C = '+f(bC,3)+'; T = '+f(bT,3)+'. Averted = '+f(bC-bT,3)+'.');
+set('c-yll','Undiscounted age-at-death YLL C = '+f(tot.yllC,2)+'; T = '+f(tot.yllT,2)+'. Add undiscounted within-5-year constructed YLD for illustrative DALY burden.');
+let svg=$('c-survival-chart');axes(svg,100);
+for(let i=0;i<=5;i++)label(svg,64+i*122.4,232,String(i),'middle',11);
+function line(vals,color){let d=vals.map((n,j)=>(j?'L':'M')+(64+122.4*j)+','+(210-1.7*n)).join(' ');shape(svg,'path',{d,fill:'none',stroke:color,'stroke-width':3.5});vals.forEach((n,j)=>shape(svg,'circle',{cx:64+122.4*j,cy:210-1.7*n,r:4,fill:color}))}
+line(baseC,'#2469b3');line(tS,'#007b75');label(svg,370,260,'Year of follow-up','middle',12);
+}
+['c-surv','c-util','c-prod','c-r','c-alpha'].forEach(id=>$(id).addEventListener('input',cohort));
+$('c-reset').addEventListener('click',()=>{['c-surv','c-util','c-prod','c-r','c-alpha'].forEach((id,i)=>$(id).value=[1,.08,.1,0,.5][i]);cohort()});
+$('c-csv').addEventListener('click',()=>{
+const keys=['year','c_start','c_end','c_mean','t_start','t_end','t_mean','death_c','death_t','utility_c','utility_t','prod_c','prod_t','df','qaly_c','qaly_t','paly_c','paly_t','yll_c','yll_t'];
+const csv=[keys.join(',')].concat(currentRows.map(o=>keys.map(k=>o[k]).join(','))).join('\n');
+const a=document.createElement('a'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.href=url;a.download='heor_adjusted_life_years_cohort.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+});cohort();
+const questions=[
+{q:'A person lives four years at utility 0.75. How many undiscounted QALYs?',o:['0.75','3.0','4.75'],a:1,why:'Multiply time by preference-based utility: 4 × 0.75 = 3 QALYs.'},
+{q:'A patient dies aged 45. Which reference is appropriate for standard YLL?',o:['Average life expectancy at birth minus 45','Remaining reference life expectancy at age 45','The QALY utility measured before death'],a:1,why:'A YLL calculation needs remaining life expectancy conditional on reaching 45, using the chosen reference table.'},
+{q:'In a GBD burden estimate, a larger DALY total indicates:',o:['More health loss','More health attained','Higher workforce output'],a:0,why:'DALYs quantify lost healthy life. DALYs averted quantify reductions in that loss.'},
+{q:'When does QALY gain exactly equal averted finite-window shortfall?',o:['Whenever two interventions use different life tables','When a common reference and consistent complementary health weights are used','Whenever productivity improves'],a:1,why:'If B=R−Q with the same R in both arms, B_C−B_T = Q_T−Q_C. Ordinary GBD DALYs need not satisfy this.'},
+{q:'What is the main caution when attaching a dollar value to PALYs?',o:['A productivity index is a probability of death','The same gain may be counted again through productivity costs','GDP is always a direct healthcare saving'],a:1,why:'Avoid counting productivity gains both as a monetised PALY outcome and as reduced indirect costs. GDP valuation is also an approximation.'},
+{q:'If treatment improves health utility but not survival, which claim is warranted?',o:['QALY gains must equal zero','QALYs can increase without extra life-years','DALYs are necessarily identical to QALYs'],a:1,why:'Higher utility in years already lived creates QALY gains, even with no survival difference.'}
+];
+function quizRender(){let s='';questions.forEach((q,i)=>{s+='<div class="question"><strong>'+(i+1)+'. '+esc(q.q)+'</strong>';q.o.forEach((x,j)=>{s+='<label><input type="radio" name="quiz'+i+'" value="'+j+'"> '+esc(x)+'</label>'});s+='<div class="feedback" id="fb'+i+'" aria-live="polite"></div></div>'});$('quiz-root').innerHTML=s}
+quizRender();
+$('quiz-check').addEventListener('click',()=>{let right=0,answered=0;questions.forEach((q,i)=>{let e=document.querySelector('input[name="quiz'+i+'"]:checked');let ok=e&&Number(e.value)===q.a;if(e)answered++;if(ok)right++;$('fb'+i).className='feedback '+(ok?'correct':'incorrect');set('fb'+i,(ok?'Correct. ':'Not quite. ')+q.why)});set('quiz-score',right+' of '+questions.length+' correct ('+answered+' answered). Review each explanation and revisit the relevant calculator.')});
+$('quiz-reset').addEventListener('click',()=>{quizRender();set('quiz-score','Select an answer for each question, then check your reasoning.')});
+const sections=[...document.querySelectorAll('section.module')],nav=[...document.querySelectorAll('nav a')];
+if('IntersectionObserver' in window){let obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)nav.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))})},{rootMargin:'-100px 0px -72% 0px'});sections.forEach(s=>obs.observe(s))}
+})();
+</script>
+</body>
+</html>
