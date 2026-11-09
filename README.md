@@ -8,7 +8,7 @@ The focus is **learning by seeing and doing**: change model assumptions, follow 
 
 **[Open the QALY, DALY, HALY and PALY interactive tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/adjusted-life-years-lab/)**
 
-A calculation-first learning environment based on the detailed tutorial and four methodological papers (Turner et al. 2026; Moreno-Ternero et al. 2023; Ademi et al. 2021 and 2025).
+A calculation-first learning environment with a [full 26-chapter Markdown companion](./adjusted-life-years-lab/comprehensive-tutorial.md), based on four methodological papers (Turner et al. 2026; Moreno-Ternero et al. 2023; Ademi et al. 2021 and 2025).
 
 - Change health utility, duration and discounting to calculate QALYs
 - Calculate YLL, YLD and DALY burden from explicit mortality and disability assumptions
