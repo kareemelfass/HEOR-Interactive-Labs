@@ -52,15 +52,15 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <div class="eyebrow">HEOR Interactive Labs · Methodology masterclass</div>
 <h1>QALYs · DALYs · HALYs · PALYs</h1>
 <p>Four lenses on survival, health loss and productive time. Change the assumptions, rebuild every calculation and see exactly why the results do or do not agree.</p>
-<div class="header-links"><a href="../">← HEOR Lab home</a><a href="#cohort">Start with the integrated cohort</a><a href="https://github.com/kareemelfass/HEOR-Interactive-Labs/blob/main/adjusted-life-years-lab/comprehensive-tutorial.md" target="_blank" rel="noopener">Full 26-chapter Markdown reference</a><a href="#references">Sources and limitations</a></div>
+<div class="header-links"><a href="../">← HEOR Lab home</a><a href="#cohort">Start with the integrated cohort</a><a href="#references">Sources and limitations</a></div>
 </header>
 <nav aria-label="Tutorial chapters" id="topnav">
-<a href="#start">Start here</a><a href="#qaly">1 · QALY</a><a href="#daly">2 · DALY</a><a href="#haly">3 · HALY</a><a href="#paly">4 · PALY</a><a href="#cohort">5 · Same cohort</a><a href="#compare">6 · Compare</a><a href="#quiz">7 · Exercises</a><a href="#references">8 · References</a>
+<a href="#start">Basics &amp; definitions</a><a href="#qaly">1 · QALY</a><a href="#daly">2 · DALY</a><a href="#haly">3 · HALY</a><a href="#paly">4 · PALY</a><a href="#cohort">5 · Same cohort</a><a href="#compare">6 · Compare</a><a href="#quiz">7 · Exercises</a><a href="#references">8 · References</a>
 </nav>
 <main>
 <div class="callout"><strong>Reading note:</strong> All interactive clinical, utility, disability, productivity, life-expectancy and cost inputs are <em>illustrative teaching assumptions</em>, not estimates from a particular study. Formulas, interpretation and methodological caveats follow the four supplied publications. Some calculators deliberately distinguish finite-horizon shortfalls from conventional GBD DALYs.</div>
 <section class="module" id="start">
-<h2>Start here · One life-year, four questions</h2><p class="sub">The same survival history can be valued in different ways. The weight you attach to time is the key difference.</p>
+<h2>Chapter 0. Basics and definitions · Demystifying the four concepts</h2><p class="sub"><b>Learning message:</b> All four approaches start with time, but they attach different meanings to that time. Learn the definition, arithmetic and interpretation before moving to the calculators.</p>
 <div class="grid4">
 <div class="box"><span class="pill">QALY</span><h3>How much preferred health?</h3><p><b>Life lived × health utility.</b> A year at utility 0.8 accrues 0.8 QALYs.</p></div>
 <div class="box"><span class="pill">DALY</span><h3>How much healthy life lost?</h3><p><b>YLL + YLD.</b> Mortality shortfall plus years lived with disability. Higher burden is worse.</p></div>
@@ -76,8 +76,42 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <g font-family="system-ui" font-size="12" fill="#14283e" font-weight="700"><text x="390" y="41">3.6</text><text x="275" y="83">2.0</text><text x="362" y="125">3.2</text><text x="217" y="167">1.2</text></g></svg></div></div>
 </div>
 </section>
+
+<div class="panel">
+<h3>First principles · A calendar year is not always a full health or productivity year</h3>
+<p>Suppose two people both live for five calendar years. One spends those years in good health; the other lives with persistent symptoms. Their <b>life-years</b> are identical, but the amount of preferred health may differ. Similarly, two people with identical health may have different work participation, responsibilities or workplace circumstances. The four outcomes answer different questions rather than providing four names for the same thing.</p>
+<div class="grid">
+<div class="box"><h3>1. Life expectancy and survival</h3><p><b>Life-years</b> count time alive. If a person survives for 3 years, that is 3 life-years, whatever their symptoms. <b>Premature mortality</b> is death before an explicitly selected reference lifespan, and not simply before average life expectancy at birth.</p><div class="math">\[LY=\int S(t)\,dt\]</div><p class="tiny">For a group, S(t) is the proportion alive. The area below survival gives expected life-years per starting person over the stated horizon.</p></div>
+<div class="box"><h3>2. Morbidity and health state</h3><p><b>Morbidity</b> means living with illness or disability. A <b>utility weight</b> describes how a health state is valued relative to full health (1) and death (0). A <b>disability weight</b> expresses departure from optimal health, from 0 (no loss) to 1 (equivalent to death on this scale).</p><p class="tiny">These scales are obtained using different valuation methods; they are not generally direct complements.</p></div>
+</div>
+<div class="grid">
+<div class="box"><h3>3. Health attained versus health lost</h3><p><b>Attainment</b> asks how much preferred health someone experiences. <b>Shortfall</b> asks how far their health is from a specified reference. QALYs usually report attainment. DALYs report burden, with premature death and time with disability both counted as loss.</p><p><b>Simple comparison:</b> 3 years at utility 0.8 = 2.4 QALYs. Three years at disability weight 0.2 = 0.6 YLD, <em>if</em> 0.2 is a justified disease severity weight. This arithmetic alone says nothing about years of life lost from premature death.</p></div>
+<div class="box"><h3>4. Counterfactual, comparator and improvement</h3><p>A <b>comparator</b> is the alternative that would have happened without the intervention being evaluated. QALYs <b>gained</b> equal treated minus comparator QALYs. DALYs <b>averted</b> equal comparator minus treated DALY burden. PALYs <b>saved</b> likewise indicate more productivity-adjusted years than the comparator.</p><p class="tiny">Never label a treated arm's total score as an intervention benefit without subtracting the comparator.</p></div>
+</div>
+</div>
+<div class="panel">
+<h3>Four definitions, four miniature calculations</h3>
+<p>These examples use separate illustrative assumptions. They demonstrate how each measure is constructed, not an identity between the measures.</p>
+<div class="tablewrap"><table><thead><tr><th>Measure</th><th>What it means in everyday language</th><th>How to calculate it</th><th>Worked example</th><th>What the number means</th></tr></thead><tbody>
+<tr><td><b>QALY</b></td><td>Years of life weighted by how desirable the health state is</td><td>Years alive × health utility</td><td>4 years × 0.75 = <b>3 QALYs</b></td><td>Four years produce the equivalent of three full-health years on this scale; the patient still lives four calendar years</td></tr>
+<tr><td><b>DALY</b></td><td>Healthy life-years lost because of disease or premature death</td><td>YLL + YLD</td><td>One death × 20 reference years + 2 years × disability weight 0.25 = <b>20.5 DALYs</b></td><td>20 years lost to premature death and half a year lost to disability; different people or non-overlapping time may contribute</td></tr>
+<tr><td><b>HALY</b></td><td>A broad health-adjusted life-year framework; the paper's family also accounts for reference lifespan</td><td>Paper-specific score: qt − αr</td><td>4 years × 0.75 − 0.5 × 5 reference years = <b>0.5 score</b></td><td>Shows reference choice affecting a population evaluation score; 0.5 is not an additional clinical HALY endpoint</td></tr>
+<tr><td><b>PALY</b></td><td>Years alive weighted by level of productive activity</td><td>Years in productive horizon × productivity index</td><td>4 years × 0.60 = <b>2.4 PALYs</b></td><td>Equivalent to 2.4 years at full productivity under the chosen measurement convention, not 2.4 healthy years</td></tr>
+</tbody></table></div>
+</div>
+<div class="grid">
+<div class="box"><h3>How to read a result correctly</h3><p><b>Higher QALYs:</b> more attained health. <b>Higher DALY burden:</b> more health lost. <b>Higher DALYs averted:</b> more burden prevented. <b>Higher PALYs:</b> more productive life-years. The sign of the 2023 HALY population score must be interpreted separately.</p></div>
+<div class="box"><h3>Three misconceptions to discard</h3><p><b>Utility 0.5 is not 50% survival.</b> Someone can be alive with utility 0.5. <b>Disability weight 0.5 is not 50% of people disabled.</b> It is a severity weight. <b>Productivity 0.5 is not worth half as much as a person.</b> It describes measured productive activity under a defined model.</p></div>
+</div>
 <section class="module" id="qaly">
 <h2>1. QALY · Build health-adjusted time</h2><p class="sub"><b>Learning message:</b> Each interval contributes its duration multiplied by health utility. The total is the sum of those contributions.</p>
+<div class="panel">
+<h3>Start with the concept · What is a QALY?</h3>
+<p>A <b>quality-adjusted life-year (QALY)</b> combines how long someone lives with how their health during those years is valued. One year at full health (utility 1) yields 1 QALY. A year at utility 0.5 yields 0.5 QALYs, even though the person lives for the full year.</p>
+<p><b>Calculation:</b> Multiply time lived in each health state by its preference-based utility, then add the intervals. <b>Interpretation:</b> More QALYs means more total preferred health over the specified horizon. An intervention's QALY gain is the <em>difference</em> between intervention and comparator totals.</p>
+<div class="math">\[QALYs = \sum_j \Delta t_j\,u_j, \qquad \Delta Q = Q_T-Q_C\]</div>
+<div class="result"><b>Worked example:</b> Year 1 at utility 0.90 and year 2 at utility 0.60: \(1(0.90)+1(0.60)=1.50\) QALYs. Two calendar years do <b>not</b> imply two QALYs. If another treatment gives 1.70 QALYs, its incremental benefit is \(1.70-1.50=0.20\) QALYs.</div>
+<p class="tiny">The next calculator assumes a constant utility over the chosen duration. For changing health states, break the timeline into intervals; for time-varying observed utility, use a justified area-under-the-utility-curve method.</p></div>
 <div class="grid">
 <div class="panel"><h3>Change the health trajectory</h3>
 <div class="control"><label for="q-duration">Time spent in state, years <output id="q-duration-o"></output></label><input id="q-duration" type="range" min="0.5" max="10" step=".5" value="4"></div>
@@ -92,9 +126,34 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <details><summary>Why does a 0.08 utility improvement create QALYs even if survival does not change?</summary><p>For 100 people alive throughout one year, moving utility from 0.70 to 0.78 creates \(100(0.78-0.70)=8\) additional QALYs without adding one life-year. A QALY benefit need not be smaller than the <em>incremental</em> life-year benefit.</p></details>
 <details><summary>Where should utilities come from?</summary><p>Use preference-based weights from appropriate instruments and value sets, such as EQ-5D. Patient-reported symptom scales and raw visual analogue scores are not automatically anchored utilities. Country-specific values, age norms, and states worse than death require explicit consideration. [R1]</p></details>
 </section>
+
+<div class="grid">
+<div class="panel"><h3>Use in HEOR · Published Egyptian pneumococcal-vaccination model</h3>
+<span class="pill">Published cost-utility analysis</span>
+<p><b>Sevilla et al. (2022)</b> compared introducing PCV13 or PCV10 childhood vaccination programmes with no vaccination in Egypt, and also compared PCV13 with PCV10. They projected outcomes across 100 successive birth cohorts, with a disease incidence and multiple-cohort model. QALY gains were used with incremental costs to calculate the ICER.</p>
+<div class="result"><b>Reported base-case results, in 2016 US$:</b> PCV13 versus no programme: <b>$926 per QALY gained</b>. PCV10 versus no programme: <b>$1,984 per QALY</b>. PCV13 versus PCV10: <b>$174 per QALY</b>. In the published per-vaccinated-infant illustration, PCV13 versus no programme yielded <b>0.0462 incremental QALYs</b> at <b>$42.75 incremental cost</b>. \(42.75/0.0462\approx925.3\); the paper reports $925.60 from underlying unrounded values. [R5]</div>
+<p><b>Why QALYs here?</b> The vaccine can prevent both deaths and nonfatal disease, so combining morbidity and mortality allows a single cost-utility comparison. The model's horizon, discounting, assumed efficacy and herd effects determine the result; these are not clinical trial observations for an individual child.</p>
+<p><a href="https://doi.org/10.1080/21645515.2022.2114252" target="_blank" rel="noopener">Read the published study</a></p>
+</div>
+<div class="panel"><h3>Caveats and common pitfalls · QALY</h3>
+<ul>
+<li><b>Do not confuse utility with survival:</b> utility weights health while alive. Survival probabilities determine time spent alive.</li>
+<li><b>Use preference-based values:</b> a symptom score or a raw health questionnaire total is not automatically a QALY utility.</li>
+<li><b>Check the valuation population:</b> EQ-5D value sets, age norms and whose preferences are used may change QALYs.</li>
+<li><b>Handle negative values:</b> some health states are valued worse than death; restricting all utilities to 0–1 may be inappropriate.</li>
+<li><b>Match timing:</b> short adverse events need their actual duration, not a whole-year decrement.</li>
+<li><b>Do not mix conventions:</b> comparator, model horizon, cycle correction and discounting must be consistent between arms.</li>
+<li><b>Interpret the gain, not just the total:</b> 7 QALYs in the treated arm does not mean 7 QALYs gained by treatment.</li>
+</ul><p class="tiny">Methodological context: Turner et al. [R1].</p>
+</div></div>
 <section class="module" id="daly">
 <h2>2. DALY · Separate premature death from disability</h2><p class="sub"><b>Learning message:</b> Conventional DALY burden combines YLL (life-years lost against a reference life table) and YLD (years lived with disability).</p>
-<div class="grid">
+<div class="panel"><h3>Start with the concept · What is a DALY?</h3>
+<p>A <b>disability-adjusted life-year (DALY)</b> is a year of full health lost. Unlike QALYs, which generally measure health attained, DALYs count <em>loss</em>. Two things cause loss: <b>premature death</b> contributes years of life lost (YLL), while <b>living with illness</b> contributes years lived with disability (YLD).</p>
+<div class="math">\[DALY=YLL+YLD,\qquad YLL=D\times e^*(a),\qquad YLD\approx \text{duration}\times\text{disability weight}\]</div>
+<p><b>Meaning:</b> More DALYs indicate more burden. A treatment is beneficial when it averts DALYs: \(DALY_{comparator}-DALY_{treatment}\).</p>
+<div class="result"><b>Worked example:</b> One death causes 23 YLL when the assumed remaining reference expectancy at death is 23 years. Four separate illness episodes lasting 0.5 years each at disability weight 0.25 contribute \(4\times0.5\times0.25=0.5\) YLD. Total = <b>23.5 DALYs</b>. The reference lifespan and disability weight are illustrative, not GBD inputs.</div>
+<p class="tiny">YLL and YLD do not have to arise in the same person. The DALY burden from a population is aggregated across people and relevant disease sequelae.</p></div><div class="grid">
 <div class="panel"><h3>A. Mortality · Years of life lost (YLL)</h3>
 <div class="math">\[\mathrm{YLL}=D(a)\times e^*(a)\]</div>
 <div class="control"><label for="d-deaths">Deaths at the specified age <output id="d-deaths-o"></output></label><input id="d-deaths" type="range" min="0" max="30" step="1" value="3"></div>
@@ -118,9 +177,35 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <div class="callout caution"><strong>GBD versus economic evaluation:</strong> Current GBD burden estimates do not apply historical age weighting or time discounting. Economic evaluations may discount DALYs averted according to their appraisal guidelines. This is a change in use and methodology, not a contradiction. [R1]</div>
 </div>
 </section>
+
+<div class="grid">
+<div class="panel"><h3>Use in HEOR · Published Egyptian PCV13 economic analysis</h3>
+<span class="pill">Published disease-burden economic evaluation</span>
+<p><b>Sibak et al. (2015)</b> compared introducing PCV13 into Egypt's national immunisation programme with no vaccination, modelling ten childhood birth cohorts in the TRIVAC model from a government perspective.</p>
+<div class="result"><b>Reported projections:</b> The programme was estimated to avert <b>8,583 pneumococcal deaths</b> and <b>272,878 DALYs</b> across ten cohorts, with an ICER of <b>US$3,916 per DALY averted</b>. [R6]</div>
+<p><b>Why DALYs here?</b> Prevention avoids both severe nonfatal infections and premature deaths, while the DALY burden gives one comparable health-loss denominator for resource allocation.</p>
+<p><b>Important contrast:</b> This 2015 DALY model and the 2022 QALY model in the previous chapter used different designs and cohorts. Their reported cost-per-outcome ratios cannot be interpreted as a head-to-head comparison of QALYs versus DALYs.</p>
+<p><a href="https://doi.org/10.1016/j.vaccine.2014.12.044" target="_blank" rel="noopener">Read the published study</a></p>
+</div>
+<div class="panel"><h3>Caveats and common pitfalls · DALY</h3>
+<ul>
+<li><b>Never use life expectancy at birth minus age at death:</b> obtain reference <em>remaining</em> life expectancy at that age.</li>
+<li><b>Distinguish incidence from prevalence:</b> future morbidity attributed to incident cases and morbidity occurring in a calendar year answer different questions.</li>
+<li><b>Do not automatically set disability weight = 1 − utility:</b> GBD disability weights and QALY utilities are elicited differently.</li>
+<li><b>Respect episode duration:</b> 30 days of disability do not count as 365 days.</li>
+<li><b>Do not mistake burden for benefit:</b> an intervention averts the <em>difference</em> in DALY burden.</li>
+<li><b>Do not import historical GBD conventions:</b> current GBD burden estimates exclude older age-weighting and health discounting; economic evaluations may follow different discounting rules.</li>
+<li><b>Check overlapping disease states:</b> comorbidities may require a justified combined disability-weight rule.</li>
+</ul><p class="tiny">Methodological context: Turner et al. [R1].</p></div>
+</div>
 <section class="module" id="haly">
 <h2>3. HALY · Explore a family of population health scores</h2><p class="sub"><b>Learning message:</b> In the supplied 2023 framework, the parameter \(\alpha\) controls the importance of reference lifetime. It is a mathematical family, not another standard standalone HEOR endpoint.</p>
-<div class="math">\[P_\alpha=\sum_{i=1}^n \left(q_i t_i-\alpha r_i\right),\qquad 0\leq\alpha\leq 1\]</div>
+<div class="panel"><h3>Start with the concept · What does HALY mean?</h3>
+<p><b>Health-adjusted life-years (HALYs)</b> is a broad label for life-years adjusted for health. It is not always one uniquely specified endpoint. In the supplied <b>Moreno-Ternero et al. (2023)</b> paper, the important contribution is a theoretical family of <b>population health evaluation functions</b>, meaning mathematical rules that assign one overall score to a population's health profile.</p>
+<p>That family combines <b>attained quality-adjusted lifetime</b> with a penalty for <b>reference lifetime</b>. A reference lifetime is an explicitly defined benchmark for how long life might ideally extend. The parameter \(\alpha\) determines how strongly that benchmark enters the social score.</p>
+<div class="math">\[P_{\alpha}=\sum_i(q_it_i-\alpha r_i)\]</div>
+<div class="result"><b>Worked example:</b> One person lives 4 years at health weight 0.8 with a reference of 5 years. Attained health: \(4\times0.8=3.2\). At \(\alpha=0.4\), score = \(3.2-0.4\times5=1.2\). At \(\alpha=0\), the score is 3.2 QALY-like attained years. At \(\alpha=1\), it is \(3.2-5=-1.8\): the <b>negative shortfall score</b>, not a positive DALY count.</div>
+<p><b>Meaning:</b> the parameter reveals which normative reference matters, and whether different population comparisons change when that reference changes. The paper's bounded-health-weight setting does not automatically cover negative QALY utilities.</p></div><div class="math">\[P_\alpha=\sum_{i=1}^n \left(q_i t_i-\alpha r_i\right),\qquad 0\leq\alpha\leq 1\]</div>
 <div class="grid">
 <div class="panel">
 <h3>Change how reference life is valued</h3>
@@ -135,9 +220,34 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <svg id="h-chart" viewBox="0 0 720 240" class="chart" role="img" aria-label="HALY treatment and comparator population health scores across alpha values"></svg>
 <p class="tiny">The displayed reference shift is a thought experiment about normative assumptions. It is not evidence that a treatment changes people's standard reference lifespan. The authors' framework assumes nonnegative time and health weights bounded by 0 and 1. [R2]</p>
 </section>
+
+<div class="grid">
+<div class="panel"><h3>Use in HEOR · Published health-adjusted life-year modelling</h3>
+<span class="pill">Published population modelling</span>
+<p><b>Marklund et al. (2024)</b> evaluated mandatory sodium limits in Australia's packaged foods. A multi-cohort, multistate life-table model compared mandatory WHO benchmarks with the existing status quo, translating sodium reduction into blood-pressure, cardiovascular disease and survival outcomes.</p>
+<div class="result"><b>Reported 10-year projection:</b> <b>11,174 HALYs gained</b>, <b>2,743 cardiovascular deaths averted</b> and <b>AUD$223 million</b> of healthcare cost savings for mandatory WHO benchmarks compared with status quo. Costs and HALYs were discounted at 3%. [R7]</div>
+<p><b>How HALYs were useful:</b> A single adjusted health outcome allowed a national prevention strategy's morbidity and mortality effects to be combined for an economic evaluation.</p>
+<p><b>Essential distinction:</b> The paper uses HALYs as a practical health-adjusted outcome. <em>It does not establish an applied estimation of the Moreno-Ternero \(\alpha\)-parameter family.</em> The interactive slider teaches that <b>theoretical</b> family, not a calibration to this empirical paper.</p>
+<p><a href="https://doi.org/10.1016/S2468-2667(24)00219-6" target="_blank" rel="noopener">Read the published study</a></p>
+</div>
+<div class="panel"><h3>Caveats and common pitfalls · HALY</h3>
+<ul>
+<li><b>Define HALY operationally:</b> a study saying “HALYs gained” may use a conventional QALY-like or another health-adjusted construction, not the 2023 \(\alpha\) family.</li>
+<li><b>Interpret the sign:</b> the paper's DALY pole is a <em>negative shortfall</em> population score, whereas conventional DALYs are a positive burden count.</li>
+<li><b>Reference lifetimes are a normative choice:</b> changing them can change results, so use and justify a common reference when appropriate.</li>
+<li><b>Do not interpret \(\alpha\) as an estimated treatment effect:</b> it is a weight expressing how references enter the evaluation.</li>
+<li><b>Bounded health weights matter:</b> assumptions behind the published theorems do not automatically accommodate negative utility states.</li>
+<li><b>Identical references cancel in increments:</b> apparent α-sensitivity should be checked for changes in the reference convention rather than claimed as a clinical benefit.</li>
+</ul><p class="tiny">Methodological context: Moreno-Ternero et al. [R2].</p></div>
+</div>
 <section class="module" id="paly">
 <h2>4. PALY · Construct the productivity index</h2><p class="sub"><b>Learning message:</b> Paid-work productivity combines how much work is performed, how effective work is, and, if included, workforce participation. It is not a health utility.</p>
-<div class="grid">
+<div class="panel"><h3>Start with the concept · What is a PALY?</h3>
+<p>A <b>productivity-adjusted life-year (PALY)</b> combines how many years a person is alive during the relevant productive period with how much of their potential productive activity is realised. Productivity loss may arise from <b>absenteeism</b> (missing work), <b>presenteeism</b> (reduced output while present), early workforce exit or changes in workforce participation.</p>
+<div class="math">\[PALYs=\sum_j \text{years lived}_j\times\text{productivity index}_j\]</div>
+<p><b>Meaning:</b> a PALY is a full-productivity-equivalent year under the chosen productivity definition. It does not measure quality of life and does not imply that someone who is not in paid employment has no worth or no social contribution.</p>
+<div class="result"><b>Worked example:</b> With 240 nominal annual workdays, 24 days missed, and 20% impairment when present, the productive fraction while participating is \((240-24)/240\times(1-0.20)=0.90\times0.80=0.72\). If the analysis also appropriately applies 85% participation, the combined index becomes \(0.72\times0.85=0.612\), yielding <b>3.06 PALYs over five years</b> at the same index.</div>
+<p class="tiny">The product here is a clearly specified illustration. Actual PALY studies vary in the use of employment, absenteeism, presenteeism, mortality and the value of unpaid work.</p></div><div class="grid">
 <div class="panel"><h3>Build a productive year</h3>
 <div class="control"><label for="p-days">Nominal working days/year <output id="p-days-o"></output></label><input id="p-days" type="range" min="150" max="300" step="5" value="240"></div>
 <div class="control"><label for="p-abs">Days absent for health reasons <output id="p-abs-o"></output></label><input id="p-abs" type="range" min="0" max="100" step="1" value="24"></div>
@@ -153,10 +263,30 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 </div></div>
 <div class="callout caution"><strong>Avoid double counting:</strong> PALYs usually capture paid work and are often monetised using GDP per full-time worker or wage-based methods. If productivity gains also enter the cost side, do not add their monetary value again as independent benefits. Ademi et al. (2021) specifically caution against treating cost per PALY as a routine ratio because of PALYs' inherent monetary valuation. [R3–R4]</div>
 </section>
+
+<div class="grid">
+<div class="panel"><h3>Use in HEOR · Published hypertension productivity burden</h3>
+<span class="pill">Published life-table productivity model</span>
+<p><b>Hird et al. (2019)</b> modelled working-age Australian adults with hypertension (aged 20–69 years) using life tables and simulated follow-up through working age. The analysis combined the consequences of premature death and reduced work productivity.</p>
+<div class="result"><b>Reported projections:</b> Hypertension was associated with <b>609,801 PALYs lost</b> across the simulated working lifetimes. Adequate treatment and control for everyone with hypertension was projected to preserve <b>342,538 PALYs</b>, valued at <b>AUD$76.4 billion</b> in GDP output retained. [R8]</div>
+<p><b>Why PALYs here?</b> The outcome expresses the productivity burden over the working lifetime, beyond health-related quality of life. The monetary value describes estimated economic output, not a verified profit gain or direct healthcare saving.</p>
+<p><a href="https://doi.org/10.1161/HYPERTENSIONAHA.118.12606" target="_blank" rel="noopener">Read the published study</a></p>
+</div>
+<div class="panel"><h3>Caveats and common pitfalls · PALY</h3>
+<ul>
+<li><b>Paid work is not all productive activity:</b> unpaid caregiving and informal work may be omitted, creating distributional bias.</li>
+<li><b>Specify working-age limits:</b> models using different upper and lower age limits may have systematically different PALYs.</li>
+<li><b>Prevent double adjustments:</b> do not apply workforce participation twice or reduce both life-years and a separate productivity weight for the same death.</li>
+<li><b>Match denominators:</b> absence as a fraction of scheduled working days and presenteeism among days present cannot simply be added without checking their definitions.</li>
+<li><b>GDP is not individual profit:</b> GDP-per-worker and wage-based valuations estimate different things; neither automatically represents cash saved by the payer.</li>
+<li><b>Avoid double counting costs:</b> do not add monetised PALYs to an ICER already accounting for the same lost productivity.</li>
+<li><b>Do not use PALYs to rank people's worth:</b> low observed productivity does not mean a life has low health value.</li>
+</ul><p class="tiny">Methodological context: Ademi et al. [R3, R4].</p></div>
+</div>
 <section class="module" id="cohort">
 <h2>5. One intervention, four perspectives · Full cohort calculator</h2>
 <p class="sub"><b>Learning message:</b> Use <em>the same survival cohort</em> for all outcomes. First compute exposure to life, then apply utility, disability or productivity weights. Keep DALY reference conventions explicit.</p>
-<div class="callout"><strong>Base case from the supplied Markdown tutorial:</strong> 100 adults aged 40, five one-year cycles. With the default treatment survival and weight improvements, results reproduce +30 life-years, +57.45 QALYs, +65.625 PALYs and 526.45 conventional-reference illustrative DALYs averted per 100 starting adults, all undiscounted. The latter includes YLL beyond the five-year horizon and is <em>not directly comparable</em> with the five-year QALYs gained.</div>
+<div class="panel"><h3>What this chapter calculates and why</h3><p>The integrated cohort reuses one set of annual survival counts while assigning health, disability and productivity weights to the same person-time. We first estimate <b>life-years</b> from the number alive in each cycle; then calculate QALYs and PALYs by multiplying time alive by utility or productivity index. We calculate two explicitly different health-loss constructions: a within-five-year shortfall and a reference-based YLL-plus-YLD burden. The result shows how a single intervention can deliver different-looking outcomes without implying contradiction.</p><p><b>HEOR use:</b> A similar structure underlies economic models combining time in health states, utilities, mortality and costs. The published pneumococcal, sodium-reduction and hypertension studies above illustrate why choosing the decision question and reference method matters. Their actual model structures and horizons differ from this teaching cohort.</p><p><b>Pitfall:</b> Never compare a five-year QALY gain directly with a DALY burden whose mortality term includes decades beyond year five.</p></div><div class="callout"><strong>Base case from the supplied Markdown tutorial:</strong> 100 adults aged 40, five one-year cycles. With the default treatment survival and weight improvements, results reproduce +30 life-years, +57.45 QALYs, +65.625 PALYs and 526.45 conventional-reference illustrative DALYs averted per 100 starting adults, all undiscounted. The latter includes YLL beyond the five-year horizon and is <em>not directly comparable</em> with the five-year QALYs gained.</div>
 <div class="grid">
 <div class="panel">
 <h3>Change the intervention</h3>
@@ -222,21 +352,27 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <section class="module" id="references">
 <h2>8. Primary sources, assumptions and further reading</h2>
 <div class="panel">
-<h3>Complete written companion</h3><p><a href="https://github.com/kareemelfass/HEOR-Interactive-Labs/blob/main/adjusted-life-years-lab/comprehensive-tutorial.md" target="_blank" rel="noopener"><b>Read the full 26-chapter Markdown tutorial</b></a> with extended concepts, all calculation steps, mathematical derivations, exercises, reconciliation and evidence context.</p><h3>Four foundation papers</h3>
+<h3>Methodological foundation papers</h3>
 <ol>
 <li id="r1"><b>[R1] Turner HC et al. (2026).</b> <em>Quality-Adjusted and Disability-Adjusted Life Years (QALYs and DALYs): An Overview and Guide to Calculations.</em> PharmacoEconomics - Open. <a href="https://doi.org/10.1007/s41669-026-00678-3" target="_blank" rel="noopener">DOI</a>. Definitions, equations, GBD changes, discounting, frequent errors and practical applications.</li>
 <li id="r2"><b>[R2] Moreno-Ternero JD, Platz TT, Østerdal LP. (2023).</b> <em>QALYs, DALYs, and HALYs: A unifying framework for the evaluation of population health.</em> Journal of Health Economics 87:102714. <a href="https://doi.org/10.1016/j.jhealeco.2022.102714" target="_blank" rel="noopener">DOI</a>. HALY one-parameter family, evaluation functions and axioms.</li>
 <li id="r3"><b>[R3] Ademi Z et al. (2025).</b> <em>Scoping Review of Productivity-Adjusted Life Years (PALYs): Methods, Applications and Policy Implications.</em> PharmacoEconomics. <a href="https://doi.org/10.1007/s40273-025-01544-6" target="_blank" rel="noopener">DOI</a>. Review of 41 studies, index variation, model choices, unpaid work and policy uses.</li>
 <li id="r4"><b>[R4] Ademi Z, Ackerman IN, Zomer E, Liew D. (2021).</b> <em>Productivity-Adjusted Life-Years: A New Metric for Quantifying Disease Burden.</em> PharmacoEconomics 39:271–273. <a href="https://doi.org/10.1007/s40273-020-00999-z" target="_blank" rel="noopener">DOI</a>. PALY definition, productivity index, GDP valuation and double-counting caution.</li>
 </ol>
-<p><b>What is constructed?</b> The 100-person five-year cohort, survival counts, utilities, productivity indices, reference years and prices are invented for teaching. The weight equality \(d=1-u\) is used only where expressly noted to show an algebraic identity. No invented values are attributed to the four papers.</p>
+<h3>Published applications discussed in the chapters</h3>
+<ol start="5">
+<li id="r5"><b>[R5] Sevilla JP et al. (2022).</b> <em>Cost-utility and cost-benefit analysis of pediatric PCV programs in Egypt.</em> Human Vaccines &amp; Immunotherapeutics. <a href="https://doi.org/10.1080/21645515.2022.2114252" target="_blank" rel="noopener">DOI</a>. QALY-based comparison of PCV13, PCV10 and no vaccination.</li>
+<li id="r6"><b>[R6] Sibak M et al. (2015).</b> <em>Cost-effectiveness analysis of the introduction of the pneumococcal conjugate vaccine (PCV-13) in the Egyptian national immunization program, 2013.</em> Vaccine. <a href="https://doi.org/10.1016/j.vaccine.2014.12.044" target="_blank" rel="noopener">DOI</a>. DALYs averted for ten modelled birth cohorts.</li>
+<li id="r7"><b>[R7] Marklund M et al. (2024).</b> <em>Estimated health effect, cost, and cost-effectiveness of mandating sodium benchmarks in Australia's packaged foods: a modelling study.</em> Lancet Public Health. <a href="https://doi.org/10.1016/S2468-2667(24)00219-6" target="_blank" rel="noopener">DOI</a>. Applied HALYs in a population prevention model, not a fitted instance of the 2023 α family.</li>
+<li id="r8"><b>[R8] Hird TR et al. (2019).</b> <em>Productivity Burden of Hypertension in Australia.</em> Hypertension 73:777–784. <a href="https://doi.org/10.1161/HYPERTENSIONAHA.118.12606" target="_blank" rel="noopener">DOI</a>. Working-lifetime PALYs and the GDP consequences of hypertension control.</li>
+</ol><p><b>What is constructed?</b> The 100-person five-year cohort, survival counts, utilities, productivity indices, reference years and prices are invented for teaching. The weight equality \(d=1-u\) is used only where expressly noted to show an algebraic identity. No invented values are attributed to the four papers.</p>
 <p><b>Methodological boundaries:</b> This is not a validated GBD burden-of-disease engine, a jurisdiction-specific submission model or a real-world evidence source. The HALY family is based on bounded nonnegative quality weights, whereas the separate QALY calculator permits negative utilities. A direct substitution of a negative utility in the bounded HALY theorem is not justified.</p>
 <p><b>Technical:</b> Static HTML, CSS and JavaScript with MathJax loaded from a public CDN. Calculators, tables, quiz and SVG visualisations run locally in-browser without server, login or analytics. Mathematical notation falls back to its source text if the CDN is unavailable.</p>
 </div>
 <div class="controls"><a href="../" class="primary">← HEOR Interactive Labs home</a><a href="#start">↑ Back to start</a></div>
 </section>
 </main>
-<footer>HEOR Interactive Labs · Interactive teaching reference · Last updated November 2026 · Calculations illustrative unless stated otherwise</footer>
+<footer>HEOR Interactive Labs · Interactive teaching reference · Revised November 2026 · Calculations illustrative unless stated otherwise</footer>
 <script>
 (function(){
 'use strict';
