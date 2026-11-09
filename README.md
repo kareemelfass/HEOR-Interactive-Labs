@@ -8,8 +8,10 @@ The focus is **learning by seeing and doing**: change model assumptions, follow 
 
 **[Open the QALY, DALY, HALY and PALY interactive tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/adjusted-life-years-lab/)**
 
-A calculation-first learning environment with a [full 26-chapter Markdown companion](./adjusted-life-years-lab/comprehensive-tutorial.md), based on four methodological papers (Turner et al. 2026; Moreno-Ternero et al. 2023; Ademi et al. 2021 and 2025).
+An interactive teaching site grounded in four methodological papers (Turner et al. 2026; Moreno-Ternero et al. 2023; Ademi et al. 2021 and 2025) and published applications. Each metric chapter opens with simple concepts and worked calculations, then discusses an applied HEOR study and pitfalls.
 
+- Read a new fundamentals chapter demystifying all four metrics and their definitions
+- Start each metric chapter with what it measures, how it is calculated, and what the result means
 - Change health utility, duration and discounting to calculate QALYs
 - Calculate YLL, YLD and DALY burden from explicit mortality and disability assumptions
 - Vary HALY parameter α and reference lifetimes to see when rankings change
@@ -17,7 +19,8 @@ A calculation-first learning environment with a [full 26-chapter Markdown compan
 - Recreate the same five-year 100-person cohort and compare all outcomes
 - Inspect every annual calculation, full equation and health-loss reconciliation
 - Export the cohort to CSV and check learning with explained quiz answers
-- All data are illustrative, with the explicit distinction between finite-horizon shortfall and standard reference-based YLL
+- Published HEOR examples for all four metric chapters, with study-specific citations and caveats
+- All interactive data are illustrative, with the distinction between finite-horizon shortfall and standard reference-based YLL
 
 **[Browse the source](https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/adjusted-life-years-lab)**
 
