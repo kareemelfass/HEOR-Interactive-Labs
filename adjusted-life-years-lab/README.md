@@ -36,6 +36,26 @@ For 100 people over five years, before discounting:
 
 The values above are invented educational examples, not primary clinical or GBD estimates. Health utility and disability weight are set to complements only in the special mathematical exercise, not asserted as the general GBD method.
 
+## Expanded concept-first chapters (9 November 2026 revision)
+
+The lab now teaches the meaning of the four measures **before** offering a calculator:
+
+- **Foundations:** One six-year patient history, a ten-year illustrative reference, utility 0.75 and productivity index 0.60. The worked example reconciles 4.5 QALYs attained, 1.5 matched-weight morbidity shortfall and 4 years of reference lifetime gap into 5.5 illustrative shortfall years. This is not a claim that actual GBD disability weights equal one minus utility.
+- **QALYs:** Time in different utility states, area-under-the-utility-curve logic and a treatment-versus-comparator example separating quality and survival gains.
+- **DALYs:** Distinction between health loss while alive and premature-mortality loss, a complete worked example, and why YLD can increase when an effective intervention extends survival.
+- **HALYs:** Detailed derivation from attained health \(Q\) and missing health \(B=R-Q\) to \(P_\alpha=(1-\alpha)Q-\alpha B=Q-\alpha R\). Includes an adjustable patient-level health-budget diagram, a same-reference treatment comparison (\(\Delta P_\alpha\) invariant), and an explicitly distinct different-population comparison (ranking reverses when references differ).
+- **PALYs:** Difference between time alive, health utility and productivity; constructive absenteeism/presenteeism arithmetic, the role of workforce participation and avoidance of double counting.
+
+Every metric chapter also retains a cited published HEOR application and a substantive caveats/pitfalls section.
+
+### Additional HALY acceptance tests
+
+1. Open the individual HALY widget at defaults: 6 years, quality weight 0.75, reference 10 years and \(\alpha=0.5\).
+2. Check 4.50 attained, 1.50 morbidity shortfall, 4.00 mortality gap, 5.50 total health shortfall and −0.50 evaluation score. The coloured bar should be 45%, 15% and 40%.
+3. Change only \(\alpha\) to 1.00. The evaluation score must become −5.50 without changing the health history.
+4. In the separate population comparison, equal references imply a +57.45 increment for every \(\alpha\).
+5. Change Profile B's reference from 500 to 600, keeping A's reference 500: at \(\alpha=0.50\) the increment must be +7.45; at \(\alpha=1.00\), it must be −42.55. That is a comparison of different reference profiles, not evidence of a treatment effect.
+
 ## Published HEOR applications
 
 - Sevilla JP et al. (2022): QALY-based Egyptian PCV programmes, [DOI](https://doi.org/10.1080/21645515.2022.2114252).
