@@ -247,7 +247,7 @@ const fmt=x=>Number(x).toLocaleString('en-US',{maximumFractionDigits:2});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function set(id,s){$(id).textContent=String(s)}
 function slider(id,cb,show){const x=$(id);x.addEventListener('input',cb);if(show){x.dataset.show=show}cb()}
-function outputs(ids){ids.forEach(id=>{const el=$(id);let value=v(id),t=el.dataset.show||'';set(id+'-o',t==='pct'?(100*value).toFixed(value===0?0:1)+'%':t==='money'?'$'+fmt(value):t==='dec'?f(value,2):fmt(value))})}
+function outputs(ids){ids.forEach(id=>{const el=$(id);let value=v(id),t=el.dataset.show||(id==='p-value'?'money':(['q-discount','c-r'].includes(id)?'pct':['q-utility','d-weight','h-alpha','p-pres','p-part','c-util','c-prod','c-alpha'].includes(id)?'dec':''));set(id+'-o',t==='pct'?(100*value).toFixed(value===0?0:1)+'%':t==='money'?'$'+fmt(value):t==='dec'?f(value,2):fmt(value))})}
 function svgEl(n,attrs){const e=document.createElementNS('http://www.w3.org/2000/svg',n);for(const k in attrs)e.setAttribute(k,attrs[k]);return e}
 function shape(parent,n,a){let e=svgEl(n,a);parent.appendChild(e);return e}
 function label(parent,x,y,s,anchor='start',size=12,color='#53677b'){const e=shape(parent,'text',{x,y,'text-anchor':anchor,'font-size':size,fill:color,'font-family':'system-ui'});e.textContent=s;return e}
@@ -274,7 +274,7 @@ function haly(){
 outputs(['h-alpha','h-ref-c','h-ref-t']);let a=v('h-alpha'),rc=v('h-ref-c'),rt=v('h-ref-t'),qc=300.30,qt=357.75,pc=qc-a*rc,pt=qt-a*rt,d=pt-pc;
 set('h-c',f(pc,2));set('h-t',f(pt,2));set('h-diff-val',f(d,2));
 set('h-steps','Comparator = 300.30 − '+f(a,2)+' × '+rc+' = '+f(pc,2)+'. Treatment = 357.75 − '+f(a,2)+' × '+rt+' = '+f(pt,2)+'. Increment = 57.45 − '+f(a,2)+' × ('+rt+' − '+rc+') = '+f(d,2)+'. '+(rc===rt?'The reference terms cancel because they are identical.':'Different reference totals can change the incremental ranking.'));
-let svg=$('h-chart');svg.replaceChildren();const yval=z=>200-(z+440)/3.35;for(let i=0;i<=4;i++){let y=200-i*44;shape(svg,'line',{x1:65,y1:y,x2:682,y2:y,stroke:'#e2eaf0'});label(svg,57,y+4,String(-440+i*147),'end',11)}shape(svg,'line',{x1:65,y1:25,x2:65,y2:200,stroke:'#8198a7'});shape(svg,'line',{x1:65,y1:200,x2:682,y2:200,stroke:'#8198a7'});
+let svg=$('h-chart');svg.replaceChildren();const yval=z=>200-(z+440)*170/880;for(let i=0;i<=4;i++){let y=200-i*170/4;shape(svg,'line',{x1:65,y1:y,x2:682,y2:y,stroke:'#e2eaf0'});label(svg,57,y+4,String(-440+i*220),'end',11)}shape(svg,'line',{x1:65,y1:25,x2:65,y2:200,stroke:'#8198a7'});shape(svg,'line',{x1:65,y1:200,x2:682,y2:200,stroke:'#8198a7'});
 for(let i=0;i<=4;i++)label(svg,65+600*i/4,222,f(i/4,2),'middle',11);
 function path(q,r){return [0,1].map((a,i)=>(i?'L':'M')+(65+600*a)+','+yval(q-a*r)).join(' ')}
 shape(svg,'path',{d:path(qc,rc),stroke:'#2469b3','stroke-width':3,fill:'none'});shape(svg,'path',{d:path(qt,rt),stroke:'#007b75','stroke-width':3,fill:'none'});let x=65+600*a;shape(svg,'circle',{cx:x,cy:yval(pc),r:5,fill:'#2469b3'});shape(svg,'circle',{cx:x,cy:yval(pt),r:5,fill:'#007b75'});label(svg,660,27,'Treatment', 'end',13,'#007b75');label(svg,660,43,'Comparator','end',13,'#2469b3');label(svg,360,237,'α reference weight','middle',11);
