@@ -8,7 +8,7 @@ The focus is **learning by seeing and doing**: change model assumptions, follow 
 
 **[Open the QALY, DALY, HALY and PALY interactive tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/adjusted-life-years-lab/)**
 
-An interactive teaching site grounded in four methodological papers (Turner et al. 2026; Moreno-Ternero et al. 2023; Ademi et al. 2021 and 2025) and published applications. Each metric chapter opens with simple concepts and worked calculations, then discusses an applied HEOR study and pitfalls.
+An interactive teaching site grounded in four methodological papers (Turner et al. 2026; Moreno-Ternero et al. 2023; Ademi et al. 2021 and 2025) and published applications. The foundations use one reconciled patient history, and each metric chapter builds its equation from the underlying problem, with multiple worked calculations and detailed interpretation. The HALY module derives its formula from attained health and reference shortfalls and provides an adjustable health-budget diagram plus same-reference and different-reference comparisons. Applied HEOR studies and methodological pitfalls remain in each chapter.
 
 - Read a new fundamentals chapter demystifying all four metrics and their definitions
 - Start each metric chapter with what it measures, how it is calculated, and what the result means
