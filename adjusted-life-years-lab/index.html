@@ -60,48 +60,79 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg
 <main>
 <div class="callout"><strong>Reading note:</strong> All interactive clinical, utility, disability, productivity, life-expectancy and cost inputs are <em>illustrative teaching assumptions</em>, not estimates from a particular study. Formulas, interpretation and methodological caveats follow the four supplied publications. Some calculators deliberately distinguish finite-horizon shortfalls from conventional GBD DALYs.</div>
 <section class="module" id="start">
-<h2>Chapter 0. Basics and definitions · Demystifying the four concepts</h2><p class="sub"><b>Learning message:</b> All four approaches start with time, but they attach different meanings to that time. Learn the definition, arithmetic and interpretation before moving to the calculators.</p>
-<div class="grid4">
-<div class="box"><span class="pill">QALY</span><h3>How much preferred health?</h3><p><b>Life lived × health utility.</b> A year at utility 0.8 accrues 0.8 QALYs.</p></div>
-<div class="box"><span class="pill">DALY</span><h3>How much healthy life lost?</h3><p><b>YLL + YLD.</b> Mortality shortfall plus years lived with disability. Higher burden is worse.</p></div>
-<div class="box"><span class="pill">HALY</span><h3>How does the reference matter?</h3><p>A <b>family</b> of health-adjusted population evaluations. QALY and negative DALY loss are polar cases in Moreno-Ternero et al.</p></div>
-<div class="box"><span class="pill">PALY</span><h3>How much productive life?</h3><p><b>Life lived × productivity index.</b> Productivity reflects work time and effectiveness, not health utility.</p></div>
-</div>
+<h2>Chapter 0 · Before any equation: what are we trying to measure?</h2>
+<p class="sub"><b>What you will understand:</b> Why ordinary life-years are not enough, why different measures use different reference points, and what one numerical result actually tells you. The goal is to understand the measurement first, not memorise four abbreviations.</p>
 <div class="panel">
-<h3>Visual intuition · Four years, different weights</h3>
-<div class="grid"><div><p>Person A and Person B each live for <b>four years</b>. A has utility 0.9 and productivity 0.8. B has utility 0.5 and productivity 0.3.</p><div class="math">\[Q_A=4(0.90)=3.60,\quad Q_B=4(0.50)=2.00\]\[P_A=4(0.80)=3.20,\quad P_B=4(0.30)=1.20\]</div><p class="tiny">Neither a utility of 0.5 nor a productivity index of 0.5 means a 50% survival probability.</p></div>
-<div><svg viewBox="0 0 440 212" class="chart" role="img" aria-label="Comparison of QALYs and PALYs for two people who live four years">
-<g font-family="system-ui" font-size="12" fill="#53657b"><text x="12" y="41">Person A QALY</text><text x="12" y="83">Person B QALY</text><text x="12" y="125">Person A PALY</text><text x="12" y="167">Person B PALY</text></g>
-<g><rect x="122" y="27" width="261" height="18" rx="3" fill="#2469b3"/><rect x="122" y="69" width="145" height="18" rx="3" fill="#2469b3"/><rect x="122" y="111" width="232" height="18" rx="3" fill="#007b75"/><rect x="122" y="153" width="87" height="18" rx="3" fill="#007b75"/></g>
-<g font-family="system-ui" font-size="12" fill="#14283e" font-weight="700"><text x="390" y="41">3.6</text><text x="275" y="83">2.0</text><text x="362" y="125">3.2</text><text x="217" y="167">1.2</text></g></svg></div></div>
-</div>
-
-
-<div class="panel">
-<h3>First principles · A calendar year is not always a full health or productivity year</h3>
-<p>Suppose two people both live for five calendar years. One spends those years in good health; the other lives with persistent symptoms. Their <b>life-years</b> are identical, but the amount of preferred health may differ. Similarly, two people with identical health may have different work participation, responsibilities or workplace circumstances. The four outcomes answer different questions rather than providing four names for the same thing.</p>
-<div class="grid">
-<div class="box"><h3>1. Life expectancy and survival</h3><p><b>Life-years</b> count time alive. If a person survives for 3 years, that is 3 life-years, whatever their symptoms. <b>Premature mortality</b> is death before an explicitly selected reference lifespan, and not simply before average life expectancy at birth.</p><div class="math">\[LY=\int S(t)\,dt\]</div><p class="tiny">For a group, S(t) is the proportion alive. The area below survival gives expected life-years per starting person over the stated horizon.</p></div>
-<div class="box"><h3>2. Morbidity and health state</h3><p><b>Morbidity</b> means living with illness or disability. A <b>utility weight</b> describes how a health state is valued relative to full health (1) and death (0). A <b>disability weight</b> expresses departure from optimal health, from 0 (no loss) to 1 (equivalent to death on this scale).</p><p class="tiny">These scales are obtained using different valuation methods; they are not generally direct complements.</p></div>
-</div>
-<div class="grid">
-<div class="box"><h3>3. Health attained versus health lost</h3><p><b>Attainment</b> asks how much preferred health someone experiences. <b>Shortfall</b> asks how far their health is from a specified reference. QALYs usually report attainment. DALYs report burden, with premature death and time with disability both counted as loss.</p><p><b>Simple comparison:</b> 3 years at utility 0.8 = 2.4 QALYs. Three years at disability weight 0.2 = 0.6 YLD, <em>if</em> 0.2 is a justified disease severity weight. This arithmetic alone says nothing about years of life lost from premature death.</p></div>
-<div class="box"><h3>4. Counterfactual, comparator and improvement</h3><p>A <b>comparator</b> is the alternative that would have happened without the intervention being evaluated. QALYs <b>gained</b> equal treated minus comparator QALYs. DALYs <b>averted</b> equal comparator minus treated DALY burden. PALYs <b>saved</b> likewise indicate more productivity-adjusted years than the comparator.</p><p class="tiny">Never label a treated arm's total score as an intervention benefit without subtracting the comparator.</p></div>
-</div>
-</div>
-<div class="panel">
-<h3>Four definitions, four miniature calculations</h3>
-<p>These examples use separate illustrative assumptions. They demonstrate how each measure is constructed, not an identity between the measures.</p>
-<div class="tablewrap"><table><thead><tr><th>Measure</th><th>What it means in everyday language</th><th>How to calculate it</th><th>Worked example</th><th>What the number means</th></tr></thead><tbody>
-<tr><td><b>QALY</b></td><td>Years of life weighted by how desirable the health state is</td><td>Years alive × health utility</td><td>4 years × 0.75 = <b>3 QALYs</b></td><td>Four years produce the equivalent of three full-health years on this scale; the patient still lives four calendar years</td></tr>
-<tr><td><b>DALY</b></td><td>Healthy life-years lost because of disease or premature death</td><td>YLL + YLD</td><td>One death × 20 reference years + 2 years × disability weight 0.25 = <b>20.5 DALYs</b></td><td>20 years lost to premature death and half a year lost to disability; different people or non-overlapping time may contribute</td></tr>
-<tr><td><b>HALY</b></td><td>A broad health-adjusted life-year framework; the paper's family also accounts for reference lifespan</td><td>Paper-specific score: qt − αr</td><td>4 years × 0.75 − 0.5 × 5 reference years = <b>0.5 score</b></td><td>Shows reference choice affecting a population evaluation score; 0.5 is not an additional clinical HALY endpoint</td></tr>
-<tr><td><b>PALY</b></td><td>Years alive weighted by level of productive activity</td><td>Years in productive horizon × productivity index</td><td>4 years × 0.60 = <b>2.4 PALYs</b></td><td>Equivalent to 2.4 years at full productivity under the chosen measurement convention, not 2.4 healthy years</td></tr>
+<h3>0.1. Start with a person, not with an abbreviation</h3>
+<p>Imagine someone diagnosed with a chronic disease at age 40. We follow them for the next ten years. We might want to know whether treatment keeps them alive, whether they feel and function better during the time they are alive, whether illness causes productive activity to be lost, or how much health is missing compared with an ideal life history. These are <b>different questions</b>. A single number cannot answer all of them unless we first decide what is being counted.</p>
+<p>Start with the simplest unit: <b>one life-year</b> means one calendar year spent alive. If somebody survives for six years after entering a model, they contribute six life-years. This says nothing about whether they lived free of symptoms, required help with daily activities, were able to work, or died earlier than a reference lifespan.</p>
+<p>Now imagine that the person survives for six of the ten years we are considering, has an average health value of 0.75 while alive, and has an assumed productivity index of 0.60 during those six years. We will use <em>these same six years</em> to explain the various ideas. All values are invented for education.</p>
+<div class="tablewrap"><table><thead><tr><th>Question</th><th>Calculation</th><th>Result</th><th>What it means and what it does not mean</th></tr></thead><tbody>
+<tr><td>How much time was lived?</td><td>6 years alive</td><td><b>6 LYs</b></td><td>Six calendar years alive; no information about how the years were experienced</td></tr>
+<tr><td>How much preference-weighted health was lived?</td><td>6 × 0.75</td><td><b>4.5 QALYs</b></td><td>Equivalent to 4.5 full-health years on the chosen valuation scale, not 4.5 years actually survived</td></tr>
+<tr><td>How much health was below the ideal during those lived years?</td><td>6 × (1 − 0.75)</td><td><b>1.5 weighted years</b></td><td>An illustrative quality shortfall; not necessarily official GBD YLD</td></tr>
+<tr><td>How much reference lifetime was not lived?</td><td>10 − 6</td><td><b>4 years</b></td><td>A mortality gap under the invented ten-year reference, not a clinical survival estimate or an official GBD reference</td></tr>
+<tr><td>How much ideal health is missing overall?</td><td>4 + 1.5</td><td><b>5.5 shortfall years</b></td><td>The complement of 4.5 attained years under this deliberately matched reference and weight convention</td></tr>
+<tr><td>How much productive time was experienced?</td><td>6 × 0.60</td><td><b>3.6 PALYs</b></td><td>Full-productivity-equivalent years under the chosen productive-period definition, not a judgment of personal worth</td></tr>
 </tbody></table></div>
+<p><b>What changes between rows?</b> The person's observed history does not change. We change the <em>question</em>, the <em>weight</em>, or the <em>reference</em>. A QALY weight does not become a disability weight merely because both use numbers between zero and one. Nor does a productivity index say how much somebody values their health.</p>
 </div>
+<div class="panel">
+<h3>0.2. Two directions of measurement: attained health and missing health</h3>
 <div class="grid">
-<div class="box"><h3>How to read a result correctly</h3><p><b>Higher QALYs:</b> more attained health. <b>Higher DALY burden:</b> more health lost. <b>Higher DALYs averted:</b> more burden prevented. <b>Higher PALYs:</b> more productive life-years. The sign of the 2023 HALY population score must be interpreted separately.</p></div>
-<div class="box"><h3>Three misconceptions to discard</h3><p><b>Utility 0.5 is not 50% survival.</b> Someone can be alive with utility 0.5. <b>Disability weight 0.5 is not 50% of people disabled.</b> It is a severity weight. <b>Productivity 0.5 is not worth half as much as a person.</b> It describes measured productive activity under a defined model.</p></div>
+<div class="box"><h3>Attained health</h3><p>Imagine drawing a rectangle for each year lived. Its width is one year, and its height is the health utility during that year. The total area is the <b>amount of health attained</b>. This is the basic QALY idea.</p><p>If four years are lived at utility 0.75, the total area is four rectangles, each 0.75 high: <b>3 QALYs</b>.</p><p><b>What if health improves?</b> Higher rectangle heights give more QALYs, even if life expectancy is unchanged. <b>What if survival improves?</b> More rectangles can give more QALYs, even if their heights stay the same.</p></div>
+<div class="box"><h3>Health missing from a reference</h3><p>Instead, draw a rectangle representing a chosen ideal: ten years at full health, height 1. Now subtract the health actually attained. The missing area has two sources: impaired health during lived years, and the reference years never lived.</p><p>Here the missing area is <b>10 − 4.5 = 5.5</b>. That equals <b>1.5</b> lost through impaired health and <b>4</b> lost through premature death under our illustrative reference.</p><p><b>The crucial choice:</b> which reference lifespan and which health-loss weights are justified? Changing them changes what “lost” means.</p></div>
+</div>
+<svg viewBox="0 0 720 210" class="chart" role="img" aria-label="Ten-year ideal health timeline: four and a half adjusted years attained, one and a half lost while alive and four lost after death">
+<rect x="56" y="39" width="600" height="75" fill="#e5ecf2" rx="5"/>
+<rect x="56" y="39" width="270" height="75" fill="#2469b3"/>
+<rect x="326" y="39" width="90" height="75" fill="#dcad57"/>
+<rect x="416" y="39" width="240" height="75" fill="#b9c6d0"/>
+<g font-size="14" font-family="system-ui" font-weight="700" text-anchor="middle"><text x="191" y="77" fill="white">4.5 attained</text><text x="371" y="77" fill="#342d1b">1.5</text><text x="536" y="77" fill="#244058">4 years</text></g>
+<g font-size="12" font-family="system-ui" fill="#51677c"><text x="56" y="143">0</text><text x="416" y="143" text-anchor="middle">Died after 6 years</text><text x="656" y="143" text-anchor="end">Reference: 10 years</text><text x="56" y="180">Blue: attained healthy-year equivalents</text><text x="56" y="198">Gold: shortfall while alive · Grey: years missing after death</text></g>
+</svg>
+<p class="tiny">The visual segments are <em>weighted year-equivalents</em>, not literal periods spent fully healthy or ill. The person lived six years throughout the blue and gold portions together. The last four calendar years represent the assumed reference gap after death.</p>
+</div>
+<div class="panel">
+<h3>0.3. The four measures, defined without circular wording</h3>
+<div class="grid">
+<div class="box">
+<span class="pill">QALY</span><h3>Quality-adjusted life-year</h3>
+<p><b>The question:</b> After taking account of the time someone survives and how their health states are valued, how many full-health-equivalent years did they experience?</p>
+<p><b>The arithmetic:</b> For each time interval, multiply time alive by the health-state utility and add all intervals. A health utility is a preference-based value anchored at 0 for death and 1 for full health; certain states may have negative values.</p>
+<p><b>Meaning:</b> 3 QALYs might come from 3 years in full health or 4 years at utility 0.75. These histories are represented by the same amount under the conventional multiplicative QALY rule, but they are not literally the same lived experience.</p>
+<p><b>HEOR direction:</b> Compare treatment with its alternative. More QALYs <em>gained</em> is a positive health effect.</p>
+</div>
+<div class="box">
+<span class="pill">DALY</span><h3>Disability-adjusted life-year</h3>
+<p><b>The question:</b> How many years of healthy life were lost due to premature death and time lived with disability, relative to a reference?</p>
+<p><b>The arithmetic:</b> Add years of life lost due to premature death (YLL) and years lived with disability, weighted by severity (YLD).</p>
+<p><b>Meaning:</b> A disease generating 100 DALYs has produced the equivalent of 100 healthy years of burden across the specified population, not necessarily 100 deaths or 100 years in which people were disabled.</p>
+<p><b>HEOR direction:</b> More DALY <em>burden</em> is worse. More DALYs <em>averted</em> by an intervention is better.</p>
+</div>
+<div class="box">
+<span class="pill">HALY</span><h3>Health-adjusted life-years, a family, not one universal formula</h3>
+<p><b>The question:</b> How can we construct a measure of population health that includes achieved health, missing health, or both, and what social judgments are hidden in that choice?</p>
+<p><b>The arithmetic:</b> The term HALY is used broadly in applied studies. The specific theoretical family in Moreno-Ternero et al. (2023) uses achieved quality-weighted lifetime minus a parameter-weighted reference lifetime.</p>
+<p><b>Meaning:</b> Different members of the theoretical family evaluate the same population from an attainment perspective or a reference-gap perspective. It would be misleading to describe every reported “HALY gained” in published studies as an application of the paper's parameter.</p>
+<p><b>HEOR direction:</b> Ask which exact HALY definition the study used. Chapter 3 derives the theoretical family from the first principles above.</p>
+</div>
+<div class="box">
+<span class="pill">PALY</span><h3>Productivity-adjusted life-year</h3>
+<p><b>The question:</b> Over time alive and within a defined productive period, how much productive activity was performed relative to full productivity under the chosen convention?</p>
+<p><b>The arithmetic:</b> Multiply lived time by a productivity index. That index may reflect missed work, reduced performance, labour-force participation and workforce exit.</p>
+<p><b>Meaning:</b> Five years at productivity index 0.6 contribute 3 PALYs. This does not mean only three years were lived, that the person's health was rated 0.6, or that the other two years had no social value.</p>
+<p><b>HEOR direction:</b> PALYs help analyse productivity burden, most commonly as a societal or economic consequence, not as a replacement for QALYs.</p>
+</div>
+</div>
+</div>
+<div class="panel">
+<h3>0.4. Four terms that must not be used interchangeably</h3>
+<p><b>Life expectancy:</b> the expected additional or total life-time in a population under a specified survival pattern. It is not a utility and is not always the same as the benchmark used for DALYs. For a person dying at a particular age, GBD YLL uses a standard remaining life expectancy <em>at that age</em>.</p>
+<p><b>Health utility:</b> a number expressing the valuation of a described health state, obtained using a preference-based approach. A utility of 0.5 is <em>not</em> a 50% probability of survival.</p>
+<p><b>Disability weight:</b> a severity weight for health loss due to disability. A value of 0.5 is <em>not</em> the proportion of patients disabled. Published GBD disability weights are not generally equal to one minus a QALY utility because the two measures are constructed and elicited differently. [R1]</p>
+<p><b>Productivity index:</b> a fraction representing activity or output under a particular definition. A 0.5 index is <em>not</em> a person's quality of life. If the index includes labour participation, make sure participation has not already reduced the population being modelled. [R3, R4]</p>
+<div class="callout caution"><strong>The main interpretive rule:</strong> Always state the comparator, population, horizon, reference lifespan, source of weights and whether the outcome is an <em>amount attained</em>, an <em>amount lost</em>, or a <em>difference between strategies</em>. A numerical result without those elements has no unambiguous interpretation.</div>
 </div>
 </section>
 <section class="module" id="qaly">
