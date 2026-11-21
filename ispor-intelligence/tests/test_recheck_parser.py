@@ -56,6 +56,19 @@ class DiscrepantPageParserTests(unittest.TestCase):
                                                   t + timedelta(hours=2), previous_controls_passed=True))
 
 
+    def test_furniture_does_not_supply_code_for_body_fallback(self):
+        page = self.parse(
+            "<html><head><title>Diabetes Control | ISPOR</title></head>"
+            "<body><header><span>P41</span></header>"
+            "<nav>Presentation P41</nav><aside>Related P41</aside>"
+            "<article>Presentation P42</article>"
+            "<footer>P41</footer></body></html>"
+        )
+        self.assertTrue(heading_matches(page, "Diabetes Control"))
+        self.assertFalse(page.has_main)
+        self.assertFalse(code_in(" ".join(page.body_chunks), "P41"))
+        self.assertTrue(code_in(" ".join(page.body_chunks), "P42"))
+
     def test_control_selection_is_deterministic_and_without_duplicates(self):
         from verify_discrepant_pages import HOST_PREFIX
         rows = [{"status": "url_match", "archive_url": HOST_PREFIX + str(i)}
