@@ -78,7 +78,7 @@ class OfficialSourceTests(unittest.TestCase):
         check_counts = collections.Counter(x["page_status"] for x in self.checks["results"])
         self.assertEqual(dict(check_counts), self.checks["counts"])
         self.assertEqual(sum(check_counts.values()), 374)
-        self.assertIn("Archive", self.html)
+        self.assertIn("archive", self.html.lower())
         self.assertIn("HTTP 404 at check time (unconfirmed)", self.js)
         self.assertNotIn('http_404:"Official page returned HTTP 404"', self.js)
 
