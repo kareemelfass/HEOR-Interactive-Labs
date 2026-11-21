@@ -17,7 +17,7 @@ import re
 import time
 import unicodedata
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -45,10 +45,13 @@ class PrimaryPage(HTMLParser):
         self.title_chunks = []
         self.headings = []
         self.main_chunks = []
+        self.body_chunks = []
+        self.has_main = False
         self.meta_title = ""
         self._in_title = 0
         self._in_h1 = 0
         self._in_main = 0
+        self._in_body = 0
         self._skip = 0
 
     def handle_starttag(self, tag, attrs):
@@ -61,6 +64,9 @@ class PrimaryPage(HTMLParser):
             self._in_h1 += 1
         elif tag == "main":
             self._in_main += 1
+            self.has_main = True
+        elif tag == "body":
+            self._in_body += 1
         elif tag == "meta" and attr.get("property") == "og:title":
             self.meta_title = html.unescape(attr.get("content") or "")
 
@@ -73,6 +79,8 @@ class PrimaryPage(HTMLParser):
             self._in_h1 -= 1
         elif tag == "main" and self._in_main:
             self._in_main -= 1
+        elif tag == "body" and self._in_body:
+            self._in_body -= 1
 
     def handle_data(self, data):
         if self._skip:
@@ -86,6 +94,8 @@ class PrimaryPage(HTMLParser):
             self.headings.append(value)
         if self._in_main:
             self.main_chunks.append(value)
+        if self._in_body:
+            self.body_chunks.append(value)
 
 def code_in(text, code):
     token = (code or "").strip()
@@ -97,9 +107,16 @@ def heading_matches(parser, title):
     expected = norm(title)
     if not expected:
         return False
-    candidates = [norm(" ".join(parser.headings)), norm(parser.meta_title), norm(" ".join(parser.title_chunks))]
-    return any(candidate == expected or candidate.startswith(expected + " |") or candidate.startswith(expected + " -")
-               for candidate in candidates if candidate)
+    candidates = [" ".join(parser.headings), parser.meta_title, " ".join(parser.title_chunks)]
+    for candidate in candidates:
+        if norm(candidate) == expected:
+            return True
+        # Apply the site-suffix check BEFORE normalisation removes punctuation.
+        # Avoid arbitrary prefix matches, which could confuse distinct study titles.
+        for separator in (" | ", " - ", " – ", " — "):
+            if separator in candidate and norm(candidate.split(separator, 1)[0]) == expected:
+                return True
+    return False
 
 def examine(url, archived_title, current_title, code):
     attempts = []
@@ -115,14 +132,18 @@ def examine(url, archived_title, current_title, code):
             parser.feed(raw)
             archived_match = heading_matches(parser, archived_title)
             current_match = heading_matches(parser, current_title)
-            main_text = " ".join(parser.main_chunks)
-            code_match = code_in(main_text, code)
+            # Some live pages have no semantic <main>. A title match plus a
+            # code elsewhere in visible body text is preferable to a false negative.
+            content_text = " ".join(parser.main_chunks if parser.has_main else parser.body_chunks)
+            code_match = code_in(content_text, code)
             attempt.update({
                 "page_html_sha256": hashlib.sha256(raw.encode()).hexdigest(),
                 "archived_title_match_heading_or_meta": archived_match,
                 "current_index_title_match_heading_or_meta": current_match,
-                "code_match_in_main": code_match,
-                "page_has_main_content": bool(main_text),
+                "code_match_in_primary_content": code_match,
+                "code_match_in_main": code_match if parser.has_main else None,
+                "code_match_scope": "main" if parser.has_main else "body_fallback",
+                "page_has_main_content": bool(parser.main_chunks),
             })
             attempts.append(attempt)
             if code_match and archived_match:
@@ -156,6 +177,11 @@ def main():
             code_to_current_titles.setdefault(row["code"], set()).add(row["title"])
     targets = [r for r in reconciliation["archive_to_official"] if r["status"] != "url_match"]
     targets.sort(key=lambda r: (r.get("archive_code") or "", r.get("archive_url") or ""))
+    previous = {}
+    if OUT.exists():
+        prior = json.loads(OUT.read_text(encoding="utf-8"))
+        previous = {(r["archive_code"], r["archived_url"]): r
+                    for r in prior.get("results", [])}
     result = []
     for i, task in enumerate(targets, 1):
         code = task.get("archive_code") or ""
@@ -166,7 +192,21 @@ def main():
             status, attempts = "invalid_or_non_ispor_archive_url", []
         else:
             status, attempts = examine(url, task.get("archive_title") or "", current_title, code)
+        old = previous.get((code, url))
+        persistent_404_across_runs = False
+        if (status == "repeated_http_404_unconfirmed" and old and
+            old.get("classification") in ("repeated_http_404_unconfirmed",
+                                           "cross_run_http_404_unconfirmed")):
+            old_observations = old.get("observations") or []
+            if old_observations:
+                old_date = datetime.fromisoformat(old_observations[0]["checked_at_utc"])
+                if datetime.now(timezone.utc) - old_date >= timedelta(hours=1):
+                    persistent_404_across_runs = True
+                    status = "cross_run_http_404_unconfirmed"
         result.append({
+            "persistent_404_observed_across_spaced_runs": persistent_404_across_runs,
+            "previous_observation_utc": old["observations"][0]["checked_at_utc"]
+                if persistent_404_across_runs else None,
             "archive_code": code,
             "archived_url": url,
             "archived_title": task.get("archive_title"),
@@ -190,7 +230,10 @@ def main():
             "prior_initial_observations_preserved_in": "official-page-checks.json",
             "repeated_404_does_not_prove_presentation_absence": True,
             "title_comparison_requires_primary_heading_or_meta": True,
-            "code_comparison_requires_main_content": True,
+            "code_comparison_requires_main_content": False,
+            "code_comparison_uses_body_only_if_main_absent": True,
+            "cross_run_404_confirmation_minimum_spacing_hours": 1,
+            "cross_run_404_remains_unconfirmed_as_absence": True,
             "fully_exhaustive_final_programme_verified": False,
         },
         "counts": dict(counts),
