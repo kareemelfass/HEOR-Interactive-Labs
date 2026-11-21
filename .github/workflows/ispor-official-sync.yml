@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Check Python syntax before contacting the source
+        run: python -m py_compile ispor-intelligence/scripts/sync_official_index.py
       - name: Fetch every current ISPOR search-index result and reconcile archive
         run: python ispor-intelligence/scripts/sync_official_index.py
       - name: Validate official-index integrity
