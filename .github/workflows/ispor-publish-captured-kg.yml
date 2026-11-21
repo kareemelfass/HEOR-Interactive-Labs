@@ -1,0 +1,131 @@
+name: Publish checked ISPOR index and KG from captured scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'ispor-intelligence/kg-publish-request.json'
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: ispor-source-write
+  cancel-in-progress: false
+
+jobs:
+  publish-captured-index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Retrieve independently captured ISPOR index snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/ispor-candidate
+          gh run download 44924258471 --repo "${{ github.repository }}" \
+            --name ispor-refresh-candidate-44924258471 \
+            --dir /tmp/ispor-candidate
+
+      - name: Extract only coherent official-source index outputs
+        run: |
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          source=Path("/tmp/ispor-candidate")
+          target=Path("ispor-intelligence/data")
+          required=[
+              "official-index-records.json",
+              "official-index-graph.json",
+              "official-index-scan-manifest.json",
+              "official-index-summary.json",
+              "official-reconciliation.json",
+          ]
+          for fname in required:
+              found=list(source.rglob(fname))
+              assert len(found)==1, (fname, [str(p) for p in found])
+              shutil.copy2(found[0], target/fname)
+          records=json.loads((target/"official-index-records.json").read_text())["records"]
+          manifest=json.loads((target/"official-index-scan-manifest.json").read_text())
+          graph=json.loads((target/"official-index-graph.json").read_text())
+          reconciliation=json.loads((target/"official-reconciliation.json").read_text())
+          assert len(records)==2928, "Expected captured source snapshot of 2,928 records"
+          assert len(records)==len({r["uid"] for r in records})
+          assert all(r["seen_in_scans"]==manifest["record_membership"][r["uid"]] for r in records)
+          assert len(reconciliation["archive_to_official"])==3097
+          n_presentations=sum(r["index_content_kind"]=="Confex Presentation" for r in records)
+          n_sessions=sum(r["index_content_kind"]=="Confex Session" for r in records)
+          assert n_presentations+n_sessions==len(records)
+          assert sum(n["type"]=="presentation" for n in graph["nodes"])==n_presentations
+          assert sum(n["type"]=="session" for n in graph["nodes"])==n_sessions
+          print("CAPTURED_INDEX_VERIFIED", {
+              "records":len(records),"presentations":n_presentations,
+              "sessions":n_sessions,"nodes":len(graph["nodes"]),"edges":len(graph["edges"])
+          })
+          PY
+      - name: Rebuild historical-only page supplement disjoint from current index
+        run: python ispor-intelligence/scripts/build_official_supplement.py
+      - name: Validate KG types, source and dashboard Python tests
+        run: |
+          python ispor-intelligence/scripts/repair_official_graph.py --check-only
+          python -m unittest discover -s ispor-intelligence/tests -v
+          python ispor-intelligence/scripts/verify_outputs.py
+          node --check ispor-intelligence/app.js
+          node --check ispor-intelligence/knowledge-gaps.js
+      - name: Render updated dashboard and verify all topic membership
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          python -m http.server 8765 --bind 127.0.0.1 > /tmp/ispor-kg-publish-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS http://127.0.0.1:8765/ispor-intelligence/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          python ispor-intelligence/scripts/smoke_dashboard_dom.py
+          python ispor-intelligence/scripts/smoke_claims_browser.py
+      - name: Preserve candidate on failure or branch protection conflict
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ispor-kg-publish-candidate-${{ github.run_id }}
+          path: |
+            ispor-intelligence/data/official-index-records.json
+            ispor-intelligence/data/official-index-graph.json
+            ispor-intelligence/data/official-index-scan-manifest.json
+            ispor-intelligence/data/official-index-summary.json
+            ispor-intelligence/data/official-reconciliation.json
+            ispor-intelligence/data/official-page-verified-supplement.json
+          retention-days: 14
+      - name: Commit validated source capture as one snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ispor-intelligence/data/official-index-records.json \
+                  ispor-intelligence/data/official-index-graph.json \
+                  ispor-intelligence/data/official-index-scan-manifest.json \
+                  ispor-intelligence/data/official-index-summary.json \
+                  ispor-intelligence/data/official-reconciliation.json \
+                  ispor-intelligence/data/official-page-verified-supplement.json
+          if git diff --cached --quiet; then
+            echo "CAPTURED_INDEX_ALREADY_PUBLISHED"
+          else
+            git commit -m "Publish ISPOR 2026 captured source index and updated knowledge graph"
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
+            echo "ISPOR_KG_SOURCE_PUBLISHED"
+          fi
+      - name: Dispatch explicit validation for token-authored publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ispor-verify-official-ui.yml --ref main
