@@ -30,7 +30,7 @@
   {name:"Infectious disease",re:/\binfection\b|\bHIV\b|\bviral\b|\bantibiotic\b/i}
  ];
  const el = id => document.getElementById(id);
- const state = {records:[],source:"",snapshot:"",isFull:false,rawCount:0,filtered:[],shown:20,graphFocus:"JCA",filter:"",query:"",searchMode:"all",error:""};
+ const state = {records:[],source:"",snapshot:"",isFull:false,rawCount:0,filtered:[],shown:20,graphFocus:"",filter:"",isOfficial:false,query:"",searchMode:"all",error:""};
  let reviewedClaims=[];
  const h = (tag,cls,text) => { const n=document.createElement(tag); if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n; };
  const safeUrl = v => typeof v==="string" && /^https:\/\/(www\.)?ispor\.org\//i.test(v) ? v : "";
@@ -117,29 +117,33 @@
   return out;
  }
  function setData(records,source,full,rawCount,error){
-  state.records=clean(records); state.rawCount=rawCount||records.length;state.source=source;state.isFull=full;state.error=error||"";
+  state.records=clean(records); state.rawCount=rawCount||records.length;state.source=source;state.isFull=full;state.isOfficial=(source==="Official ISPOR search index");state.error=error||"";
   state.shown=20;
   updateThemeSelect();updateGraphSelect();applyFilters();
   el("sourceName").textContent=source;
-  el("sourceDetail").textContent=full?"2026 pre-conference snapshot, external archive; not official final census":(error?error:"Individually checked ISPOR presentation pages; selected sample");
+  el("sourceDetail").textContent=state.isOfficial?"Search-index snapshot, not a final census; individual page validation is not complete":(error||"Unverified input");
   el("liveDot").className="live-dot "+(full?"ok":"warn");
-  el("metricQualifier").textContent=full?"2026 archive, not final official census":"Selected verified records, not all abstracts";
+  el("metricQualifier").textContent=state.isOfficial?"Official search-index records; denominator not reconciled":"Unverified dataset";
   renderQuality();
  }
  function updateThemeSelect(){
   const current=state.filter;
   const sel=el("themeFilter");sel.replaceChildren(h("option","", "All themes"));sel.options[0].value="";
-  TOPICS.forEach(t=>{const op=h("option","",t.name);op.value=t.name;sel.append(op)});
-  sel.value=current;
+  const values=[...new Set(state.records.flatMap(r=>r.tags))].sort();
+  values.forEach(t=>{const op=h("option","",t);op.value=t;sel.append(op)});
+  sel.value=values.includes(current)?current:"";
+  state.filter=sel.value;
  }
  function updateGraphSelect(){
   const sel=el("graphFocus");sel.replaceChildren();
-  TOPICS.forEach(t=>{const op=h("option","",t.name);op.value=t.name;sel.append(op)});
+  const values=[...new Set(state.records.flatMap(r=>r.tags))].sort();
+  values.forEach(t=>{const op=h("option","",t);op.value=t;sel.append(op)});
+  if(!values.includes(state.graphFocus))state.graphFocus=values[0]||"";
   sel.value=state.graphFocus;
  }
  function matchSearch(r){
   if(!state.query)return true;
-  const value=(state.searchMode==="title"?r.title:[r.title,r.abstract,r.code,r.topicsRaw,r.diseaseRaw].join(" ")).toLowerCase();
+  const value=(state.searchMode==="title"?r.title:[r.title,r.abstract,r.code,r.topicsRaw,r.diseaseRaw,r.authorText||""].join(" ")).toLowerCase();
   return state.query.trim().toLowerCase().split(/\s+/).every(t=>value.includes(t));
  }
  function applyFilters(){
@@ -169,7 +173,7 @@
  function renderInsights(){
   const top=counts("tags")[0]; const pct=top&&state.filtered.length?Math.round(100*top.count/state.filtered.length):0;
   el("insightTitle").textContent=top?top.name+" appears in "+format(top.count)+" matching records":"No records match these filters";
-  el("insightText").textContent=top?"This is "+pct+"% of the currently filtered presentations. It measures a keyword signal, not audience interest, methodological quality or growth since 2025.":"Try clearing your filters or importing a different corpus.";
+  el("insightText").textContent=top?"This is "+pct+"% of the currently filtered records. It measures an official search-index category, not discussion intensity, methodological quality or year-on-year growth.":"Try clearing your filters or importing a different corpus.";
   const links=el("insightSources");links.replaceChildren();
   if(top)state.filtered.filter(r=>r.tags.includes(top.name)&&sourceLink(r)).slice(0,3).forEach(r=>{const a=h("a","",r.title.slice(0,55)+(r.title.length>55?"…":""));a.href=r.url;a.target="_blank";a.rel="noopener noreferrer";links.append(a)});
  }
@@ -210,14 +214,14 @@
  function switchGraphFocus(t){state.graphFocus=t;el("graphFocus").value=t;renderGraph()}
  function showThemeDetail(t,matching){
   el("detailTitle").textContent=t;
-  el("detailText").textContent=format(matching.length)+" currently filtered presentations mention this theme. Links represent keyword mentions, not confirmed method use or findings.";
+  el("detailText").textContent=format(matching.length)+" currently filtered presentations mention this theme. Links represent source-index topic classifications, not confirmed method use or findings.";
   el("detailLinks").replaceChildren();
   related(matching);
   renderReviewedClaims(matching,t);
  }
  function showRecordDetail(r){
   el("detailTitle").textContent=r.title;
-  el("detailText").textContent=(r.code?r.code+" · ":"")+"Tagged themes: "+(r.tags.join(", ")||"none")+". Check the official source for methods and findings.";
+  el("detailText").textContent=(r.code?r.code+" · ":"")+"Indexed categories: "+(r.tags.join(", ")||"none")+". Check the official source for methods and findings.";
   const out=el("detailLinks");out.replaceChildren();
   if(sourceLink(r)){const a=h("a","","Open original ISPOR presentation ↗");a.href=r.url;a.target="_blank";a.rel="noopener noreferrer";out.append(a)}
   related([r]);
@@ -258,7 +262,7 @@
    const title=h("h3");const a=sourceLink(r)?h("a","",r.title):h("span","",r.title);
    if(sourceLink(r)){a.href=r.url;a.rel="noopener noreferrer";a.target="_blank"}
    title.append(a);
-   const caption=h("p","",r.sourceType+(sourceLink(r)?" · Link verified as ISPOR domain":" · Official link not available in source"));
+   const caption=h("p","",r.sourceType+(sourceLink(r)?" · Search-index URL, not yet individually page-checked":" · Official link not available in source"));
    const tags=h("div","tags");r.tags.forEach(t=>tags.append(h("span","",t)));
    article.append(head,title,caption,tags);target.append(article);
   });
@@ -294,10 +298,10 @@
    [format(state.rawCount),"Input rows"],
    [format(state.records.length),"Usable unique records"],
    [format(valid),"ISPOR-domain URLs"],
-   [format(abstract),"Records with text"],
-   [format(tagged),"Records with topic signal"],
-   [format(state.records.filter(r=>r.sourceCategories.length>0).length),"Archive category coverage"],
-   [state.isFull?"External snapshot":"Verified seed","Data coverage"]
+   [format(abstract),"Local abstract text (not republished)"],
+   [format(tagged),"Records with official topic group"],
+   [format(state.records.filter(r=>r.sourceCategories.length>0).length),"Official index category coverage"],
+   [state.isOfficial?"ISPOR search index":"Unverified","Data coverage"]
   ];
   el("quality").replaceChildren(...items.map(([v,label])=>{const box=h("div","quality-box");box.append(h("strong","",v),h("span","",label));return box}));
  }
@@ -336,7 +340,36 @@
   const csv=[cols.join(","),...state.filtered.map(r=>cols.map(c=>quote(r[c])).join(","))].join("\r\n");
   download("ispor_europe_2026_filtered.csv",csv,"text/csv;charset=utf-8");
  }
- async function loadSeed(){
+ function fromOfficial(items) {
+  return items.map((r,i)=>({
+    id:r.uid || "official"+i,
+    code:r.code || "",
+    title:r.title,
+    abstract:"",
+    authorText:r.authors_affiliations_text || "",
+    url:r.official_detail_link_present?safeUrl(r.url):"",
+    tags:r.topic_groups || [],
+    diseases:r.disease_areas || [],
+    sourceCategories:r.category_paths || [],
+    sourceDiseases:r.disease_areas || [],
+    topicsRaw:(r.category_paths||[]).join(" "),
+    diseaseRaw:(r.disease_areas||[]).join(" "),
+    sourceType:"ISPOR search index",
+    year:2026
+  }));
+ }
+ async function loadOfficialIndex(){
+  const response=await fetch("./data/official-index-records.json",{cache:"no-store"});
+  if(!response.ok)throw Error("Official-index file unavailable, HTTP "+response.status);
+  const data=await response.json();
+  if(!Array.isArray(data.records)||data.records.length<1000)throw Error("Official-index corpus incomplete");
+  const official=fromOfficial(data.records);
+  setData(official,"Official ISPOR search index",true,data.records.length,"");
+  const flagged=data.records.filter(r=>!r.official_detail_link_present).length;
+  el("sourceDetail").textContent="Official index: "+format(data.records.length)+" results; "+format(flagged)+" lack presentation-detail URLs. Final ISPOR denominator unresolved.";
+  return data;
+ }
+  async function loadSeed(){
   const response=await fetch("./data/verified-records.json",{cache:"no-store"});
   if(!response.ok)throw Error("Curated seed unavailable");
   const body=await response.json();
@@ -389,23 +422,32 @@
   el("textMode").addEventListener("change",e=>{state.searchMode=e.target.value;applyFilters()});
   el("clearFilters").addEventListener("click",()=>{state.query="";state.filter="";state.searchMode="all";el("search").value="";el("themeFilter").value="";el("textMode").value="all";state.shown=20;applyFilters()});
   el("graphFocus").addEventListener("change",e=>{state.graphFocus=e.target.value;renderGraph()});
-  el("resetGraph").addEventListener("click",()=>switchGraphFocus("JCA"));
+  el("resetGraph").addEventListener("click",()=>switchGraphFocus([...new Set(state.records.flatMap(r=>r.tags))].sort()[0]||""));
   el("loadMore").addEventListener("click",()=>{state.shown+=20;renderResults()});
-  el("refreshData").addEventListener("click",loadArchive);
+  el("refreshData").addEventListener("click",loadOfficialIndex);
   el("importJson").addEventListener("change",e=>{if(e.target.files&&e.target.files[0])importFile(e.target.files[0])});
   el("exportCsv").addEventListener("click",exportCsv);
-  el("exportKg").addEventListener("click",()=>download("ispor_europe_2026_knowledge_graph.json",JSON.stringify(makeGraph(state.records),null,2)));
+  el("exportKg").addEventListener("click",async()=>{
+    if(!state.isOfficial)return alert("Official source graph unavailable");
+    try{
+      const response=await fetch("./data/official-index-graph.json");
+      if(!response.ok)throw Error("Official graph unavailable");
+      const body=await response.text();
+      download("ispor_europe_2026_official_index_graph.json",body);
+    }catch(e){alert("Export failed: "+e.message)}
+  });
  }
  async function init(){
   try{
-   const response=await fetch("./data/reviewed-claims.json");
-   if(response.ok){const raw=await response.json();reviewedClaims=(raw.claims||[]).filter(c=>safeUrl(c.source_url));}
+    const response=await fetch("./data/reviewed-claims.json");
+    if(response.ok){const raw=await response.json();reviewedClaims=(raw.claims||[]).filter(c=>safeUrl(c.source_url))}
   }catch(_e){}
-  try{
-   await loadSeed();
-   try{await loadLocalIndex()}catch(_e){}
-   await loadArchive();
-  }catch(e){el("sourceName").textContent="Data unavailable";el("sourceDetail").textContent=e.message}
+  try{await loadOfficialIndex()}
+  catch(e){
+    setData([],"Official index unavailable",false,0,String(e));
+    el("sourceName").textContent="Official dataset unavailable";
+    el("sourceDetail").textContent="Unable to verify source: "+String(e)+". Archive data is not substituted.";
+  }
  }
  bind();
  init();
