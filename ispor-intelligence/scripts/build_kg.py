@@ -258,6 +258,9 @@ def main():
     else:
         with open(args.source, "r", encoding="utf-8") as f:
             raw = json.load(f)
+    raw_rows = extract_rows(raw)
+    if raw_rows and isinstance(raw_rows[0], dict):
+        print("Archive source fields:", ", ".join(sorted(raw_rows[0].keys())))
     records, input_rows = build(raw, allow_small=args.allow_small)
     graph, index, summary = outputs(records, input_rows, args.source)
     claim_path = Path(__file__).resolve().parents[1] / "data" / "reviewed-claims.json"
