@@ -19,7 +19,7 @@ def latest(code, status):
     return {
         "original_reconciliation_status": "archive_only_not_in_official_index",
         "classification": status, "archive_code": code,
-        "archive_title": "Title " + code, "archived_url": HOST + code,
+        "archived_title": "Title " + code, "archived_url": HOST + code,
         "observations": [{
             "checked_at_utc": "2026-11-21T17:00:00+00:00",
             "http_status": 200 if status == "heading_and_code_verified" else 404,
