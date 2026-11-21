@@ -4,9 +4,9 @@
 
 ## Primary-source policy
 
-The main dashboard displays **individual research presentations, excluding conference sessions, from ISPOR's own configured public search-index service**, accessed from its [presentations database](https://www.ispor.org/heor-resources/presentations-database/results). The independent August 2026 abstract archive is not used as the dashboard's primary source or silently substituted.
+The main dashboard displays **individual research presentations, excluding conference sessions, from ISPOR's own configured public search-index service**, accessed from its [presentations database](https://www.ispor.org/heor-resources/presentations-database/results). The independent abstract archive, whose collection date is unverified, is not used as the dashboard's primary source or silently substituted.
 
-This is a **search-index capture**, not certification of the final conference universe. The public search index changed its count during collection, and a separate ISPOR facet displayed a different count. Consequently, **no final-conference denominator is claimed**.
+This is a **search-index capture**, not certification of the final conference universe. The 2,778-presentation headline is a lower bound on *presentations documented by these sources at their respective check times*: 30 further official presentation pages matched code/title during the initial check but were not captured in the index. They are not proof of current availability or a point-in-time final census. The public search index changed its count during collection, and a separate ISPOR facet displayed a different count. Consequently, **no final-conference denominator is claimed**.
 
 The captured ISPOR metadata comprise UIDs, presentation codes where provided, titles, URLs, raw authors/affiliations, topic groups and subtopic paths, disease categories, session labels, publication dates, citable flags, and available indexed media links. **Full abstract bodies are not republished.** Text hashes preserve a source identity check.
 
