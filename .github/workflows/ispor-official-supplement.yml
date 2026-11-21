@@ -1,0 +1,51 @@
+name: Publish individually verified ISPOR page supplement
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ispor-intelligence/scripts/build_official_supplement.py"
+      - ".github/workflows/ispor-official-supplement.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build from directly checked official pages only
+        run: |
+          python -m py_compile ispor-intelligence/scripts/build_official_supplement.py
+          python ispor-intelligence/scripts/build_official_supplement.py
+      - name: Verify supplement does not contaminate official index
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          base=Path("ispor-intelligence/data")
+          x=json.loads((base/"official-page-verified-supplement.json").read_text())
+          s=json.loads((base/"official-index-summary.json").read_text())
+          assert x["metadata"]["not_added_to_search_index_denominator"]
+          assert x["metadata"]["count"]==len(x["records"])
+          assert s["metadata"]["records"]>=2500
+          assert all(r["verdict"]=="verified_official_page_absent_from_captured_search_index" for r in x["records"])
+          print("OFFICIAL_PAGE_SUPPLEMENT_VALIDATED",len(x["records"]))
+          PY
+      - name: Commit independently verified supplement
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ispor-intelligence/data/official-page-verified-supplement.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Publish directly confirmed ISPOR pages absent from search index"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then echo "OFFICIAL_SUPPLEMENT_PUBLISHED"; exit 0; fi
+            sleep 2
+          done
+          exit 1
