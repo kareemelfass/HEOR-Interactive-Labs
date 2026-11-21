@@ -40,7 +40,7 @@ The pipeline downloads the public JSON and creates:
 
 The builder refuses to replace the published graph if fewer than 1,000 candidate/usable records can be parsed. Its exact input source and record coverage are recorded in the generated files. Import a different JSON locally using the dashboard's Import JSON control.
 
-The GitHub Actions workflow at .github/workflows/ispor-intelligence.yml tests and rebuilds the derived graph on pipeline changes, weekly, or by manual workflow dispatch. Repository Actions permissions must permit writing contents for automatic commits to succeed.
+The GitHub Actions workflow at .github/workflows/ispor-intelligence.yml tests and rebuilds the derived graph on pipeline changes or by manual workflow dispatch. Repository Actions permissions must permit writing contents for automatic commits to succeed.
 
 ## Interpretation rules
 
