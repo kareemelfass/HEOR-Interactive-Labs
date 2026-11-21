@@ -7,9 +7,8 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 from urllib.error import HTTPError
-import verify_discrepant_pages as pagecheck
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+import verify_discrepant_pages as pagecheck
 from verify_discrepant_pages import PrimaryPage, heading_matches, code_in, spaced_404_observation, select_controls
 
 
