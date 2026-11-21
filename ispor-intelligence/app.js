@@ -363,6 +363,25 @@
     return box;
   }));
  }
+  function renderOfficialPageAudit(audit){
+  const target=el("officialPageAudit");
+  if(!target)return;
+  const counts=audit.counts||{};
+  const labels={
+    official_page_title_code_verified:"Official page verified (title and code)",
+    official_page_reachable_content_mismatch:"Official page reachable, title/code unresolved",
+    http_404:"Official page returned HTTP 404",
+    http_403:"Official page returned HTTP 403",
+    network_error:"Network error, not verified",
+    invalid_or_missing_url:"No valid ISPOR page URL",
+    parse_or_unknown_error:"Other verification errors"
+  };
+  target.replaceChildren(...Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{
+    const box=h("div","quality-box");
+    box.append(h("strong","",format(v)),h("span","",labels[k]||k));
+    return box;
+  }));
+ }
   function fromOfficial(items) {
   return items.map((r,i)=>({
     id:r.uid || "official"+i,
@@ -391,6 +410,7 @@
   const sessions=data.records.filter(r=>r.index_content_kind==="Confex Session").length;
   el("sourceDetail").textContent="Official indexed items: "+format(data.records.length)+" ("+format(data.records.length-sessions)+" presentations, "+format(sessions)+" sessions). Index count changed during collection; final census unresolved.";
   try{const response=await fetch("./data/official-index-summary.json",{cache:"no-store"});if(response.ok)renderOfficialReconciliation(await response.json())}catch(_e){}
+  try{const response=await fetch("./data/official-page-checks.json",{cache:"no-store"});if(response.ok)renderOfficialPageAudit(await response.json())}catch(_e){}
   return data;
  }
   async function loadSeed(){
