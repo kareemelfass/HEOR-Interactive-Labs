@@ -1,0 +1,51 @@
+name: Repair ISPOR source graph node types
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ispor-intelligence/scripts/repair_official_graph.py"
+      - ".github/workflows/ispor-graph-repair.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ispor-source-write
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Re-type source sessions, without changing any relationship assertions
+        run: |
+          python -m py_compile ispor-intelligence/scripts/repair_official_graph.py
+          python ispor-intelligence/scripts/repair_official_graph.py
+          python -m unittest discover -s ispor-intelligence/tests -v
+      - name: Commit only the deterministic corrected official source graph
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ispor-intelligence/data/official-index-graph.json
+          if git diff --cached --quiet; then
+            echo "Official graph already has correctly typed nodes"
+            exit 0
+          fi
+          git commit -m "Correct 139 official ISPOR session node types and source IDs"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              echo "ISPOR_GRAPH_REPAIR_PUBLISHED"
+              exit 0
+            fi
+            sleep 3
+          done
+          exit 1
