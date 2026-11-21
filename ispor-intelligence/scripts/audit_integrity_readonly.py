@@ -11,6 +11,14 @@ raw=json.load(urlopen(Request(source,headers={"User-Agent":"ISPOR-Audit/1.0"}),t
 from importlib.machinery import SourceFileLoader
 builder=SourceFileLoader("builder",str(root/"scripts"/"build_kg.py")).load_module()
 original=builder.extract_rows(raw)
+print("SCHEMA_SAMPLE_START")
+for i in [0, 1, 2]:
+    r=original[i]
+    print(json.dumps({"row":i,"fields":{k:{"type":type(v).__name__,
+        "preview":str(v)[:240] if k not in ("summary","sections","source_authors_affiliations") else "<redacted full-text field>",
+        "count":len(v) if isinstance(v,(list,dict)) else None}
+        for k,v in r.items()}},ensure_ascii=False))
+print("SCHEMA_SAMPLE_END")
 data=root/"data"
 index=json.loads((data/"records-index.json").read_text())
 graph=json.loads((data/"knowledge-graph.json").read_text())
