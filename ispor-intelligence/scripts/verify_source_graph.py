@@ -8,13 +8,14 @@ from importlib.machinery import SourceFileLoader
 
 ROOT=Path(__file__).resolve().parents[1]
 builder=SourceFileLoader("build_source_graph",str(ROOT/"scripts"/"build_source_graph.py")).load_module()
-raw=builder.load_source(builder.SOURCE)
+envelope=builder.load_source(builder.SOURCE)
+raw=envelope["records"] if isinstance(envelope,dict) and isinstance(envelope.get("records"),list) else envelope
 index=json.loads((ROOT/"data"/"source-records.json").read_text(encoding="utf-8"))
 graph=json.loads((ROOT/"data"/"source-knowledge-graph.json").read_text(encoding="utf-8"))
 coverage=json.loads((ROOT/"data"/"source-coverage.json").read_text(encoding="utf-8"))
 rows=index["records"]
 assert len(raw)==len(rows)==3097, "Record mismatch"
-assert graph["metadata"]["source_sha256"]==builder.sha(raw)
+assert graph["metadata"]["source_sha256"]==builder.sha(envelope)
 assert not graph["metadata"]["full_abstract_text_redistributed"]
 assert graph["metadata"]["source_only_graph"]
 assert not any(n["type"] in ("research_gap","inferred_method","sponsor","person") for n in graph["nodes"])
