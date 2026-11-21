@@ -3,21 +3,59 @@ name: Validate official-source ISPOR dashboard
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "ispor-intelligence/**"
-      - ".github/workflows/ispor-verify-official-ui.yml"
   push:
     branches: [main]
-    paths:
-      - "ispor-intelligence/**"
-      - ".github/workflows/ispor-verify-official-ui.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      ispor_changed: ${{ steps.diff.outputs.ispor_changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Determine whether ISPOR source or validation changed
+        id: diff
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "$EVENT_NAME" = workflow_dispatch ]; then
+            echo "ispor_changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          BASE="${BASE_SHA:-$BEFORE_SHA}"
+          if [ -z "$BASE" ] || [[ "$BASE" =~ ^0+$ ]]; then
+            echo "ispor_changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git diff --name-only "$BASE" HEAD > /tmp/changed-paths.txt
+          if grep -Eq '^(ispor-intelligence/|\.github/workflows/(ispor-|pages\.yml))' /tmp/changed-paths.txt; then
+            echo "ispor_changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ispor_changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate shared Pages entrypoints for every repository change
+        run: |
+          test -s index.html
+          test -s ispor-intelligence/index.html
+          echo "HEOR_SITE_ENTRYPOINTS_PASS"
+
   verify:
+    needs: detect
+    if: needs.detect.outputs.ispor_changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -50,30 +88,16 @@ jobs:
             if curl -fsS http://127.0.0.1:8765/ispor-intelligence/index.html >/dev/null; then break; fi
             sleep 1
           done
-          CHROME="$(command -v google-chrome || command -v chromium || true)"
-          test -n "$CHROME"
-          timeout 90 "$CHROME" --headless --no-sandbox --disable-gpu \
-            --virtual-time-budget=20000 --dump-dom \
-            http://127.0.0.1:8765/ispor-intelligence/index.html \
-            > /tmp/ispor-live-dom.html 2>/tmp/ispor-chrome.log
-          python - <<'PY'
-          from pathlib import Path
-          import json
-          html=Path("/tmp/ispor-live-dom.html").read_text(encoding="utf-8")
-          rows=json.loads(Path("ispor-intelligence/data/official-index-records.json").read_text())["records"]
-          presentations=sum(r["index_content_kind"]=="Confex Presentation" for r in rows)
-          sessions=sum(r["index_content_kind"]=="Confex Session" for r in rows)
-          assert presentations>=2500 and sessions>0 and presentations+sessions==len(rows)
-          assert f'id="metricRecords">{presentations:,}<' in html, \
-            "Dashboard denominator includes sessions or other records"
-          assert 'id="sourceName">Official ISPOR search index<' in html
-          assert 'id="diseaseMissing">' in html
-          assert "16 of 16 editorial topics · 32 proposed hypotheses" in html
-          assert "Archived URL returned HTTP 404 at check time (unconfirmed)" in html
-          assert "archive only, not in captured official index" in html.lower()
-          assert "Related ISPOR presentations" not in html
-          print("ISPOR_CORRECTIVE_BROWSER_PASS",{
-            "presentations":presentations,"sessions_excluded":sessions,
-            "hypotheses":32,"provisional_404_label":True
-          })
-          PY
+          python ispor-intelligence/scripts/smoke_dashboard_dom.py
+
+      - name: Browser regression for reviewed-claim membership across official topics
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          python -m http.server 8765 --bind 127.0.0.1 > /tmp/ispor-claims-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS http://127.0.0.1:8765/ispor-intelligence/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          python ispor-intelligence/scripts/smoke_claims_browser.py

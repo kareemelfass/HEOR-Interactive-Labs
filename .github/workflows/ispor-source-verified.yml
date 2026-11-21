@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ispor-source-write
@@ -23,26 +23,12 @@ jobs:
         run: python ispor-intelligence/scripts/build_source_graph.py
       - name: Independently validate all 3097 records and every relationship
         run: python ispor-intelligence/scripts/verify_source_graph.py
-      - name: Publish only the newly verified source-derived files
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ispor-intelligence/data/source-records.json \
-                  ispor-intelligence/data/source-knowledge-graph.json \
-                  ispor-intelligence/data/source-coverage.json \
-                  ispor-intelligence/data/source-summary.json
-          if git diff --cached --quiet; then
-            echo "No source-derived changes"
-            exit 0
-          fi
-          git commit -m "Publish source-verifiable ISPOR full metadata graph"
-          for attempt in 1 2 3 4; do
-            git fetch origin main
-            git rebase origin/main
-            if git push origin HEAD:main; then
-              echo "Verified source-only KG published"
-              exit 0
-            fi
-            sleep 3
-          done
-          exit 1
+      - name: Preserve results as inspection-only artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ispor-single-purpose-audit-${{ github.run_id }}
+          path: |
+            ispor-intelligence/data/source-*.json
+          if-no-files-found: warn
+          retention-days: 14
