@@ -121,7 +121,7 @@
   el("sourceName").textContent=source;
   el("sourceDetail").textContent=state.isOfficial?"Search-index snapshot, not a final census; individual page validation is not complete":(error||"Unverified input");
   el("liveDot").className="live-dot "+(full?"ok":"warn");
-  el("metricQualifier").textContent=state.isOfficial?"Indexed presentations only; 30 other official pages matched on first check outside this index; sessions excluded; final census unknown":"User-imported unverified data";
+  el("metricQualifier").textContent=state.isOfficial?"Indexed presentations only; sessions excluded; final census unknown":"User-imported unverified data";
   renderQuality();
  }
  function updateThemeSelect(){
@@ -354,7 +354,7 @@
     invalid_or_missing_url:"No valid ISPOR page URL",
     parse_or_unknown_error:"Other verification errors"
   };
-  target.replaceChildren(...[["additional official pages matched on first check; list not exhaustive",separatelyConfirmed],...Object.entries(counts).sort((a,b)=>b[1]-a[1])].map(([k,v])=>{
+  target.replaceChildren(...[["archived-only official pages matched on first check (historical; list not exhaustive)",separatelyConfirmed],...Object.entries(counts).sort((a,b)=>b[1]-a[1])].map(([k,v])=>{
     const box=h("div","quality-box");
     box.append(h("strong","",format(v)),h("span","",labels[k]||k));
     return box;
@@ -391,6 +391,14 @@
   el("sourceDetail").textContent="Indexed research presentations: "+format(official.length)+"; "+format(sessions)+" conference sessions excluded from analysis. Final conference census unresolved.";
   try{const response=await fetch("./data/official-index-summary.json",{cache:"no-store"});if(response.ok)renderOfficialReconciliation(await response.json())}catch(_e){}
   try{const response=await fetch("./data/official-page-checks.json",{cache:"no-store"});if(response.ok)renderOfficialPageAudit(await response.json())}catch(_e){}
+  try{
+   const response=await fetch("./data/official-page-verified-supplement.json",{cache:"no-store"});
+   if(response.ok){
+    const extra=(await response.json()).records||[];
+    el("metricQualifier").textContent="Indexed presentations only; "+format(extra.length)+
+      " additional official presentation pages matched on the first check outside this captured index; final census unknown.";
+   }
+  }catch(_e){}
   return data;
  }
  async function importFile(file){
