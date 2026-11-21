@@ -419,37 +419,6 @@
   try{const response=await fetch("./data/official-page-checks.json",{cache:"no-store"});if(response.ok)renderOfficialPageAudit(await response.json())}catch(_e){}
   return data;
  }
-  async function loadSeed(){
-  const response=await fetch("./data/verified-records.json",{cache:"no-store"});
-  if(!response.ok)throw Error("Curated seed unavailable");
-  const body=await response.json();
-  setData(fromSeed(body.records||[]),"Verified official ISPOR seed",false,(body.records||[]).length,"");
- }
- async function loadLocalIndex(){
-  const response=await fetch("./data/records-index.json",{cache:"no-store"});
-  if(!response.ok)throw Error("No prebuilt full metadata index");
-  const body=await response.json();
-  const rows=extractRows(body);
-  if(rows.length<1000)throw Error("Incomplete local metadata index");
-  setData(rows,"Prebuilt 2026 metadata KG index",true,rows.length,"");
- }
- async function loadArchive(){
-  el("sourceName").textContent="Retrieving 2026 archive...";
-  try{
-   const response=await fetch(ARCHIVE,{mode:"cors",cache:"no-store"});
-   if(!response.ok)throw Error("HTTP "+response.status);
-   const body=await response.json();
-   const rows=extractRows(body);
-   if(rows.length<1000)throw Error("Archive shape could not be interpreted reliably ("+rows.length+" candidate rows)");
-   const records=clean(rows);
-   if(records.length<1000)throw Error("Only "+records.length+" titles were usable; not accepting partial corpus");
-   setData(records,"Independent 2026 abstract archive",true,rows.length,"");
-  }catch(e){
-   const reason=e&&e.message?e.message:String(e);
-   if(state.records.length===0){el("sourceName").textContent="Unable to load research records";el("sourceDetail").textContent=reason}
-   else{el("sourceName").textContent=state.source;el("sourceDetail").textContent="Live archive fetch unavailable: "+reason+". Displaying "+(state.isFull?"the prebuilt metadata index":"the verified seed")+".";state.error=reason;renderQuality()}
-  }
- }
  async function importFile(file){
   if(!file)return;
   try{
