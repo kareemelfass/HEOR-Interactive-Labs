@@ -1,0 +1,58 @@
+name: Validate official-source ISPOR dashboard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ispor-intelligence/app.js"
+      - "ispor-intelligence/index.html"
+      - "ispor-intelligence/knowledge-gaps.js"
+      - "ispor-intelligence/tests/test_official_source.py"
+      - ".github/workflows/ispor-verify-official-ui.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate source fidelity, relationships and discrepancy coverage
+        run: python -m unittest discover -s ispor-intelligence/tests -v
+      - name: Check JavaScript syntax
+        run: |
+          node --check ispor-intelligence/app.js
+          node --check ispor-intelligence/knowledge-gaps.js
+      - name: Validate official data and reconciliation in rendered browser
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 > /tmp/ispor-official-ui-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS http://127.0.0.1:8765/ispor-intelligence/index.html > /dev/null; then break; fi
+            sleep 1
+          done
+          CHROME="$(command -v google-chrome || command -v chromium || true)"
+          test -n "$CHROME"
+          timeout 90 "$CHROME" --headless --no-sandbox --disable-gpu --virtual-time-budget=18000 --dump-dom \
+            http://127.0.0.1:8765/ispor-intelligence/index.html > /tmp/ispor-official-ui.html 2>/tmp/ispor-official-ui-chrome.log
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          text=Path("/tmp/ispor-official-ui.html").read_text(encoding="utf-8")
+          index=json.loads(Path("ispor-intelligence/data/official-index-records.json").read_text())
+          expected=f'{len(index["records"]):,}'
+          assert f'id="metricRecords">{expected}<' in text, "Dashboard did not render all captured official-index items"
+          assert 'id="sourceName">Official ISPOR search index<' in text, "Did not use official primary source"
+          assert "archive only, not in captured official index" in text.lower(), "Missing discrepancy register"
+          assert "16 of 16 themes · 32 proposed research directions" in text, "Proposed research questions missing"
+          assert "Independent 2026 abstract archive" not in text, "Archive was used as primary dataset"
+          print("OFFICIAL_BROWSER_SMOKE_PASS",{"indexed_items":expected,
+            "proposed_topics":16,"discrepancies_visible":True})
+          PY
