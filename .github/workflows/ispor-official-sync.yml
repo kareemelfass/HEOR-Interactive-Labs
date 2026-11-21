@@ -1,14 +1,13 @@
 name: Build official ISPOR 2026 search-index dataset
 on:
-  push:
-    branches: [main]
-    paths:
-      - "ispor-intelligence/scripts/sync_official_index.py"
-      - ".github/workflows/ispor-official-sync.yml"
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: ispor-source-write
+  cancel-in-progress: false
 
 jobs:
   index-and-reconcile:
