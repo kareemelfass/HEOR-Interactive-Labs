@@ -36,6 +36,7 @@
  const safeUrl = v => typeof v==="string" && /^https:\/\/(www\.)?ispor\.org\//i.test(v) ? v : "";
  const sourceLink = r => safeUrl(r.url);
  const format = n => Number(n||0).toLocaleString("en-GB");
+ const UNSPECIFIED_DISEASE = "No Additional Disease & Conditions/Specialized Treatment Areas";
  const byCount = (a,b) => b.count-a.count || a.name.localeCompare(b.name);
  const str = v => {
   if(v===null || v===undefined)return "";
@@ -123,7 +124,7 @@
   el("sourceName").textContent=source;
   el("sourceDetail").textContent=state.isOfficial?"Search-index snapshot, not a final census; individual page validation is not complete":(error||"Unverified input");
   el("liveDot").className="live-dot "+(full?"ok":"warn");
-  el("metricQualifier").textContent=state.isOfficial?"Official search-index records; denominator not reconciled":"Unverified dataset";
+  el("metricQualifier").textContent=state.isOfficial?"Indexed presentations only; sessions excluded; final census unknown":"User-imported unverified data";
   renderQuality();
  }
  function updateThemeSelect(){
@@ -155,7 +156,7 @@
   el("filteredCount").textContent=format(state.filtered.length)+" matching";
   renderBars();renderInsights();renderGraph();renderResults();renderMatrix();renderQuality();
  }
- function counts(fieldName){return [...new Set(state.filtered.flatMap(r=>r[fieldName]))].map(name=>({name,count:state.filtered.filter(r=>r[fieldName].includes(name)).length})).sort(byCount)}
+ function counts(fieldName){return [...new Set(state.filtered.flatMap(r=>r[fieldName]).filter(name=>!(fieldName==="diseases"&&name===UNSPECIFIED_DISEASE)))].map(name=>({name,count:state.filtered.filter(r=>r[fieldName].includes(name)).length})).sort(byCount)}
  function drawBars(target,items,interactive){
   const parent=el(target);parent.replaceChildren();
   if(!items.length){parent.append(h("p","muted","No matching topic signals."));return}
@@ -169,7 +170,13 @@
    parent.append(b);
   });
  }
- function renderBars(){drawBars("themeBars",counts("tags"),true);drawBars("diseaseBars",counts("diseases"),false);drawBars("sourceTopicBars",counts("sourceCategories"),false);drawBars("sourceDiseaseBars",counts("sourceDiseases"),false)}
+ function renderBars(){
+  drawBars("themeBars",counts("tags"),true);
+  drawBars("diseaseBars",counts("diseases"),false);
+  drawBars("sourceTopicBars",counts("sourceCategories"),false);
+  const missing=state.filtered.filter(r=>r.diseases.includes(UNSPECIFIED_DISEASE)).length;
+  el("diseaseMissing").textContent=format(missing)+" of "+format(state.filtered.length)+" filtered presentations have no specific disease area assigned in the index.";
+ }
  function renderInsights(){
   const top=counts("tags")[0]; const pct=top&&state.filtered.length?Math.round(100*top.count/state.filtered.length):0;
   el("insightTitle").textContent=top?top.name+" appears in "+format(top.count)+" matching records":"No records match these filters";
@@ -292,14 +299,11 @@
  }
  function renderQuality(){
   const valid=state.records.filter(r=>sourceLink(r)).length;
-  const abstract=state.records.filter(r=>r.abstract.length>40).length;
   const tagged=state.records.filter(r=>r.tags.length>0).length;
   const items=[
-   [format(state.rawCount),"Input rows"],
-   [format(state.records.length),"Usable unique records"],
-   [format(valid),"ISPOR-domain URLs"],
-   [format(abstract),"Local abstract text (not republished)"],
-   [format(tagged),"Records with official topic group"],
+   [format(state.records.length),"Indexed presentations in analysis"],
+   [format(valid),"ISPOR-domain source URLs (not all page-verified)"],
+   [format(tagged),"Presentations with indexed topic group"],
    [format(state.records.filter(r=>r.sourceCategories.length>0).length),"Official index category coverage"],
    [state.isOfficial?"ISPOR search index":"Unverified","Data coverage"]
   ];
@@ -406,10 +410,11 @@
   if(!response.ok)throw Error("Official-index file unavailable, HTTP "+response.status);
   const data=await response.json();
   if(!Array.isArray(data.records)||data.records.length<1000)throw Error("Official-index corpus incomplete");
-  const official=fromOfficial(data.records);
-  setData(official,"Official ISPOR search index",true,data.records.length,"");
+  const presentations=data.records.filter(r=>r.index_content_kind==="Confex Presentation");
+  const official=fromOfficial(presentations);
+  setData(official,"Official ISPOR search index",true,presentations.length,"");
   const sessions=data.records.filter(r=>r.index_content_kind==="Confex Session").length;
-  el("sourceDetail").textContent="Official indexed items: "+format(data.records.length)+" ("+format(data.records.length-sessions)+" presentations, "+format(sessions)+" sessions). Index count changed during collection; final census unresolved.";
+  el("sourceDetail").textContent="Indexed research presentations: "+format(official.length)+"; "+format(sessions)+" conference sessions excluded from analysis. Final conference census unresolved.";
   try{const response=await fetch("./data/official-index-summary.json",{cache:"no-store"});if(response.ok)renderOfficialReconciliation(await response.json())}catch(_e){}
   try{const response=await fetch("./data/official-page-checks.json",{cache:"no-store"});if(response.ok)renderOfficialPageAudit(await response.json())}catch(_e){}
   return data;
