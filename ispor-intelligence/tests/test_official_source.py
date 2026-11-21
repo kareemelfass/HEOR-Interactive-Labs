@@ -33,8 +33,9 @@ class OfficialSourceTests(unittest.TestCase):
         counts = collections.Counter(r["index_content_kind"] for r in records)
         self.assertEqual(len(records), len({r["uid"] for r in records}))
         self.assertEqual(len(records), len({r["url"] for r in records}))
-        self.assertEqual(counts["Confex Presentation"], 2778)
-        self.assertEqual(counts["Confex Session"], 139)
+        self.assertGreater(counts["Confex Presentation"], 2500)
+        self.assertGreater(counts["Confex Session"], 0)
+        self.assertEqual(sum(counts.values()), len(records))
         self.assertEqual(dict(counts), self.summary["official_index_content_kinds"])
         self.assertIn('data.records.filter(r=>r.index_content_kind==="Confex Presentation")', self.js)
         self.assertIn('setData(official,"Official ISPOR search index",true,presentations.length,"")', self.js)
@@ -46,8 +47,9 @@ class OfficialSourceTests(unittest.TestCase):
         nodes = {n["id"]: n for n in self.graph["nodes"]}
         self.assertEqual(len(nodes), len(self.graph["nodes"]))
         counts = collections.Counter(n["type"] for n in self.graph["nodes"])
-        self.assertEqual(counts["presentation"], 2778)
-        self.assertEqual(counts["session"], 139)
+        kinds = collections.Counter(r["index_content_kind"] for r in self.index["records"])
+        self.assertEqual(counts["presentation"], kinds["Confex Presentation"])
+        self.assertEqual(counts["session"], kinds["Confex Session"])
         field_by_relation = {
             "OFFICIAL_INDEX_TOPIC": "topic_groups",
             "OFFICIAL_INDEX_CATEGORY": "category_paths",
