@@ -40,7 +40,8 @@ jobs:
           assert all(not e["provenance"]["inferred"] for e in g["edges"])
           assert len(q["archive_to_official"])==q["archive_records"]
           assert all(x["record_source"]=="ISPOR website configured SearchBlox index" for x in rec)
-          assert all(x["url"].startswith("https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/") for x in rec)
+          assert all(not x["official_detail_link_present"] or x["url"].startswith("https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/") for x in rec)
+          assert all(x["event"]=="2026-11, ISPOR Europe 2026, Vienna, Austria" for x in rec)
           assert s["comparison"]["official_index_records"]==len(rec)
           print("OFFICIAL_INDEX_VALIDATION",{"records":len(rec),"graph_nodes":len(ids),"graph_edges":len(g["edges"]),"archive_comparison":s["comparison"]})
           PY
