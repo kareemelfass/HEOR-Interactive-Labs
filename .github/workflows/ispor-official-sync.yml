@@ -4,6 +4,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: ispor-source-write
@@ -71,3 +72,8 @@ jobs:
             sleep 2
           done
           exit 1
+
+      - name: Dispatch validation after GITHUB_TOKEN writes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ispor-verify-official-ui.yml --ref main
