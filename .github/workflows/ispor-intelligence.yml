@@ -45,8 +45,9 @@ jobs:
           CHROME="$(command -v google-chrome || command -v chromium || true)"
           if [ -n "$CHROME" ]; then
             timeout 55 "$CHROME" --headless --no-sandbox --disable-gpu --virtual-time-budget=12000 --dump-dom http://127.0.0.1:8765/ispor-intelligence/index.html > /tmp/ispor-dashboard-dom.html 2>/tmp/ispor-chrome.log
-            if ! grep -Eq 'id="metricRecords">[1-9][0-9,]*<' /tmp/ispor-dashboard-dom.html; then
-              echo "Dashboard failed to render nonzero presentation count"
+            EXPECTED_RECORDS="$(python -c 'import json; p="ispor-intelligence/data/records-index.json"; print(format(len(json.load(open(p))["records"]), ","))')"
+            if ! grep -Fq "id=\"metricRecords\">${EXPECTED_RECORDS}<" /tmp/ispor-dashboard-dom.html; then
+              echo "Dashboard did not render the complete indexed corpus: expected ${EXPECTED_RECORDS} records"
               tail -c 3000 /tmp/ispor-chrome.log
               exit 1
             fi
