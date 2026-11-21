@@ -29,6 +29,31 @@ jobs:
         run: python -m unittest discover -s ispor-intelligence/tests -v
       - name: Refresh graph from public archive
         run: python ispor-intelligence/scripts/build_kg.py
+      - name: Validate full graph and dashboard assets
+        run: |
+          python ispor-intelligence/scripts/verify_outputs.py
+          node --check ispor-intelligence/app.js
+      - name: Smoke-test dashboard in a headless browser
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/ispor-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS http://127.0.0.1:8765/ispor-intelligence/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          CHROME="$(command -v google-chrome || command -v chromium || true)"
+          if [ -n "$CHROME" ]; then
+            timeout 55 "$CHROME" --headless --no-sandbox --disable-gpu --virtual-time-budget=12000 --dump-dom http://127.0.0.1:8765/ispor-intelligence/index.html > /tmp/ispor-dashboard-dom.html 2>/tmp/ispor-chrome.log
+            if ! grep -Eq 'id="metricRecords">[1-9][0-9,]*<' /tmp/ispor-dashboard-dom.html; then
+              echo "Dashboard failed to render nonzero presentation count"
+              tail -c 3000 /tmp/ispor-chrome.log
+              exit 1
+            fi
+            echo "Dashboard rendered nonzero presentation count in headless Chrome."
+          else
+            echo "No headless browser present, static validation only."
+          fi
       - name: Commit refreshed derived metadata only
         run: |
           git config user.name "github-actions[bot]"
