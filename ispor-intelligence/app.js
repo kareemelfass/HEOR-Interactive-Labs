@@ -121,12 +121,12 @@
   el("sourceName").textContent=source;
   el("sourceDetail").textContent=state.isOfficial?"Search-index snapshot, not a final census; individual page validation is not complete":(error||"Unverified input");
   el("liveDot").className="live-dot "+(full?"ok":"warn");
-  el("metricQualifier").textContent=state.isOfficial?"Indexed presentations only; sessions excluded; final census unknown":"User-imported unverified data";
+  el("metricQualifier").textContent=state.isOfficial?"Indexed presentations only; 30 other official pages matched on first check outside this index; sessions excluded; final census unknown":"User-imported unverified data";
   renderQuality();
  }
  function updateThemeSelect(){
   const current=state.filter;
-  const sel=el("themeFilter");sel.replaceChildren(h("option","", "All themes"));sel.options[0].value="";
+  const sel=el("themeFilter");sel.replaceChildren(h("option","", "All topic groups"));sel.options[0].value="";
   const values=[...new Set(state.records.flatMap(r=>r.tags))].sort();
   values.forEach(t=>{const op=h("option","",t);op.value=t;sel.append(op)});
   sel.value=values.includes(current)?current:"";
@@ -221,7 +221,7 @@
   el("detailText").textContent=format(matching.length)+" filtered presentations have this ISPOR-index topic classification; classification does not establish method use or study findings.";
   el("detailLinks").replaceChildren();
   related(matching);
-  renderReviewedClaims(matching,t);
+  renderReviewedClaims(matching);
  }
  function showRecordDetail(r){
   el("detailTitle").textContent=r.title;
@@ -231,13 +231,14 @@
   related([r]);
   renderReviewedClaims([r]);
  }
- function renderReviewedClaims(records,topic){
+ function renderReviewedClaims(records){
   const target=el("claimsList");target.replaceChildren();
   const urls=new Set(records.map(r=>r.url).filter(Boolean));
-  const codes=new Set(records.map(r=>r.code.toUpperCase()).filter(Boolean));
+  const codes=new Set(records.map(r=>String(r.code || "").trim().toUpperCase()).filter(Boolean));
+  // Claim topic labels use a separate editorial vocabulary. Only source-record
+  // membership, never a comparison of topic labels, can link a reviewed claim.
   const matches=reviewedClaims.filter(c=>
-   (urls.has(c.source_url) || codes.has(c.presentation_code.toUpperCase())) &&
-   (!topic || !c.topic || c.topic.toLowerCase()===topic.toLowerCase())
+   urls.has(c.source_url) || codes.has(String(c.presentation_code || "").trim().toUpperCase())
   );
   matches.slice(0,8).forEach(c=>{
    const card=h("div","claim-card");
@@ -353,7 +354,7 @@
     invalid_or_missing_url:"No valid ISPOR page URL",
     parse_or_unknown_error:"Other verification errors"
   };
-  target.replaceChildren(...[["additional verified official pages absent from index",separatelyConfirmed],...Object.entries(counts).sort((a,b)=>b[1]-a[1])].map(([k,v])=>{
+  target.replaceChildren(...[["additional official pages matched on first check; list not exhaustive",separatelyConfirmed],...Object.entries(counts).sort((a,b)=>b[1]-a[1])].map(([k,v])=>{
     const box=h("div","quality-box");
     box.append(h("strong","",format(v)),h("span","",labels[k]||k));
     return box;
