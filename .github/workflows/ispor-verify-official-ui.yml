@@ -3,14 +3,8 @@ name: Validate official-source ISPOR dashboard
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "ispor-intelligence/**"
-      - ".github/workflows/ispor-verify-official-ui.yml"
   push:
     branches: [main]
-    paths:
-      - "ispor-intelligence/**"
-      - ".github/workflows/ispor-verify-official-ui.yml"
   workflow_dispatch:
 
 permissions:
@@ -77,3 +71,15 @@ jobs:
             "hypotheses":32,"provisional_404_label":True
           })
           PY
+
+      - name: Browser regression for reviewed-claim membership across official topics
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          python -m http.server 8765 --bind 127.0.0.1 > /tmp/ispor-claims-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS http://127.0.0.1:8765/ispor-intelligence/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          python ispor-intelligence/scripts/smoke_claims_browser.py
