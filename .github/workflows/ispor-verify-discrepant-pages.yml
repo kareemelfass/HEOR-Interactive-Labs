@@ -1,19 +1,18 @@
-name: Verify all discrepant ISPOR pages
+name: Recheck archived ISPOR URLs conservatively (manual only)
 on:
-  push:
-    branches: [main]
-    paths:
-      - "ispor-intelligence/scripts/verify_discrepant_pages.py"
-      - ".github/workflows/ispor-verify-discrepant-pages.yml"
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: ispor-source-write
+  cancel-in-progress: false
+
 jobs:
   verify-discrepancies:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,13 +29,14 @@ jobs:
           from pathlib import Path
           p=Path("ispor-intelligence/data")
           recon=json.loads((p/"official-reconciliation.json").read_text())
-          audit=json.loads((p/"official-page-checks.json").read_text())
+          audit=json.loads((p/"official-page-recheck-latest.json").read_text())
           expected=sum(r["status"]!="url_match" for r in recon["archive_to_official"])
           assert len(audit["results"])==expected
+          assert audit["metadata"]["repeated_404_does_not_prove_presentation_absence"]
           assert sum(audit["counts"].values())==expected
-          assert len({(r["archive_code"],r["archive_url"]) for r in audit["results"]})==expected
-          assert all(r["page_status"]!="official_page_title_code_verified" or
-                     (r["title_match"] and r["code_match"] and r["http_status"]==200)
+          assert len({(r["archive_code"],r["archived_url"]) for r in audit["results"]})==expected
+          assert all(r["classification"]!="repeated_http_404_unconfirmed" or
+                     len(r["observations"])==3 and all(a.get("http_status")==404 for a in r["observations"])
                      for r in audit["results"])
           print("OFFICIAL_DISCREPANCY_AUDIT_PASS",audit["counts"])
           PY
@@ -44,9 +44,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ispor-intelligence/data/official-page-checks.json
+          git add ispor-intelligence/data/official-page-recheck-latest.json
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Record official-page audit for each ISPOR archive discrepancy"
+          git commit -m "Record conservative archived-URL recheck with original observations preserved"
           for attempt in 1 2 3 4; do
             git fetch origin main
             git rebase origin/main

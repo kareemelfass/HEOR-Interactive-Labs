@@ -1,8 +1,9 @@
 name: Deploy HEOR Interactive Labs to GitHub Pages
 
 on:
-  push:
-    branches: ["main"]
+  workflow_run:
+    workflows: ["Validate official-source ISPOR dashboard"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -16,13 +17,20 @@ concurrency:
 
 jobs:
   deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.event == 'push')
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout verified commit
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Setup and enable Pages
         uses: actions/configure-pages@v5
