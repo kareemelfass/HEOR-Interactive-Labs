@@ -107,15 +107,14 @@
       const heading = node("summary","kg-gap-summary");
       const headingText = node("div","kg-gap-summary-copy");
       headingText.append(node("strong","",entry.theme),node("span","",entry.intro));
-      const archiveCount = records.filter(r => Array.isArray(r.tags) && r.tags.includes(entry.theme)).length;
-      const n = node("span","kg-gap-theme-count",records.length ? archiveCount.toLocaleString("en-GB") + " related abstracts" : "Source count unavailable");
+      const n = node("span","kg-gap-theme-count",entry.items.length + " proposed research directions");
       heading.append(headingText,n);
       const body = node("div","kg-gap-body");
       body.append(node("p","kg-gap-statement","Research agenda, not a measured conference-wide consensus: the following are analytical questions and prospective study designs. Where available, specific authors' findings are separately identified."));
       body.append(evidence(entry));
       const grid = node("div","kg-gap-grid");
       entry.items.forEach((item,i)=>grid.append(itemCard(item,i)));
-      body.append(grid,related(entry,archiveCount));
+      body.append(grid);
       details.append(heading,body);
       root.append(details);
     });
@@ -139,18 +138,19 @@
       entries = Array.isArray(loaded.themes) ? loaded.themes : [];
       if(entries.length!==16)throw new Error("Expected 16 existing themes, got " + entries.length);
       const [index,reviewed] = await Promise.allSettled([
-        getJson("./data/records-index.json"),
+        getJson("./data/official-index-records.json"),
         getJson("./data/reviewed-claims.json")
       ]);
       if(index.status==="fulfilled" && Array.isArray(index.value.records)) {
-        records=index.value.records;
-        sourceLabel="Independent 2026 pre-conference archive (" + records.length.toLocaleString("en-GB") + " indexed records)";
+        records=index.value.records.map(r=>({
+          id:r.code,title:r.title,url:r.official_detail_link_present?r.url:"",
+          tags:r.topic_groups||[]
+        }));
+        sourceLabel="ISPOR-configured search index (" + records.length.toLocaleString("en-GB") +
+          " captured items); future directions are proposals, NOT conference-verified gaps";
       } else {
-        try {
-          const seed=await getJson("./data/verified-records.json");
-          records=Array.isArray(seed.records)?seed.records:[];
-          sourceLabel="Verified seed selection ("+records.length+" records); full metadata index unavailable";
-        } catch(e){records=[];}
+        records=[];
+        sourceLabel="Official index unavailable; proposed directions do not establish conference findings";
       }
       claims=reviewed.status==="fulfilled" && Array.isArray(reviewed.value.claims) ? reviewed.value.claims : [];
       document.getElementById("kgGapsSource").textContent=sourceLabel;
