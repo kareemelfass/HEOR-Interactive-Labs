@@ -367,6 +367,7 @@
   const target=el("officialPageAudit");
   if(!target)return;
   const counts=audit.counts||{};
+  const separatelyConfirmed=(audit.results||[]).filter(r=>r.reconciliation_status==="archive_only_not_in_official_index" && r.page_status==="official_page_title_code_verified").length;
   const labels={
     official_page_title_code_verified:"Official page verified (title and code)",
     official_page_reachable_content_mismatch:"Official page reachable, title/code unresolved",
@@ -376,7 +377,7 @@
     invalid_or_missing_url:"No valid ISPOR page URL",
     parse_or_unknown_error:"Other verification errors"
   };
-  target.replaceChildren(...Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{
+  target.replaceChildren(...[["additional verified official pages absent from index",separatelyConfirmed],...Object.entries(counts).sort((a,b)=>b[1]-a[1])].map(([k,v])=>{
     const box=h("div","quality-box");
     box.append(h("strong","",format(v)),h("span","",labels[k]||k));
     return box;
