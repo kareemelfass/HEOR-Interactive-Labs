@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from verify_discrepant_pages import PrimaryPage, heading_matches, code_in, spaced_404_observation
+from verify_discrepant_pages import PrimaryPage, heading_matches, code_in, spaced_404_observation, select_controls
 
 
 class DiscrepantPageParserTests(unittest.TestCase):
@@ -49,11 +49,32 @@ class DiscrepantPageParserTests(unittest.TestCase):
         old = {"classification": "repeated_http_404_unconfirmed",
                "observations": [{"checked_at_utc": t.isoformat(), "http_status": 404}]}
         self.assertIsNone(spaced_404_observation("repeated_http_404_unconfirmed", old,
-                                                  t + timedelta(minutes=59)))
+                                                  t + timedelta(minutes=59), previous_controls_passed=True))
         self.assertEqual(spaced_404_observation("repeated_http_404_unconfirmed", old,
-                                                t + timedelta(hours=2)), t.isoformat())
+                                                t + timedelta(hours=2), previous_controls_passed=True), t.isoformat())
         self.assertIsNone(spaced_404_observation("heading_and_code_verified", old,
-                                                  t + timedelta(hours=2)))
+                                                  t + timedelta(hours=2), previous_controls_passed=True))
+
+
+    def test_control_selection_is_deterministic_and_without_duplicates(self):
+        from verify_discrepant_pages import HOST_PREFIX
+        rows = [{"status": "url_match", "archive_url": HOST_PREFIX + str(i)}
+                for i in range(15)]
+        rows.append({"status": "archive_only_not_in_official_index",
+                     "archive_url": HOST_PREFIX + "excluded"})
+        original = select_controls({"archive_to_official": rows})
+        reversed_input = select_controls({"archive_to_official": list(reversed(rows))})
+        self.assertEqual(original, reversed_input)
+        self.assertEqual(len({r["archive_url"] for r in original}), 10)
+        self.assertTrue(all("excluded" not in r["archive_url"] for r in original))
+
+    def test_cross_run_404_refused_if_prior_controls_not_healthy(self):
+        t = datetime(2026, 11, 21, 12, tzinfo=timezone.utc)
+        old = {"classification": "repeated_http_404_unconfirmed",
+               "observations": [{"checked_at_utc": t.isoformat(), "http_status": 404}]}
+        self.assertIsNone(spaced_404_observation("repeated_http_404_unconfirmed", old,
+                                                 t + timedelta(hours=2),
+                                                 previous_controls_passed=False))
 
 
 if __name__ == "__main__":
