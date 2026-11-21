@@ -1,14 +1,13 @@
-name: Verify all discrepant ISPOR pages
+name: Verify archive URL response observations (manual only)
 on:
-  push:
-    branches: [main]
-    paths:
-      - "ispor-intelligence/scripts/verify_discrepant_pages.py"
-      - ".github/workflows/ispor-verify-discrepant-pages.yml"
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: ispor-source-write
+  cancel-in-progress: false
 
 jobs:
   verify-discrepancies:
