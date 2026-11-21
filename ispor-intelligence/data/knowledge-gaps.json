@@ -1,0 +1,394 @@
+{
+  "metadata": {
+    "title": "Knowledge gaps and future research directions across ISPOR Europe 2026 themes",
+    "created": "2026-11-21",
+    "revision": "1.0",
+    "scope": "Analyst-formulated research questions and proposed study designs, not conference-wide verified evidence gaps",
+    "source_note": "Related presentations are illustrative keyword matches from the pre-conference archive; only manually reviewed claims are identified as author-reported evidence.",
+    "coverage": "16 existing theme signals; two proposed gaps and research directions per theme",
+    "archive": "https://justinsyu.github.io/ispor-eu-nov-2026/",
+    "primary_source": "https://www.ispor.org/heor-resources/presentations-database/"
+  },
+  "themes": [
+    {
+      "theme": "JCA",
+      "intro": "How much of the clinical evidence available at launch can answer the actual EU assessment questions?",
+      "claimIds": [
+        "p41-coverage",
+        "p41-sap"
+      ],
+      "searchTerms": [
+        "PICO",
+        "joint clinical assessment",
+        "treatment effect modifier"
+      ],
+      "items": [
+        {
+          "gap": "Many scoped PICOs can lack a defensible comparative evidence pathway, even when an application includes pivotal clinical data.",
+          "direction": "Audit each PICO against its available studies, comparator network, endpoints and maturity; report the proportion supported by direct, anchored indirect, unanchored or no comparison, and why.",
+          "decision": "Quantifies which JCA questions can be answered and where additional evidence generation is needed."
+        },
+        {
+          "gap": "Effect-modifier choice and indirect comparison plans may be poorly aligned with the questions assessors evaluate.",
+          "direction": "Compare pre-specified versus post-hoc adjustment sets using documented clinical justification, available aggregate covariates and sensitivity analyses; test how conclusions change.",
+          "decision": "Separates avoidable analytical limitations from genuine evidence gaps."
+        }
+      ]
+    },
+    {
+      "theme": "AI",
+      "intro": "Which AI-assisted HEOR tasks are reproducible and safe enough for decision-grade evidence?",
+      "claimIds": [
+        "msr231-reporting"
+      ],
+      "searchTerms": [
+        "validation",
+        "literature review",
+        "JCA"
+      ],
+      "items": [
+        {
+          "gap": "Benchmarking often lacks a shared definition of acceptable errors, gold-standard datasets and independently reproducible performance estimates.",
+          "direction": "Construct externally annotated datasets for screening, extraction, PICO identification and model QA; report recall, precision, factual errors, time saved and disagreement resolution.",
+          "decision": "Tests actual workflow reliability instead of assuming automation equals validity."
+        },
+        {
+          "gap": "Prospective evidence on how AI affects human reviewer workload, bias and correction costs remains limited.",
+          "direction": "Run paired human versus human-plus-AI studies with blinded adjudication; record model version, prompt, human corrections and downstream impact of missed evidence.",
+          "decision": "Shows when AI accelerates work without reducing decision quality."
+        }
+      ]
+    },
+    {
+      "theme": "Economic evaluation",
+      "intro": "How do model structure, uncertainty and distributional consequences affect reimbursement conclusions?",
+      "claimIds": [
+        "msr252-psa"
+      ],
+      "searchTerms": [
+        "model validation",
+        "sensitivity analysis",
+        "cost effectiveness"
+      ],
+      "items": [
+        {
+          "gap": "Alternative plausible model structures can produce different long-term costs and QALYs, yet their contribution to uncertainty may be insufficiently isolated.",
+          "direction": "Use prespecified structural scenarios, external validation, model averaging where justified and a transparent decomposition of parameter versus structural uncertainty.",
+          "decision": "Identifies where the reimbursement conclusion depends on modelling choices."
+        },
+        {
+          "gap": "A positive population-average ICER may hide affordability, implementation or subgroup inequities.",
+          "direction": "Link cost-effectiveness, budget impact, uptake constraints and distributional outcomes using consistent eligible populations and time horizons.",
+          "decision": "Tests whether a cost-effective intervention can be implemented equitably within payer constraints."
+        }
+      ]
+    },
+    {
+      "theme": "RWE",
+      "intro": "When can observational evidence emulate the decision-relevant trial well enough for HTA?",
+      "claimIds": [],
+      "searchTerms": [
+        "target trial",
+        "external control",
+        "real world"
+      ],
+      "items": [
+        {
+          "gap": "Treatment eligibility, time zero and outcome measurement are not always captured consistently across real-world datasets.",
+          "direction": "Pre-register an explicit target-trial protocol and test sensitivity to treatment grace periods, outcome ascertainment and missing covariates across databases.",
+          "decision": "Clarifies whether a real-world estimate answers the intended clinical question."
+        },
+        {
+          "gap": "Transporting a treatment effect from one healthcare system or registry to another may fail when important effect modifiers differ.",
+          "direction": "Evaluate overlap, transport weights, subgroup heterogeneity and external calibration against independent datasets.",
+          "decision": "Defines which payer population can reasonably use the evidence."
+        }
+      ]
+    },
+    {
+      "theme": "Causal inference",
+      "intro": "How robust are comparative effectiveness estimates to design choices and unmeasured confounding?",
+      "claimIds": [
+        "msr87-before-after"
+      ],
+      "searchTerms": [
+        "target trial",
+        "propensity score",
+        "causal"
+      ],
+      "items": [
+        {
+          "gap": "Time-varying treatment and confounders can create selection or immortal-time bias if analysed as fixed baseline variables.",
+          "direction": "Compare emulated dynamic treatment strategies, appropriate longitudinal weighting or g-methods, and simpler baseline analyses under a common estimand.",
+          "decision": "Shows when treatment-effect estimates are driven by exposure timing instead of clinical differences."
+        },
+        {
+          "gap": "Residual confounding and treatment positivity problems are often difficult to quantify from routine data.",
+          "direction": "Pre-specify overlap diagnostics, negative controls and quantitative bias analyses; report effect estimates under alternative target populations.",
+          "decision": "Identifies when causal conclusions remain fragile despite good measured covariate balance."
+        }
+      ]
+    },
+    {
+      "theme": "Indirect comparisons",
+      "intro": "What makes indirect comparisons credible when head-to-head trials are absent?",
+      "claimIds": [
+        "p41-sap"
+      ],
+      "searchTerms": [
+        "indirect",
+        "effect modifier",
+        "network meta"
+      ],
+      "items": [
+        {
+          "gap": "The clinical justification for prognostic factors and treatment effect modifiers may not be reproducible, especially with limited aggregate data.",
+          "direction": "Publish covariate-selection rationales and evaluate sensitivity to alternative adjustment sets, population overlap and effective sample size.",
+          "decision": "Makes the direction and magnitude of adjustment bias visible."
+        },
+        {
+          "gap": "Sparse or disconnected treatment networks can make results highly dependent on assumptions about relative effects.",
+          "direction": "Benchmark anchored and unanchored approaches in simulation scenarios with known treatment effects and realistic between-study heterogeneity.",
+          "decision": "Separates statistical precision from identification of a credible treatment contrast."
+        }
+      ]
+    },
+    {
+      "theme": "ML-NMR",
+      "intro": "Can multilevel network meta-regression be transported into economic models without changing the target estimand?",
+      "claimIds": [
+        "msr252-difference",
+        "msr252-psa"
+      ],
+      "searchTerms": [
+        "ML-NMR",
+        "multilevel network meta"
+      ],
+      "items": [
+        {
+          "gap": "Survival predicted at mean covariates may differ from survival marginalised across the target population, particularly under strong effect modification or nonlinear hazards.",
+          "direction": "Compare conditional approximations with numerical marginalisation across realistic covariate distributions, correlation structures and follow-up horizons.",
+          "decision": "Defines when an Excel approximation changes the economic decision."
+        },
+        {
+          "gap": "Computational shortcuts can obscure numerical integration error, baseline survival assumptions and uncertainty propagation.",
+          "direction": "Benchmark Excel implementations against independently validated R or Stan models over PSA runs and complex survival functions, documenting runtime and numerical tolerances.",
+          "decision": "Balances reproducibility and speed against bias in long-term predictions."
+        }
+      ]
+    },
+    {
+      "theme": "Survival modelling",
+      "intro": "How credible are long-term survival predictions when follow-up is immature?",
+      "claimIds": [
+        "msr252-difference"
+      ],
+      "searchTerms": [
+        "survival extrapolation",
+        "Kaplan-Meier",
+        "long-term"
+      ],
+      "items": [
+        {
+          "gap": "Several distributions may fit observed data equally well yet imply materially different long-term mortality or cure behaviour.",
+          "direction": "Compare extrapolations against external cohorts, clinical plausibility constraints and later data cuts; report decision sensitivity to tail assumptions.",
+          "decision": "Shows how much of the ICER depends on unobserved survival."
+        },
+        {
+          "gap": "Treatment-effect waning and post-progression survival relationships may not be supported by the same evidence used to fit primary survival endpoints.",
+          "direction": "Validate linked endpoint and treatment-duration assumptions using available patient-level information, independent data and structural stress tests.",
+          "decision": "Prevents apparently precise model outputs from masking poorly identified long-term pathways."
+        }
+      ]
+    },
+    {
+      "theme": "Bayesian methods",
+      "intro": "When is borrowing external evidence helpful rather than misleading?",
+      "claimIds": [],
+      "searchTerms": [
+        "Bayesian",
+        "prior",
+        "external data"
+      ],
+      "items": [
+        {
+          "gap": "The external data used to form informative priors may differ from the target study in prognosis, treatment pathways or endpoint definition.",
+          "direction": "Assess prior-data conflict, commensurability and dynamic borrowing using prespecified sensitivity analyses and simulated operating characteristics.",
+          "decision": "Avoids overconfident predictions when external populations are not exchangeable."
+        },
+        {
+          "gap": "Posterior results can be sensitive to priors without that dependence being clear to decision-makers.",
+          "direction": "Report weak, sceptical and evidence-informed prior scenarios, posterior predictive checks and the resulting reimbursement decision probabilities.",
+          "decision": "Makes the incremental influence of expert and external evidence transparent."
+        }
+      ]
+    },
+    {
+      "theme": "MFN pricing",
+      "intro": "What is the actual effect of international price referencing on launches and access?",
+      "claimIds": [
+        "hpr213-positions",
+        "hpr213-reforms"
+      ],
+      "searchTerms": [
+        "most favored",
+        "MFN",
+        "pricing"
+      ],
+      "items": [
+        {
+          "gap": "Policy announcements and industry expectations do not establish whether MFN has caused delays, withdrawals or reduced access in European countries.",
+          "direction": "Create a dated country-policy and launch panel; compare pre-policy and post-policy launch timing with credible controls and explicit alternative explanations.",
+          "decision": "Distinguishes predicted manufacturer behaviour from observed consequences."
+        },
+        {
+          "gap": "Changes in list prices, confidential discounts and treated patient volumes may move in different directions.",
+          "direction": "Model and, where data permit, estimate net expenditure, access volume and launch decisions jointly rather than using list prices alone.",
+          "decision": "Identifies the price-access trade-off relevant to patients and payers."
+        }
+      ]
+    },
+    {
+      "theme": "Market access",
+      "intro": "What happens after a positive HTA or reimbursement decision?",
+      "claimIds": [
+        "hpr213-reforms"
+      ],
+      "searchTerms": [
+        "launch",
+        "market access",
+        "reimbursement"
+      ],
+      "items": [
+        {
+          "gap": "Approval or listing dates do not establish actual treatment initiation, geographic availability or continuity of therapy.",
+          "direction": "Link regulatory, reimbursement, procurement and patient-level dispensing data to measure the interval from authorisation to real uptake.",
+          "decision": "Distinguishes nominal coverage from effective access."
+        },
+        {
+          "gap": "International pricing strategies can shift availability between countries with different negotiating power and payment constraints.",
+          "direction": "Examine launch sequence, confidential arrangements and patient access jointly across markets; adjust for regulatory and clinical-demand differences.",
+          "decision": "Tests whether pricing strategies improve access overall or redistribute delays."
+        }
+      ]
+    },
+    {
+      "theme": "Evidence synthesis",
+      "intro": "How can large and increasingly automated evidence reviews remain complete and auditable?",
+      "claimIds": [
+        "msr231-reporting",
+        "msr231-wss"
+      ],
+      "searchTerms": [
+        "systematic literature",
+        "evidence synthesis",
+        "screening"
+      ],
+      "items": [
+        {
+          "gap": "AI-assisted screening and extraction studies do not always report enough performance information to estimate missed-study risk.",
+          "direction": "Adopt explicit datasets, screening recall, precision, work saved, extraction agreement and human adjudication reports for every automated step.",
+          "decision": "Allows assessors to quantify the completeness-efficiency trade-off."
+        },
+        {
+          "gap": "Changing search results and model versions can impair reproducibility and selective retrieval may affect indirect comparison networks.",
+          "direction": "Publish versioned searches, deduplication rules, model prompts where appropriate, rejected-study logs and repeatable audit trails.",
+          "decision": "Keeps downstream treatment comparisons traceable to the underlying study universe."
+        }
+      ]
+    },
+    {
+      "theme": "PICO",
+      "intro": "Can clinical evidence cover the populations, interventions, comparators and outcomes requested by HTA?",
+      "claimIds": [
+        "p41-coverage"
+      ],
+      "searchTerms": [
+        "PICO",
+        "comparators",
+        "outcomes"
+      ],
+      "items": [
+        {
+          "gap": "One pivotal study can be relevant to several PICOs but provide no valid comparison for a subset of required comparators.",
+          "direction": "Build machine-readable PICO-to-evidence matrices with explicit inclusion, exclusion and indirect-comparison feasibility reasons.",
+          "decision": "Prevents an apparent study count from being confused with answerable assessment questions."
+        },
+        {
+          "gap": "PICO boundaries and outcome definitions may differ between regulatory trials and national decision needs.",
+          "direction": "Map trial eligibility, endpoint timing and outcome definitions to decision populations and rerun analyses for material mismatches.",
+          "decision": "Makes evidence applicability a testable rather than assumed property."
+        }
+      ]
+    },
+    {
+      "theme": "Estimands",
+      "intro": "Is the treatment effect estimated actually the effect the clinical and payer decision requires?",
+      "claimIds": [
+        "msr87-drift",
+        "msr87-before-after"
+      ],
+      "searchTerms": [
+        "estimand",
+        "intercurrent event",
+        "treatment switching"
+      ],
+      "items": [
+        {
+          "gap": "Rescue medication, switching, discontinuation and missing outcomes can alter the effect targeted during analysis, without transparent documentation.",
+          "direction": "Write the intended estimand before analysis, record intercurrent-event strategies, and compare target versus realised estimands in a structured table.",
+          "decision": "Avoids interpreting an effect for one treatment strategy as evidence for another."
+        },
+        {
+          "gap": "Trial estimands and target-trial emulations may differ in follow-up, eligibility and adherence handling.",
+          "direction": "Develop matched protocol diagrams and benchmark treatment-policy, hypothetical and per-protocol effects using common endpoint definitions.",
+          "decision": "Improves transfer of clinical effectiveness evidence into HTA."
+        }
+      ]
+    },
+    {
+      "theme": "Patient-reported outcomes",
+      "intro": "Do patient-reported measures capture the benefit and burden relevant to different populations?",
+      "claimIds": [],
+      "searchTerms": [
+        "quality of life",
+        "EQ-5D",
+        "patient-reported"
+      ],
+      "items": [
+        {
+          "gap": "Generic utility measures may be insensitive to short-lived symptoms, treatment burden or disease-specific changes in patient experience.",
+          "direction": "Validate responsiveness and mapping against condition-specific instruments, then test how the choice of instrument changes QALYs.",
+          "decision": "Shows which aspects of patient benefit are omitted in an economic model."
+        },
+        {
+          "gap": "Missing patient-reported data may be associated with worsening health, treatment discontinuation or unequal participation.",
+          "direction": "Compare missing-data mechanisms and joint or pattern-mixture sensitivity analyses, including language and subgroup measurement equivalence.",
+          "decision": "Tests whether apparent quality-of-life gains depend on who remains observed."
+        }
+      ]
+    },
+    {
+      "theme": "Medical devices",
+      "intro": "How does real-world implementation change the value of devices compared with trial conditions?",
+      "claimIds": [],
+      "searchTerms": [
+        "device",
+        "learning curve",
+        "health technology"
+      ],
+      "items": [
+        {
+          "gap": "Device performance, complication rates and costs may depend on operator experience, hospital volume and training, which are rarely constant across sites.",
+          "direction": "Evaluate centre-level learning curves and volume-outcome relationships; incorporate dynamic adoption and capacity constraints into cost-effectiveness models.",
+          "decision": "Explains why effectiveness and affordability can differ between trial centres and ordinary hospitals."
+        },
+        {
+          "gap": "Rapid product iteration can outpace clinical trials and create uncertainty about transferring evidence between device versions.",
+          "direction": "Use post-market registries and version-specific reassessments with clear linkage between the assessed device and observed outcomes.",
+          "decision": "Avoids using historical evidence for a materially changed technology without validation."
+        }
+      ]
+    }
+  ]
+}
