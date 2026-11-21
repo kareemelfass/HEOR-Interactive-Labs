@@ -1,0 +1,195 @@
+{
+  "metadata": {
+    "coverage": "Hand-curated verified selection; NOT full-conference census",
+    "source": "ISPOR official",
+    "created": "2026-11-21"
+  },
+  "records": [
+    {
+      "id": "P41",
+      "title": "EU JOINT CLINICAL ASSESSMENT OF TOVORAFENIB: METHODOLOGICAL LEARNINGS FOR FUTURE ORPHAN DOSSIERS",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/addressing-the-challenges-in-rare-disease-methods/eu-joint-clinical-assessment-of-tovorafenib-methodological-learnings-for-future-orphan-dossiers",
+      "tags": [
+        "JCA",
+        "Indirect comparisons",
+        "Rare diseases"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "AI-PICO",
+      "title": "PROSPECTIVE AI-ENABLED PICO PREDICTION FOR EU JOINT CLINICAL ASSESSMENT: BLINDED VALIDATION USING THE FIRST PUBLISHED JCA REPORT ON TOVORAFENIB",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/prospective-ai-enabled-pico-prediction-for-eu-joint-clinical-assessment-blinded-validation-using-the-first-published-jca-report-on-tovorafenib",
+      "tags": [
+        "JCA",
+        "AI",
+        "PICO"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "TEM-PV",
+      "title": "OPERATIONALISING JCA REQUIREMENTS FOR INDIRECT TREATMENT COMPARISONS: AN UPDATED SLR-BASED FRAMEWORK FOR IDENTIFYING TREATMENT EFFECT MODIFIERS AND PROGNOSTIC VARIABLES",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/generating-decision-ready-evidence-for-hta-and-jca/operationalising-jca-requirements-for-indirect-treatment-comparisons-an-updated-slr-based-framework-for-identifying-treatment-effect-modifiers-and-prognostic-variables",
+      "tags": [
+        "JCA",
+        "Indirect comparisons",
+        "Evidence synthesis"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "MLNMR-EXCEL",
+      "title": "INTEGRATING MULTILEVEL NETWORK META-REGRESSION (ML-NMR) INTO EXCEL COST-EFFECTIVENESS MODELS USING CONDITIONAL M-SPLINE SURVIVAL CURVES",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-5-4/integrating-multilevel-network-meta-regression-ml-nmr-into-excel-cost-effectiveness-models-using-conditional-m-spline-survival-curves",
+      "tags": [
+        "ML-NMR",
+        "Survival modelling",
+        "Economic evaluation"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "TTE-ICU",
+      "title": "APPLYING TARGET TRIAL EMULATION TO MULTIDRUG-RESISTANT GRAM-NEGATIVE INFECTIONS IN THE INTENSIVE CARE UNIT: A PRACTICAL FRAMEWORK",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/applying-target-trial-emulation-to-multidrug-resistant-gram-negative-infections-in-the-intensive-care-unit-a-practical-framework",
+      "tags": [
+        "Causal inference",
+        "RWE"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "BAYES-SURV",
+      "title": "BAYESIAN INTEGRATION OF EXTERNAL TRIAL DATA IMPROVES LONG-TERM SURVIVAL EXTRAPOLATION IN MULTIPLE MYELOMA",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/beyond-the-kaplan-meier-curve-advances-in-survival-analysis/bayesian-integration-of-external-trial-data-improves-long-term-survival-extrapolation-in-multiple-myeloma",
+      "tags": [
+        "Bayesian methods",
+        "Survival modelling",
+        "Economic evaluation"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "MFN-EU",
+      "title": "MANAGING MFN UNCERTAINTY: EUROPEAN RESPONSES AND IMPLICATIONS FOR PRICING AND ACCESS STRATEGY",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/managing-mfn-uncertainty-european-responses-and-implications-for-pricing-and-access-strategy",
+      "tags": [
+        "MFN pricing",
+        "Market access"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "AI-SLR",
+      "title": "A MINIMUM PERFORMANCE-REPORTING STANDARD FOR AI IN SYSTEMATIC LITERATURE REVIEW IN ABSTRACTS PRESENTED IN ISPOR",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/a-minimum-performance-reporting-standard-for-ai-in-systematic-literature-review-in-abstracts-presented-in-ispor",
+      "tags": [
+        "AI",
+        "Evidence synthesis"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "EMR-HTA",
+      "title": "ESTABLISHING THE VALUE OF HOSPITAL ELECTRONIC MEDICAL RECORD DATA IN THE HEALTH TECHNOLOGY ASSESSMENT AND REASSESSMENT PROCESS FOR ONCOLOGY: HEPATOCELLULAR CARCINOMA IN THE CHANG GUNG RESEARCH DATABASE AS A CASE STUDY",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/establishing-the-value-of-hospital-electronic-medical-record-data-in-the-health-technology-assessment-and-reassessment-process-for-oncology-hepatocellular-carcinoma-in-the-chang-gung-research-database-as-a-case-study",
+      "tags": [
+        "RWE",
+        "AI",
+        "JCA"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "ESTIMAND-DRIFT",
+      "title": "ESTIMAND DRIFT IN ONCOLOGY TARGET TRIAL EMULATIONS: LESSONS LEARNED FROM FOUR REAL-WORLD CASE STUDIES",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/estimand-drift-in-oncology-target-trial-emulations-lessons-learned-from-four-real-world-case-studies",
+      "tags": [
+        "Causal inference",
+        "RWE",
+        "Estimands"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "NMA-IPD-SURV",
+      "title": "A BAYESIAN FRAMEWORK FOR NETWORK META-ANALYSIS OF INDIVIDUAL PATIENT DATA SURVIVAL OUTCOMES USING FLEXIBLE PARAMETRIC SURVIVAL MODELS",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-3-4/a-bayesian-framework-for-network-meta-analysis-of-individual-patient-data-survival-outcomes-using-flexible-parametric-survival-models",
+      "tags": [
+        "Bayesian methods",
+        "Survival modelling",
+        "Indirect comparisons"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "MLNMR-FAST",
+      "title": "EXACT AND SAME-ESTIMAND ACCELERATION OF MULTILEVEL NETWORK META-REGRESSION: INTEGRATION-BLOCK DEDUPLICATION, TIE AGGREGATION, AND STRUCTURE-EXPLOITING QUADRATURE",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/exact-and-same-estimand-acceleration-of-multilevel-network-meta-regression-integration-block-deduplication-tie-aggregation-and-structure-exploiting-quadrature",
+      "tags": [
+        "ML-NMR",
+        "Indirect comparisons",
+        "Estimands"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "PICO-CEM",
+      "title": "FROM PICO TO ECONOMIC EVALUATION: A STRUCTURED FRAMEWORK FOR ALIGNING EU JOINT CLINICAL ASSESSMENT (JCA) EVIDENCE WITH NATIONAL ECONOMIC EVALUATIONS",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/from-pico-to-economic-evaluation-a-structured-framework-for-aligning-eu-joint-clinical-assessment-jca-evidence-with-national-economic-evaluations",
+      "tags": [
+        "JCA",
+        "Economic evaluation",
+        "PICO"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "TRUMPRX",
+      "title": "DO TRUMPRX PRICES MATCH THE LOWEST PRICES IN EUROPE? A CROSS-COUNTRY COMPARISON",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/do-trumprx-prices-match-the-lowest-prices-in-europe-a-cross-country-comparison",
+      "tags": [
+        "MFN pricing",
+        "Market access"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "TTE-EXT",
+      "title": "INFORMING EARLY CLINICAL PROGRAMS WITH EXTERNAL CONTROL ARMS AND TARGET TRIAL EMULATION",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/informing-early-clinical-programs-with-external-control-arms-and-target-trial-emulation",
+      "tags": [
+        "RWE",
+        "Causal inference"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    },
+    {
+      "id": "HTA-READY",
+      "title": "READINESS OF HEALTH TECHNOLOGY DEVELOPERS FOR EU JOINT CLINICAL ASSESSMENT: EVIDENCE REQUIREMENTS, OPERATIONAL CHALLENGES, AND NATIONAL HTA IMPLICATIONS",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/novel-value-elements-and-approaches-in-hta/readiness-of-health-technology-developers-for-eu-joint-clinical-assessment-evidence-requirements-operational-challenges-and-national-hta-implications",
+      "tags": [
+        "JCA",
+        "Market access"
+      ],
+      "source": "Official ISPOR presentation record",
+      "year": 2026
+    }
+  ]
+}
