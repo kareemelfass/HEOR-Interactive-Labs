@@ -16,17 +16,27 @@ concurrency:
 
 jobs:
   cleanup:
-    if: github.event.before == '7730c8a5f3a0a810993b9755731838b446164929'
+    if: github.event.before == '15d6cba72511cd57643b361cf8fe1f86b96c2f6f'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Install history filter and authenticate Git
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Install history filter and copy authenticated checkout
         run: |
           python -m pip install --disable-pip-version-check git-filter-repo
-          gh auth setup-git
-          git clone --bare "https://github.com/${GITHUB_REPOSITORY}.git" "$RUNNER_TEMP/cleanup.git"
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*' --tags
+          while read -r ref sha; do
+            branch="${ref#refs/remotes/origin/}"
+            if [ "$branch" != HEAD ]; then
+              git update-ref "refs/heads/$branch" "$sha"
+            fi
+          done < <(git for-each-ref --format='%(refname) %(objectname)' refs/remotes/origin)
+          git clone --bare --no-local "$GITHUB_WORKSPACE" "$RUNNER_TEMP/cleanup.git"
 
       - name: Remove only retired atlas directory and verify every branch and tag
         shell: bash
@@ -61,6 +71,10 @@ jobs:
 
           git remote remove origin 2>/dev/null || true
           git remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          auth="$(git -C "$GITHUB_WORKSPACE" config --get http.https://github.com/.extraheader)"
+          test -n "$auth"
+          git config http.https://github.com/.extraheader "$auth"
+          unset auth
           if [ "${#refspecs[@]}" -gt 0 ]; then
             git push --atomic "${leases[@]}" origin "${refspecs[@]}"
           fi
