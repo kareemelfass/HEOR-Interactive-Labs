@@ -102,6 +102,12 @@ def main():
     for page in range(1,pages+1):
         body=first if page==1 else fetch_page(page)
         if int(body["hits"])!=n or int(body["currentPage"])!=page:
+            print("OFFICIAL_PAGINATION_DIAGNOSTIC",json.dumps({
+                "requested_page":page,"returned_page":body.get("currentPage"),
+                "reported_hits":body.get("hits"),"initial_hits":n,
+                "received":len(body.get("result") or []),"lastPage":body.get("lastPage"),
+                "first_id":(body.get("result") or [{}])[0].get("uid")
+            }),flush=True)
             raise RuntimeError(f"Index changed during extraction or wrong page at {page}")
         chunk=body.get("result") or []
         expected=PAGE_SIZE if page<pages else n-PAGE_SIZE*(page-1)
