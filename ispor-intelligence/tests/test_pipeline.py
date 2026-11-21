@@ -50,7 +50,7 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(graph["edges"])
         self.assertTrue(all(e["relation"] == "MENTIONS" for e in graph["edges"]))
         self.assertEqual(summary["metadata"]["linked_ispor_records"], 1)
-        self.assertFalse(any("abstract" in node for node in graph["nodes"]))
+        self.assertFalse(any("abstract_text" in node for node in graph["nodes"]))
 
     def test_duplicate_deduplication(self):
         sample = self.sample()
