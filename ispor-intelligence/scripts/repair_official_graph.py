@@ -66,7 +66,6 @@ def main() -> None:
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     graph = json.loads(GRAPH.read_text(encoding="utf-8"))
     repaired = repair(index, graph)
-    changed = repaired != graph  # graph mutated in place, so inspect source file for changes below
     source = GRAPH.read_text(encoding="utf-8")
     output = json.dumps(repaired, ensure_ascii=False, separators=(",", ":"))
     if args.check_only:
