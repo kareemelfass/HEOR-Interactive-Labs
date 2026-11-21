@@ -38,5 +38,17 @@ jobs:
             echo "No changes to publish"
           else
             git commit -m "Refresh ISPOR Europe 2026 derived metadata graph"
-            git push
+            # Reconcile intervening commits rather than failing on a fast-forward race.
+            for attempt in 1 2 3 4; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                echo "Full metadata graph published"
+                exit 0
+              fi
+              echo "Concurrent update detected, retrying ($attempt/4)"
+              sleep 3
+            done
+            echo "Failed to publish generated data after four attempts" >&2
+            exit 1
           fi
