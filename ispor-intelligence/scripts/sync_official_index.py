@@ -93,31 +93,46 @@ def main():
         homepage=r.read().decode("utf-8","replace")
     if "isporsearch303.aws.mtxgp.net" not in homepage:
         raise RuntimeError("ISPOR's own search page no longer advertises this backend. Aborting.")
-    first=fetch_page(1)
-    n=int(first["hits"])
-    pages=math.ceil(n/PAGE_SIZE)
-    if n<500:
-        raise RuntimeError(f"Unexpectedly small official dataset: {n}")
-    data=[]
-    for page in range(1,pages+1):
-        body=first if page==1 else fetch_page(page)
-        if int(body["hits"])!=n or int(body["currentPage"])!=page:
-            print("OFFICIAL_PAGINATION_DIAGNOSTIC",json.dumps({
-                "requested_page":page,"returned_page":body.get("currentPage"),
-                "reported_hits":body.get("hits"),"initial_hits":n,
-                "received":len(body.get("result") or []),"lastPage":body.get("lastPage"),
-                "first_id":(body.get("result") or [{}])[0].get("uid")
-            }),flush=True)
-            raise RuntimeError(f"Index changed during extraction or wrong page at {page}")
-        chunk=body.get("result") or []
-        expected=PAGE_SIZE if page<pages else n-PAGE_SIZE*(page-1)
-        if len(chunk)!=expected:
-            raise RuntimeError(f"Page {page} expected {expected} records; got {len(chunk)}")
-        data.extend(record(x) for x in chunk)
-        print("OFFICIAL_PAGE",page,"of",pages,"cumulative",len(data),flush=True)
-        time.sleep(.2)
-    if len(data)!=n:
-        raise RuntimeError(f"Expected {n} official search records, received {len(data)}")
+    # Index contents can change while ISPOR is importing records. Restart on drift
+    # instead of stitching together incompatible pagination snapshots.
+    attempts_used=0
+    for attempt in range(1,7):
+        attempts_used=attempt
+        first=fetch_page(1)
+        n=int(first["hits"])
+        pages=math.ceil(n/PAGE_SIZE)
+        if n<500:
+            raise RuntimeError(f"Unexpectedly small official dataset: {n}")
+        data=[]
+        unstable=False
+        for page in range(1,pages+1):
+            body=first if page==1 else fetch_page(page)
+            if int(body["hits"])!=n or int(body["currentPage"])!=page:
+                print("OFFICIAL_INDEX_CHANGED_RESTART",json.dumps({
+                    "attempt":attempt,"page":page,"initial_hits":n,
+                    "current_hits":body.get("hits"),"returned_page":body.get("currentPage")}),flush=True)
+                unstable=True
+                break
+            chunk=body.get("result") or []
+            expected=PAGE_SIZE if page<pages else n-PAGE_SIZE*(page-1)
+            if len(chunk)!=expected:
+                print("OFFICIAL_INDEX_SHORT_PAGE_RESTART",attempt,page,len(chunk),expected,flush=True)
+                unstable=True
+                break
+            data.extend(record(x) for x in chunk)
+            print("OFFICIAL_PAGE",page,"of",pages,"attempt",attempt,"cumulative",len(data),flush=True)
+            time.sleep(.15)
+        if not unstable and len(data)==n and len(set(r["uid"] for r in data))==n and len(set(r["url"] for r in data))==n:
+            # Recheck the count after collecting all pages: a stable extraction
+            # must agree with an independent final backend query.
+            final=int(fetch_page(1)["hits"])
+            if final==n:
+                print("OFFICIAL_STABLE_SNAPSHOT",n,"attempt",attempt,flush=True)
+                break
+            print("OFFICIAL_FINAL_COUNT_CHANGED",n,final,flush=True)
+        time.sleep(1.0)
+    else:
+        raise RuntimeError("ISPOR index changed on all six extraction attempts; no snapshot published.")
     urls=[x["url"] for x in data]
     ids=[x["uid"] for x in data]
     failures=[]
@@ -134,6 +149,7 @@ def main():
         "conference":EVENT,"source":"Official ISPOR website configured search service",
         "search_page":SITE,"api_endpoint":API,"query":"* filtered by exact event string",
         "retrieved_at_utc":created,"records":len(data),"pages":pages,"page_size":PAGE_SIZE,
+        "extraction_attempts":attempts_used,"index_count_stable_during_extraction":True,
         "independent_archive_not_used_for_official_records":True,
         "reproduces_official_search_index_not_final_conference_census":True,
         "all_record_urls_page_verified":False,
