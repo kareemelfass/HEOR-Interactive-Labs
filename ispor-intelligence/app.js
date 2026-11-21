@@ -428,9 +428,14 @@
   try{
    const response=await fetch("./data/official-page-verified-supplement.json",{cache:"no-store"});
    if(response.ok){
-    const extra=(await response.json()).records||[];
-    el("metricQualifier").textContent="Indexed presentations only; "+format(extra.length)+
-      " additional official presentation pages matched on the first check outside this captured index; final census unknown.";
+    const supplement=await response.json();
+    const extra=supplement.records||[];
+    const latest=supplement.metadata && supplement.metadata.verification_basis==="latest_controlled_recheck";
+    const total=official.length+extra.length;
+    const basis=latest?"latest controlled recheck":"historical first check";
+    el("metricQualifier").textContent="At least "+format(total)+
+      " distinct presentations documented across the captured index and "+basis+
+      " ("+format(extra.length)+" outside-index page matches); final census unknown.";
    }
   }catch(_e){}
   return data;
