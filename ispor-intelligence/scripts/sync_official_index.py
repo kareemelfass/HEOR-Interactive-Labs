@@ -6,9 +6,10 @@ than a third-party reconstructed abstract archive. This is an indexed search
 snapshot, not a guarantee of every final presentation or a web-page audit.
 Only factual metadata is republished, not complete copyrighted abstracts.
 
-The script aborts on pagination gaps, duplicate URLs, event mismatches, or
-unexpected count changes during extraction. The archive is used only to
-calculate a clearly labelled discrepancy table.
+The script retains individual page UID membership, timestamps, observed counts
+and response hashes. The live index may change during scanning, so the
+resulting union is never described as a stable point-in-time census.
+The archive is used only to calculate a labelled discrepancy table.
 """
 from __future__ import annotations
 
@@ -104,11 +105,15 @@ def main():
     observations=[]
     retrieved={}
     conflicts=[]
+    pages_provenance=[]
+    seen_in_scans=defaultdict(set)
+    per_scan_page_counts=[]
     for attempt in range(1,scans+1):
         first=fetch_page(1)
         n=int(first["hits"])
         if n<500:raise RuntimeError(f"Official search returned an implausible count: {n}")
         pages=math.ceil((n+4)/PAGE_SIZE)
+        per_scan_page_counts.append(pages)
         for page in range(1,pages+1):
             body=first if page==1 else fetch_page(page)
             count=int(body["hits"])
@@ -116,6 +121,19 @@ def main():
             if int(body["currentPage"])!=page:
                 raise RuntimeError(f"Search backend returned page {body.get('currentPage')} instead of {page}")
             chunk=body.get("result") or []
+            raw_serialised=json.dumps(body,ensure_ascii=False,sort_keys=True,separators=(",",":"))
+            page_uid_list=[str(x.get("uid") or "") for x in chunk]
+            pages_provenance.append({
+                "scan":attempt,"requested_page":page,
+                "observed_at_utc":datetime.now(timezone.utc).isoformat(),
+                "reported_total_hits":count,
+                "response_page_number":body.get("currentPage"),
+                "record_uids":page_uid_list,
+                "raw_response_sha256":hashlib.sha256(raw_serialised.encode("utf-8")).hexdigest(),
+                "raw_full_abstracts_published":False,
+            })
+            for uid in page_uid_list:
+                if uid:seen_in_scans[uid].add(attempt)
             for x in chunk:
                 r=record(x)
                 uid=r["uid"]
@@ -130,8 +148,10 @@ def main():
                   "index_hits",count,"unique_captured",len(retrieved),flush=True)
             time.sleep(.12)
     data=list(retrieved.values())
+    for row in data:
+        row["seen_in_scans"]=sorted(seen_in_scans[row["uid"]])
     n=len(data)
-    pages=math.ceil(n/PAGE_SIZE)
+    pages=max(per_scan_page_counts)
     print("OFFICIAL_INDEX_CAPTURE",json.dumps({
         "indexed_hits_min":min(observations),"indexed_hits_max":max(observations),
         "unique_captured":len(data),"capture_scans":scans,
@@ -164,7 +184,8 @@ def main():
         "conference":EVENT,"source":"Official ISPOR website configured search service",
         "search_page":SITE,"api_endpoint":API,"query":"* filtered by exact event string",
         "retrieved_at_utc":created,"records":len(data),"pages":pages,"page_size":PAGE_SIZE,
-        "capture_scans":scans,"index_hits_observed_min":min(observations),
+        "capture_scans":scans,"page_count_per_scan":per_scan_page_counts,
+        "scan_membership_available":True,"index_hits_observed_min":min(observations),
         "index_hits_observed_max":max(observations),"index_count_stable_during_extraction":len(set(observations))==1,
         "point_in_time_census_verified":False,"conflicting_index_record_versions":conflicts,
         "independent_archive_not_used_for_official_records":True,
@@ -181,8 +202,9 @@ def main():
         if node_id not in seen:
             seen.add(node_id);nodes.append({"id":node_id,"type":kind,"label":label})
     for rec in data:
-        pid="presentation:"+rec["uid"]
-        enode(pid,"presentation",rec["title"])
+        kind="session" if rec["index_content_kind"]=="Confex Session" else "presentation"
+        pid=kind+":"+rec["uid"]
+        enode(pid,kind,rec["title"])
         for kind,relation,key in [
             ("official_topic","OFFICIAL_INDEX_TOPIC","topic_groups"),
             ("official_category_path","OFFICIAL_INDEX_CATEGORY","category_paths"),
@@ -248,6 +270,14 @@ def main():
       "official-index-records.json":{"metadata":metadata,"records":data},
       "official-index-graph.json":{"metadata":metadata,"nodes":nodes,"edges":edges},
       "official-index-summary.json":summary,
+      "official-index-scan-manifest.json":{
+          "metadata":{"capture_scans":scans,"retrieved_at_utc":created,
+                      "source":API,"conference":EVENT,
+                      "not_a_final_census":True,
+                      "full_abstract_responses_not_republished":True},
+          "pages":pages_provenance,
+          "record_membership":{uid:sorted(scans_seen) for uid,scans_seen in seen_in_scans.items()},
+      },
       "official-reconciliation.json":{"metadata":metadata,"archive_records":len(candidates),
                                       "archive_to_official":recon,"official_only":official_only},
     }

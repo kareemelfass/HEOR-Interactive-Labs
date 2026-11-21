@@ -20,7 +20,7 @@ from pathlib import Path
 
 SOURCE = "https://justinsyu.github.io/ispor-eu-nov-2026/ispor_europe_2026_abstracts.json"
 EXPECTED = 3097
-ORIGIN = "independent pre-conference snapshot, collected 2026-08-24"
+ORIGIN = "independent pre-conference archive; collection date not verified"
 ROOT = Path(__file__).resolve().parents[1]
 FIELDS = (
     "uid", "abstract_number", "session_code", "title", "authors",

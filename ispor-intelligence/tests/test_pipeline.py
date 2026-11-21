@@ -39,6 +39,24 @@ class PipelineTests(unittest.TestCase):
         self.assertIn("ML-NMR", records[0]["tags"])
         self.assertIn("Causal inference", records[1]["tags"])
 
+    def test_archive_categories_cannot_create_theme_or_disease_mentions(self):
+        """Official/legacy categories are not text evidence that a method was used."""
+        sample = {"records": [{
+            "title": "SURVEY OF HOSPITAL PARKING",
+            "abstract_number": "P999",
+            "source_url": "https://www.ispor.org/heor-resources/presentations-database/test",
+            "categories": ["Medical Technologies", "Economic Evaluation"],
+            "diseases": ["Oncology"],
+            "summary": "",
+            "sections": {},
+        }]}
+        records, n = builder.build(sample, allow_small=True)
+        self.assertEqual(n, 1)
+        self.assertEqual(records[0]["tags"], [])
+        self.assertEqual(records[0]["diseases"], [])
+        self.assertIn("Medical Technologies", records[0]["source_categories"])
+        self.assertIn("Oncology", records[0]["source_diseases"])
+
     def test_does_not_invent_official_urls(self):
         records, _ = builder.build(self.sample(), allow_small=True)
         self.assertIsNone(records[1]["url"])

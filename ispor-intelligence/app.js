@@ -1,6 +1,5 @@
 "use strict";
 (function () {
- const ARCHIVE = "https://justinsyu.github.io/ispor-eu-nov-2026/ispor_europe_2026_abstracts.json";
  const PREFIX = "https://www.ispor.org/heor-resources/presentations-database/";
  const TOPICS = [
   {name:"JCA",re:/\bJCA\b|joint clinical assessment|EU HTA regulation|\bHTAR\b/i},
@@ -30,12 +29,13 @@
   {name:"Infectious disease",re:/\binfection\b|\bHIV\b|\bviral\b|\bantibiotic\b/i}
  ];
  const el = id => document.getElementById(id);
- const state = {records:[],source:"",snapshot:"",isFull:false,rawCount:0,filtered:[],shown:20,graphFocus:"",filter:"",isOfficial:false,query:"",searchMode:"all",error:""};
+ const state = {records:[],source:"",snapshot:"",isFull:false,rawCount:0,sessionCount:0,filtered:[],shown:20,graphFocus:"",filter:"",isOfficial:false,query:"",searchMode:"all",error:""};
  let reviewedClaims=[];
  const h = (tag,cls,text) => { const n=document.createElement(tag); if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n; };
  const safeUrl = v => typeof v==="string" && /^https:\/\/(www\.)?ispor\.org\//i.test(v) ? v : "";
  const sourceLink = r => safeUrl(r.url);
  const format = n => Number(n||0).toLocaleString("en-GB");
+ const UNSPECIFIED_DISEASE = "No Additional Disease & Conditions/Specialized Treatment Areas";
  const byCount = (a,b) => b.count-a.count || a.name.localeCompare(b.name);
  const str = v => {
   if(v===null || v===undefined)return "";
@@ -93,19 +93,16 @@
   const sourceDiseases=asLabels(field(row,["source_diseases","diseases","disease_areas","disease"]));
   const topicsRaw=sourceCategories.join(" ");
   const diseaseRaw=sourceDiseases.join(" ");
-  const haystack=[title,abstract,topicsRaw].join(" ");
+  const haystack=[title,abstract].join(" ");
   const inputTags=field(row,["tags"]);
   const inputDiseases=field(row,["diseases"]);
   const tagNames=Array.isArray(inputTags)?inputTags:[];
   const diseaseNames=Array.isArray(inputDiseases)?inputDiseases:[];
   const tags=[...new Set([...TOPICS.filter(x=>x.re.test(haystack)).map(x=>x.name),...tagNames.filter(x=>TOPICS.some(t=>t.name===x))])];
-  const diseases=[...new Set([...DISEASES.filter(x=>x.re.test([title,abstract,diseaseRaw].join(" "))).map(x=>x.name),...diseaseNames.filter(x=>DISEASES.some(t=>t.name===x))])];
-  return {id:code || "r"+i,title,abstract,code,url,tags,diseases,sourceCategories,sourceDiseases,topicsRaw,diseaseRaw,sourceType:"Archive record",year:2026};
+  const diseases=[...new Set([...DISEASES.filter(x=>x.re.test([title,abstract].join(" "))).map(x=>x.name),...diseaseNames.filter(x=>DISEASES.some(t=>t.name===x))])];
+  return {id:code || "r"+i,title,abstract,code,url,tags,diseases,sourceCategories,sourceDiseases,topicsRaw,diseaseRaw,sourceType:"User-imported unverified record",year:2026};
  }
- function fromSeed(items){
-  return items.map((r,i)=>({id:r.id||"seed"+i,title:r.title,abstract:"",code:r.id||"",url:safeUrl(r.url),tags:r.tags||[],diseases:DISEASES.filter(x=>x.re.test(r.title)).map(x=>x.name),sourceCategories:[],sourceDiseases:[],topicsRaw:"",diseaseRaw:"",sourceType:"Verified official presentation",year:2026}));
- }
- function clean(rows){
+  function clean(rows){
   const seen=new Set(),out=[];
   rows.forEach((r,i)=>{
    const record=r && r.sourceType?r:normalize(r,i);
@@ -118,12 +115,13 @@
  }
  function setData(records,source,full,rawCount,error){
   state.records=clean(records); state.rawCount=rawCount||records.length;state.source=source;state.isFull=full;state.isOfficial=(source==="Official ISPOR search index");state.error=error||"";
+  if(!state.isOfficial)state.sessionCount=0;
   state.shown=20;
   updateThemeSelect();updateGraphSelect();applyFilters();
   el("sourceName").textContent=source;
   el("sourceDetail").textContent=state.isOfficial?"Search-index snapshot, not a final census; individual page validation is not complete":(error||"Unverified input");
   el("liveDot").className="live-dot "+(full?"ok":"warn");
-  el("metricQualifier").textContent=state.isOfficial?"Official search-index records; denominator not reconciled":"Unverified dataset";
+  el("metricQualifier").textContent=state.isOfficial?"Indexed presentations only; sessions excluded; final census unknown":"User-imported unverified data";
   renderQuality();
  }
  function updateThemeSelect(){
@@ -155,7 +153,7 @@
   el("filteredCount").textContent=format(state.filtered.length)+" matching";
   renderBars();renderInsights();renderGraph();renderResults();renderMatrix();renderQuality();
  }
- function counts(fieldName){return [...new Set(state.filtered.flatMap(r=>r[fieldName]))].map(name=>({name,count:state.filtered.filter(r=>r[fieldName].includes(name)).length})).sort(byCount)}
+ function counts(fieldName){return [...new Set(state.filtered.flatMap(r=>r[fieldName]).filter(name=>!(fieldName==="diseases"&&name===UNSPECIFIED_DISEASE)))].map(name=>({name,count:state.filtered.filter(r=>r[fieldName].includes(name)).length})).sort(byCount)}
  function drawBars(target,items,interactive){
   const parent=el(target);parent.replaceChildren();
   if(!items.length){parent.append(h("p","muted","No matching topic signals."));return}
@@ -169,7 +167,13 @@
    parent.append(b);
   });
  }
- function renderBars(){drawBars("themeBars",counts("tags"),true);drawBars("diseaseBars",counts("diseases"),false);drawBars("sourceTopicBars",counts("sourceCategories"),false);drawBars("sourceDiseaseBars",counts("sourceDiseases"),false)}
+ function renderBars(){
+  drawBars("themeBars",counts("tags"),true);
+  drawBars("diseaseBars",counts("diseases"),false);
+  drawBars("sourceTopicBars",counts("sourceCategories"),false);
+  const missing=state.filtered.filter(r=>r.diseases.includes(UNSPECIFIED_DISEASE)).length;
+  el("diseaseMissing").textContent=format(missing)+" of "+format(state.filtered.length)+" filtered presentations have no specific disease area assigned in the index.";
+ }
  function renderInsights(){
   const top=counts("tags")[0]; const pct=top&&state.filtered.length?Math.round(100*top.count/state.filtered.length):0;
   el("insightTitle").textContent=top?top.name+" appears in "+format(top.count)+" matching records":"No records match these filters";
@@ -214,7 +218,7 @@
  function switchGraphFocus(t){state.graphFocus=t;el("graphFocus").value=t;renderGraph()}
  function showThemeDetail(t,matching){
   el("detailTitle").textContent=t;
-  el("detailText").textContent=format(matching.length)+" currently filtered presentations mention this theme. Links represent source-index topic classifications, not confirmed method use or findings.";
+  el("detailText").textContent=format(matching.length)+" filtered presentations have this ISPOR-index topic classification; classification does not establish method use or study findings.";
   el("detailLinks").replaceChildren();
   related(matching);
   renderReviewedClaims(matching,t);
@@ -233,7 +237,7 @@
   const codes=new Set(records.map(r=>r.code.toUpperCase()).filter(Boolean));
   const matches=reviewedClaims.filter(c=>
    (urls.has(c.source_url) || codes.has(c.presentation_code.toUpperCase())) &&
-   (!topic || c.topic===topic || records.some(r=>r.tags.includes(topic)))
+   (!topic || !c.topic || c.topic.toLowerCase()===topic.toLowerCase())
   );
   matches.slice(0,8).forEach(c=>{
    const card=h("div","claim-card");
@@ -262,7 +266,7 @@
    const title=h("h3");const a=sourceLink(r)?h("a","",r.title):h("span","",r.title);
    if(sourceLink(r)){a.href=r.url;a.rel="noopener noreferrer";a.target="_blank"}
    title.append(a);
-   const caption=h("p","",r.sourceType+(sourceLink(r)?" · Search-index URL, not yet individually page-checked":" · Official link not available in source"));
+   const caption=h("p","",r.sourceType+(sourceLink(r)?" · Indexed ISPOR URL; direct page verification not complete":" · Indexed source link unavailable"));
    const tags=h("div","tags");r.tags.forEach(t=>tags.append(h("span","",t)));
    article.append(head,title,caption,tags);target.append(article);
   });
@@ -292,50 +296,22 @@
  }
  function renderQuality(){
   const valid=state.records.filter(r=>sourceLink(r)).length;
-  const abstract=state.records.filter(r=>r.abstract.length>40).length;
   const tagged=state.records.filter(r=>r.tags.length>0).length;
   const items=[
-   [format(state.rawCount),"Input rows"],
-   [format(state.records.length),"Usable unique records"],
-   [format(valid),"ISPOR-domain URLs"],
-   [format(abstract),"Local abstract text (not republished)"],
-   [format(tagged),"Records with official topic group"],
+   [format(state.records.length),"Indexed presentations in analysis"],
+   [format(state.sessionCount),"Indexed conference sessions excluded"],
+   [format(valid),"ISPOR-domain source URLs (not all page-verified)"],
+   [format(tagged),"Presentations with indexed topic group"],
    [format(state.records.filter(r=>r.sourceCategories.length>0).length),"Official index category coverage"],
    [state.isOfficial?"ISPOR search index":"Unverified","Data coverage"]
   ];
   el("quality").replaceChildren(...items.map(([v,label])=>{const box=h("div","quality-box");box.append(h("strong","",v),h("span","",label));return box}));
  }
- function makeGraph(records){
-  const themes=[...new Set(records.flatMap(r=>r.tags))].sort();
-  const categories=[...new Set(records.flatMap(r=>r.sourceCategories))].sort();
-  const diseases=[...new Set(records.flatMap(r=>r.sourceDiseases))].sort();
-  const nodes=themes.map(t=>({id:"topic:"+t,type:"theme",label:t,provenance:"Keyword-detected text mention"}));
-  categories.forEach(t=>nodes.push({id:"ispor_topic:"+t,type:"archive_topic_group",label:t}));
-  diseases.forEach(t=>nodes.push({id:"disease_area:"+t,type:"archive_disease_area",label:t}));
-  const edges=[],recordByUrl=new Map();
-  records.forEach((r,i)=>{
-   const id="presentation:"+(r.code||"index"+i).replace(/[^a-z0-9_-]/gi,"_")+"_"+i;
-   nodes.push({id,type:"presentation",label:r.title,url:sourceLink(r)||null,abstract_code:r.code||null});
-   if(sourceLink(r))recordByUrl.set(r.url,id);
-   r.tags.forEach(t=>edges.push({source:id,target:"topic:"+t,relation:"MENTIONS",provenance:"Rule-based keyword classification, not an author-reported finding"}));
-   r.sourceCategories.forEach(t=>edges.push({source:id,target:"ispor_topic:"+t,relation:"ARCHIVE_CLASSIFIES_AS"}));
-   r.sourceDiseases.forEach(t=>edges.push({source:id,target:"disease_area:"+t,relation:"ARCHIVE_DISEASE_AREA"}));
-  });
-  reviewedClaims.forEach(c=>{
-   const pid=recordByUrl.get(c.source_url);
-   if(!pid)return;
-   const cid="claim:"+c.id;
-   nodes.push({id:cid,type:"reported_claim",label:c.claim,qualifier:c.qualifier,source_url:c.source_url});
-   edges.push({source:pid,target:cid,relation:"REPORTS",provenance:"Manually checked author-reported claim"});
-   if(themes.includes(c.topic))edges.push({source:cid,target:"topic:"+c.topic,relation:"ABOUT"});
-  });
-  return {metadata:{conference:"ISPOR Europe 2026",records:records.length,source:state.source,full_archive:state.isFull,created_utc:new Date().toISOString(),interpretation:"Keyword and archive-classification edges are not scientific findings. Claims are author-reported."},nodes,edges};
- }
- function download(filename,text,type){
+  function download(filename,text,type){
   const blob=new Blob([text],{type:type||"application/json"}),url=URL.createObjectURL(blob),a=h("a");a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
  }
  function exportCsv(){
-  const cols=["id","title","url","tags","diseases","year"];
+  const cols=["code","id","title","url","tags","diseases","year"];
   const quote=v=>'"'+String(v===undefined?"":Array.isArray(v)?v.join("; "):v).replace(/"/g,'""')+'"';
   const csv=[cols.join(","),...state.filtered.map(r=>cols.map(c=>quote(r[c])).join(","))].join("\r\n");
   download("ispor_europe_2026_filtered.csv",csv,"text/csv;charset=utf-8");
@@ -347,15 +323,15 @@
   const status=comparison.archive_reconciliation_status||{};
   const meta=summary.metadata||{};
   const values=[
-    ["Official-index items captured",meta.records],
+    ["Official-index items captured (presentations and sessions)",meta.records],
     ["Indexed research presentations",(summary.official_index_content_kinds||{})["Confex Presentation"]||0],
     ["Indexed conference sessions",(summary.official_index_content_kinds||{})["Confex Session"]||0],
     ["Archive records",comparison.archive_records],
     ["Exact URL matches",status.url_match||0],
     ["Changed URL, matching code and title",status.code_title_match_url_changed||0],
-    ["Same code, differing title or URL",status.code_exists_but_title_or_url_different||0],
+    ["Same code, revised title or URL candidate",status.code_exists_but_title_or_url_different||0],
     ["Archive only, not in captured official index",status.archive_only_not_in_official_index||0],
-    ["Official-index items without archive match",comparison.official_index_not_matched_to_archive||0]
+    ["Index items unmatched to archived records (including sessions)",comparison.official_index_not_matched_to_archive||0]
   ];
   target.replaceChildren(...values.map(([label,count])=>{
     const box=h("div","quality-box");
@@ -369,9 +345,9 @@
   const counts=audit.counts||{};
   const separatelyConfirmed=(audit.results||[]).filter(r=>r.reconciliation_status==="archive_only_not_in_official_index" && r.page_status==="official_page_title_code_verified").length;
   const labels={
-    official_page_title_code_verified:"Official page verified (title and code)",
-    official_page_reachable_content_mismatch:"Official page reachable, title/code unresolved",
-    http_404:"Official page returned HTTP 404",
+    official_page_title_code_verified:"Archived code and title matched when checked",
+    official_page_reachable_content_mismatch:"Archived title differs; code matched during original check; current title unverified",
+    http_404:"Archived URL returned HTTP 404 at check time (unconfirmed)",
     http_403:"Official page returned HTTP 403",
     network_error:"Network error, not verified",
     invalid_or_missing_url:"No valid ISPOR page URL",
@@ -406,44 +382,15 @@
   if(!response.ok)throw Error("Official-index file unavailable, HTTP "+response.status);
   const data=await response.json();
   if(!Array.isArray(data.records)||data.records.length<1000)throw Error("Official-index corpus incomplete");
-  const official=fromOfficial(data.records);
-  setData(official,"Official ISPOR search index",true,data.records.length,"");
   const sessions=data.records.filter(r=>r.index_content_kind==="Confex Session").length;
-  el("sourceDetail").textContent="Official indexed items: "+format(data.records.length)+" ("+format(data.records.length-sessions)+" presentations, "+format(sessions)+" sessions). Index count changed during collection; final census unresolved.";
+  state.sessionCount=sessions;
+  const presentations=data.records.filter(r=>r.index_content_kind==="Confex Presentation");
+  const official=fromOfficial(presentations);
+  setData(official,"Official ISPOR search index",true,presentations.length,"");
+  el("sourceDetail").textContent="Indexed research presentations: "+format(official.length)+"; "+format(sessions)+" conference sessions excluded from analysis. Final conference census unresolved.";
   try{const response=await fetch("./data/official-index-summary.json",{cache:"no-store"});if(response.ok)renderOfficialReconciliation(await response.json())}catch(_e){}
   try{const response=await fetch("./data/official-page-checks.json",{cache:"no-store"});if(response.ok)renderOfficialPageAudit(await response.json())}catch(_e){}
   return data;
- }
-  async function loadSeed(){
-  const response=await fetch("./data/verified-records.json",{cache:"no-store"});
-  if(!response.ok)throw Error("Curated seed unavailable");
-  const body=await response.json();
-  setData(fromSeed(body.records||[]),"Verified official ISPOR seed",false,(body.records||[]).length,"");
- }
- async function loadLocalIndex(){
-  const response=await fetch("./data/records-index.json",{cache:"no-store"});
-  if(!response.ok)throw Error("No prebuilt full metadata index");
-  const body=await response.json();
-  const rows=extractRows(body);
-  if(rows.length<1000)throw Error("Incomplete local metadata index");
-  setData(rows,"Prebuilt 2026 metadata KG index",true,rows.length,"");
- }
- async function loadArchive(){
-  el("sourceName").textContent="Retrieving 2026 archive...";
-  try{
-   const response=await fetch(ARCHIVE,{mode:"cors",cache:"no-store"});
-   if(!response.ok)throw Error("HTTP "+response.status);
-   const body=await response.json();
-   const rows=extractRows(body);
-   if(rows.length<1000)throw Error("Archive shape could not be interpreted reliably ("+rows.length+" candidate rows)");
-   const records=clean(rows);
-   if(records.length<1000)throw Error("Only "+records.length+" titles were usable; not accepting partial corpus");
-   setData(records,"Independent 2026 abstract archive",true,rows.length,"");
-  }catch(e){
-   const reason=e&&e.message?e.message:String(e);
-   if(state.records.length===0){el("sourceName").textContent="Unable to load research records";el("sourceDetail").textContent=reason}
-   else{el("sourceName").textContent=state.source;el("sourceDetail").textContent="Live archive fetch unavailable: "+reason+". Displaying "+(state.isFull?"the prebuilt metadata index":"the verified seed")+".";state.error=reason;renderQuality()}
-  }
  }
  async function importFile(file){
   if(!file)return;

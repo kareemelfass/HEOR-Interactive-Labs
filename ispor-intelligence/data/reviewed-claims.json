@@ -2,9 +2,10 @@
   "metadata": {
     "source": "Official ISPOR Europe 2026 abstract pages",
     "reviewed_on": "2026-11-21",
-    "purpose": "Manually verified abstract-level claim excerpts in paraphrase",
+    "purpose": "Ten author-reported statements from five ISPOR abstracts (7 results, 1 limitation, 1 conclusion and 1 recommendation)",
     "interpretation": "All claims remain author-reported; independent verification of underlying studies and data is not implied.",
-    "count": 10
+    "count": 10,
+    "numeric_verification": "Do not treat numbers in a typographically ambiguous source as verified without poster confirmation"
   },
   "claims": [
     {
@@ -63,7 +64,7 @@
       "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/a-minimum-performance-reporting-standard-for-ai-in-systematic-literature-review-in-abstracts-presented-in-ispor",
       "topic": "Evidence synthesis",
       "type": "reported_result",
-      "claim": "The authors found that none of the 86 reviewed abstracts reported Work Saved over Sampling, their selected screening-efficiency metric.",
+      "claim": "The authors found that none of the 86 reviewed abstracts reported Work Saved over Sampling, which they described as the standard screening-efficiency metric.",
       "qualifier": "Study-specific content analysis, not an audit of all ISPOR Europe presentations.",
       "source_section": "RESULTS"
     },
@@ -73,9 +74,10 @@
       "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/managing-mfn-uncertainty-european-responses-and-implications-for-pricing-and-access-strategy",
       "topic": "MFN pricing",
       "type": "reported_result",
-      "claim": "The authors reported public MFN-related positions in 14 of 17 European Economic Area countries assessed under their GDP-threshold definition.",
-      "qualifier": "Secondary targeted review and author classification; country policies not independently verified.",
-      "source_section": "RESULTS"
+      "claim": "The authors describe European Economic Area countries issuing public MFN-related positions, but the numerical count is ambiguous in the rendered abstract.",
+      "qualifier": "Numeric figure was previously transcribed as 14 of 17 from ambiguous superscripted page text; poster or source document required before reporting this number.",
+      "source_section": "RESULTS",
+      "evidence_status": "ambiguous_numeric_unverified"
     },
     {
       "id": "hpr213-reforms",

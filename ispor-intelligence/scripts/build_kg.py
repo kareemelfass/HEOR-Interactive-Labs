@@ -146,7 +146,7 @@ def source_labels(value):
 
 def normalize(row, index):
     title = flatten(get(row, "title", "presentation_title", "abstract_title", "name", "paper_title")).strip()
-    # Two official 2026 records have unusually short titles (EE81 and EE219).
+    # Two historical archive records with placeholder titles have unusually short titles (EE81 and EE219).
     # Preserve them if their source URL is official rather than imposing length >= 8.
     if not title or (len(title) < 8 and not official_url(row)):
         return None
@@ -154,7 +154,7 @@ def normalize(row, index):
     abstract = flatten([x for x in parts if x is not None])
     topics = flatten(get(row, "topic_groups", "topics", "topic", "categories", "category", "topic_area"))
     diseases = flatten(get(row, "disease_areas", "disease_area", "diseases", "disease"))
-    txt = " ".join([title, abstract, topics])
+    txt = " ".join([title, abstract])
     code = flatten(get(row, "abstract_number", "presentation_code", "presentation_id",
                        "abstract_id", "code", "number", "id")).strip()[:80]
     code = code or "hash-" + hashlib.sha256(title.lower().encode()).hexdigest()[:15]
@@ -164,7 +164,7 @@ def normalize(row, index):
         "url": official_url(row),
         "year": 2026,
         "tags": classify(txt, PATTERNS),
-        "diseases": classify(" ".join([title, abstract, diseases]), DISEASES),
+        "diseases": classify(" ".join([title, abstract]), DISEASES),
         "source_categories": source_labels(get(row, "categories", "topic_groups", "topic")),
         "source_diseases": source_labels(get(row, "diseases", "disease_areas", "disease")),
         "session_type": flatten(get(row, "session_type", "session")).strip()[:150],
@@ -228,9 +228,9 @@ def outputs(records, input_rows, source_url):
     metadata = {
         "conference": "ISPOR Europe 2026",
         "input": source_url,
-        "snapshot": "Independent pre-conference archive collected 2026-08-24",
+        "snapshot": "Independent pre-conference archive collection date unverified; independent pre-conference archive",
         "official_final_census": False,
-        "method": "Multi-label regex-based metadata extraction; not author-validated",
+        "method": "Legacy non-author-validated text mentions from title and abstract only; source categories are kept separate",
         "interpretation": "Edges indicate keyword associations only, not causal relationships or methodological findings.",
         "input_rows": input_rows,
         "unique_usable_records": len(records),
