@@ -29,7 +29,7 @@ print("OFFICIAL_SEARCH_PAGE",json.dumps({
     "scripts":parser.scripts,"forms":parser.forms,
     "input_tags":parser.input_tags[:30],
     "keywords":[{"pattern":p,"at":m.start(),"context":text[max(0,m.start()-140):m.start()+250]} for p in
-      [r"3112",r"api/",r"results",r"SearchResults",r"search-result",r"ajax",r"endPoint",r"sitefinity"] for m in list(re.finditer(p,text,re.I))[:4]
+      [r"3112",r"api/",r"results",r"SearchResults",r"search-result",r"ajax",r"endPoint",r"sitefinity"] for m in list(re.finditer(p,text,re.I))[:4]]
 },ensure_ascii=False)[:21000])
 for src in parser.scripts:
     if "ispor" not in urljoin(BASE,src):continue
