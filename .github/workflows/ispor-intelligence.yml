@@ -8,8 +8,6 @@ on:
       - "ispor-intelligence/tests/**"
       - ".github/workflows/ispor-intelligence.yml"
   workflow_dispatch:
-  schedule:
-    - cron: "15 4 * * 1"
 
 permissions:
   contents: write
