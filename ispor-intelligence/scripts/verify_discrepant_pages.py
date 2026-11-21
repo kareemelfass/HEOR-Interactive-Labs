@@ -168,6 +168,26 @@ def examine(url, archived_title, current_title, code):
         return "repeated_http_403_unconfirmed", attempts
     return "inconsistent_http_or_network_unverified", attempts
 
+def spaced_404_observation(status, previous, checked_at=None):
+    """Return prior observation time only for HTTP 404 seen on runs >=1 hour apart."""
+    if status != "repeated_http_404_unconfirmed" or not previous:
+        return None
+    if previous.get("classification") not in ("repeated_http_404_unconfirmed",
+                                              "cross_run_http_404_unconfirmed"):
+        return None
+    observations = previous.get("observations") or []
+    if not observations:
+        return None
+    try:
+        first = observations[0]["checked_at_utc"]
+        prior_time = datetime.fromisoformat(first)
+        current_time = checked_at or datetime.now(timezone.utc)
+        if current_time - prior_time >= timedelta(hours=1):
+            return first
+    except (KeyError, ValueError, TypeError):
+        return None
+    return None
+
 def main():
     reconciliation = json.loads(RECON.read_text(encoding="utf-8"))
     indexed = json.loads(INDEX.read_text(encoding="utf-8"))["records"]
@@ -193,20 +213,13 @@ def main():
         else:
             status, attempts = examine(url, task.get("archive_title") or "", current_title, code)
         old = previous.get((code, url))
-        persistent_404_across_runs = False
-        if (status == "repeated_http_404_unconfirmed" and old and
-            old.get("classification") in ("repeated_http_404_unconfirmed",
-                                           "cross_run_http_404_unconfirmed")):
-            old_observations = old.get("observations") or []
-            if old_observations:
-                old_date = datetime.fromisoformat(old_observations[0]["checked_at_utc"])
-                if datetime.now(timezone.utc) - old_date >= timedelta(hours=1):
-                    persistent_404_across_runs = True
-                    status = "cross_run_http_404_unconfirmed"
+        previous_observation = spaced_404_observation(status, old)
+        persistent_404_across_runs = previous_observation is not None
+        if persistent_404_across_runs:
+            status = "cross_run_http_404_unconfirmed"
         result.append({
             "persistent_404_observed_across_spaced_runs": persistent_404_across_runs,
-            "previous_observation_utc": old["observations"][0]["checked_at_utc"]
-                if persistent_404_across_runs else None,
+            "previous_observation_utc": previous_observation,
             "archive_code": code,
             "archived_url": url,
             "archived_title": task.get("archive_title"),
