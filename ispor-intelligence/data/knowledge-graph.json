@@ -1,0 +1,453 @@
+{
+  "metadata": {
+    "name": "ISPOR Europe 2026 Verified Seed Knowledge Graph",
+    "coverage": "Selected verified official presentation records, not full conference",
+    "source": "Official ISPOR presentation pages",
+    "scope": "Titles and topics only",
+    "is_full_corpus": false,
+    "created": "2026-11-21",
+    "records": 16
+  },
+  "nodes": [
+    {
+      "id": "topic:JCA",
+      "label": "JCA",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:Indirect comparisons",
+      "label": "Indirect comparisons",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:Rare diseases",
+      "label": "Rare diseases",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:AI",
+      "label": "AI",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:PICO",
+      "label": "PICO",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:Evidence synthesis",
+      "label": "Evidence synthesis",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:ML-NMR",
+      "label": "ML-NMR",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:Survival modelling",
+      "label": "Survival modelling",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:Economic evaluation",
+      "label": "Economic evaluation",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:Causal inference",
+      "label": "Causal inference",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:RWE",
+      "label": "RWE",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:Bayesian methods",
+      "label": "Bayesian methods",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:MFN pricing",
+      "label": "MFN pricing",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:Market access",
+      "label": "Market access",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "topic:Estimands",
+      "label": "Estimands",
+      "type": "topic",
+      "evidence": "Curated title-based classification"
+    },
+    {
+      "id": "record:P41",
+      "label": "EU JOINT CLINICAL ASSESSMENT OF TOVORAFENIB: METHODOLOGICAL LEARNINGS FOR FUTURE ORPHAN DOSSIERS",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/addressing-the-challenges-in-rare-disease-methods/eu-joint-clinical-assessment-of-tovorafenib-methodological-learnings-for-future-orphan-dossiers"
+    },
+    {
+      "id": "record:AI-PICO",
+      "label": "PROSPECTIVE AI-ENABLED PICO PREDICTION FOR EU JOINT CLINICAL ASSESSMENT: BLINDED VALIDATION USING THE FIRST PUBLISHED JCA REPORT ON TOVORAFENIB",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/prospective-ai-enabled-pico-prediction-for-eu-joint-clinical-assessment-blinded-validation-using-the-first-published-jca-report-on-tovorafenib"
+    },
+    {
+      "id": "record:TEM-PV",
+      "label": "OPERATIONALISING JCA REQUIREMENTS FOR INDIRECT TREATMENT COMPARISONS: AN UPDATED SLR-BASED FRAMEWORK FOR IDENTIFYING TREATMENT EFFECT MODIFIERS AND PROGNOSTIC VARIABLES",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/generating-decision-ready-evidence-for-hta-and-jca/operationalising-jca-requirements-for-indirect-treatment-comparisons-an-updated-slr-based-framework-for-identifying-treatment-effect-modifiers-and-prognostic-variables"
+    },
+    {
+      "id": "record:MLNMR-EXCEL",
+      "label": "INTEGRATING MULTILEVEL NETWORK META-REGRESSION (ML-NMR) INTO EXCEL COST-EFFECTIVENESS MODELS USING CONDITIONAL M-SPLINE SURVIVAL CURVES",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-5-4/integrating-multilevel-network-meta-regression-ml-nmr-into-excel-cost-effectiveness-models-using-conditional-m-spline-survival-curves"
+    },
+    {
+      "id": "record:TTE-ICU",
+      "label": "APPLYING TARGET TRIAL EMULATION TO MULTIDRUG-RESISTANT GRAM-NEGATIVE INFECTIONS IN THE INTENSIVE CARE UNIT: A PRACTICAL FRAMEWORK",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/applying-target-trial-emulation-to-multidrug-resistant-gram-negative-infections-in-the-intensive-care-unit-a-practical-framework"
+    },
+    {
+      "id": "record:BAYES-SURV",
+      "label": "BAYESIAN INTEGRATION OF EXTERNAL TRIAL DATA IMPROVES LONG-TERM SURVIVAL EXTRAPOLATION IN MULTIPLE MYELOMA",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/beyond-the-kaplan-meier-curve-advances-in-survival-analysis/bayesian-integration-of-external-trial-data-improves-long-term-survival-extrapolation-in-multiple-myeloma"
+    },
+    {
+      "id": "record:MFN-EU",
+      "label": "MANAGING MFN UNCERTAINTY: EUROPEAN RESPONSES AND IMPLICATIONS FOR PRICING AND ACCESS STRATEGY",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/managing-mfn-uncertainty-european-responses-and-implications-for-pricing-and-access-strategy"
+    },
+    {
+      "id": "record:AI-SLR",
+      "label": "A MINIMUM PERFORMANCE-REPORTING STANDARD FOR AI IN SYSTEMATIC LITERATURE REVIEW IN ABSTRACTS PRESENTED IN ISPOR",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/a-minimum-performance-reporting-standard-for-ai-in-systematic-literature-review-in-abstracts-presented-in-ispor"
+    },
+    {
+      "id": "record:EMR-HTA",
+      "label": "ESTABLISHING THE VALUE OF HOSPITAL ELECTRONIC MEDICAL RECORD DATA IN THE HEALTH TECHNOLOGY ASSESSMENT AND REASSESSMENT PROCESS FOR ONCOLOGY: HEPATOCELLULAR CARCINOMA IN THE CHANG GUNG RESEARCH DATABASE AS A CASE STUDY",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/establishing-the-value-of-hospital-electronic-medical-record-data-in-the-health-technology-assessment-and-reassessment-process-for-oncology-hepatocellular-carcinoma-in-the-chang-gung-research-database-as-a-case-study"
+    },
+    {
+      "id": "record:ESTIMAND-DRIFT",
+      "label": "ESTIMAND DRIFT IN ONCOLOGY TARGET TRIAL EMULATIONS: LESSONS LEARNED FROM FOUR REAL-WORLD CASE STUDIES",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/estimand-drift-in-oncology-target-trial-emulations-lessons-learned-from-four-real-world-case-studies"
+    },
+    {
+      "id": "record:NMA-IPD-SURV",
+      "label": "A BAYESIAN FRAMEWORK FOR NETWORK META-ANALYSIS OF INDIVIDUAL PATIENT DATA SURVIVAL OUTCOMES USING FLEXIBLE PARAMETRIC SURVIVAL MODELS",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-3-4/a-bayesian-framework-for-network-meta-analysis-of-individual-patient-data-survival-outcomes-using-flexible-parametric-survival-models"
+    },
+    {
+      "id": "record:MLNMR-FAST",
+      "label": "EXACT AND SAME-ESTIMAND ACCELERATION OF MULTILEVEL NETWORK META-REGRESSION: INTEGRATION-BLOCK DEDUPLICATION, TIE AGGREGATION, AND STRUCTURE-EXPLOITING QUADRATURE",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/exact-and-same-estimand-acceleration-of-multilevel-network-meta-regression-integration-block-deduplication-tie-aggregation-and-structure-exploiting-quadrature"
+    },
+    {
+      "id": "record:PICO-CEM",
+      "label": "FROM PICO TO ECONOMIC EVALUATION: A STRUCTURED FRAMEWORK FOR ALIGNING EU JOINT CLINICAL ASSESSMENT (JCA) EVIDENCE WITH NATIONAL ECONOMIC EVALUATIONS",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/from-pico-to-economic-evaluation-a-structured-framework-for-aligning-eu-joint-clinical-assessment-jca-evidence-with-national-economic-evaluations"
+    },
+    {
+      "id": "record:TRUMPRX",
+      "label": "DO TRUMPRX PRICES MATCH THE LOWEST PRICES IN EUROPE? A CROSS-COUNTRY COMPARISON",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/do-trumprx-prices-match-the-lowest-prices-in-europe-a-cross-country-comparison"
+    },
+    {
+      "id": "record:TTE-EXT",
+      "label": "INFORMING EARLY CLINICAL PROGRAMS WITH EXTERNAL CONTROL ARMS AND TARGET TRIAL EMULATION",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/informing-early-clinical-programs-with-external-control-arms-and-target-trial-emulation"
+    },
+    {
+      "id": "record:HTA-READY",
+      "label": "READINESS OF HEALTH TECHNOLOGY DEVELOPERS FOR EU JOINT CLINICAL ASSESSMENT: EVIDENCE REQUIREMENTS, OPERATIONAL CHALLENGES, AND NATIONAL HTA IMPLICATIONS",
+      "type": "presentation",
+      "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/novel-value-elements-and-approaches-in-hta/readiness-of-health-technology-developers-for-eu-joint-clinical-assessment-evidence-requirements-operational-challenges-and-national-hta-implications"
+    }
+  ],
+  "edges": [
+    {
+      "source": "record:P41",
+      "target": "topic:JCA",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:P41",
+      "target": "topic:Indirect comparisons",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:P41",
+      "target": "topic:Rare diseases",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:AI-PICO",
+      "target": "topic:JCA",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:AI-PICO",
+      "target": "topic:AI",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:AI-PICO",
+      "target": "topic:PICO",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:TEM-PV",
+      "target": "topic:JCA",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:TEM-PV",
+      "target": "topic:Indirect comparisons",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:TEM-PV",
+      "target": "topic:Evidence synthesis",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:MLNMR-EXCEL",
+      "target": "topic:ML-NMR",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:MLNMR-EXCEL",
+      "target": "topic:Survival modelling",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:MLNMR-EXCEL",
+      "target": "topic:Economic evaluation",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:TTE-ICU",
+      "target": "topic:Causal inference",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:TTE-ICU",
+      "target": "topic:RWE",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:BAYES-SURV",
+      "target": "topic:Bayesian methods",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:BAYES-SURV",
+      "target": "topic:Survival modelling",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:BAYES-SURV",
+      "target": "topic:Economic evaluation",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:MFN-EU",
+      "target": "topic:MFN pricing",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:MFN-EU",
+      "target": "topic:Market access",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:AI-SLR",
+      "target": "topic:AI",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:AI-SLR",
+      "target": "topic:Evidence synthesis",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:EMR-HTA",
+      "target": "topic:RWE",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:EMR-HTA",
+      "target": "topic:AI",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:EMR-HTA",
+      "target": "topic:JCA",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:ESTIMAND-DRIFT",
+      "target": "topic:Causal inference",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:ESTIMAND-DRIFT",
+      "target": "topic:RWE",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:ESTIMAND-DRIFT",
+      "target": "topic:Estimands",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:NMA-IPD-SURV",
+      "target": "topic:Bayesian methods",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:NMA-IPD-SURV",
+      "target": "topic:Survival modelling",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:NMA-IPD-SURV",
+      "target": "topic:Indirect comparisons",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:MLNMR-FAST",
+      "target": "topic:ML-NMR",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:MLNMR-FAST",
+      "target": "topic:Indirect comparisons",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:MLNMR-FAST",
+      "target": "topic:Estimands",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:PICO-CEM",
+      "target": "topic:JCA",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:PICO-CEM",
+      "target": "topic:Economic evaluation",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:PICO-CEM",
+      "target": "topic:PICO",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:TRUMPRX",
+      "target": "topic:MFN pricing",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:TRUMPRX",
+      "target": "topic:Market access",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:TTE-EXT",
+      "target": "topic:RWE",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:TTE-EXT",
+      "target": "topic:Causal inference",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:HTA-READY",
+      "target": "topic:JCA",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:HTA-READY",
+      "target": "topic:Market access",
+      "type": "TAGGED_WITH",
+      "basis": "Curator-assigned from presentation title; not a validated finding"
+    }
+  ]
+}
