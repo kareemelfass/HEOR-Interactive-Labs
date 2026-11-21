@@ -18,7 +18,7 @@
   {name:"PICO",re:/\bPICO\b|population.intervention.comparator.outcome/i},
   {name:"Estimands",re:/\bestimands?\b|intercurrent event/i},
   {name:"Patient-reported outcomes",re:/patient.reported outcome|\bPROMs?\b|\bEQ.5D\b|health.utility/i},
-  {name:"Medical devices",re:/medical devices?|digital therapeutics|health technology|diagnostic accuracy/i}
+  {name:"Medical devices",re:/medical devices?|medical technolog(?:y|ies)|\bmedtech\b|implantable devices?|\bin vitro diagnostic|\bIVD\b|digital therapeutics|robotic surgery/i}
  ];
  const DISEASES = [
   {name:"Oncology",re:/\boncolog|\bcancer\b|\btumou?r\b|\bcarcinoma\b|\bleukemia\b|\bmyeloma\b/i},
