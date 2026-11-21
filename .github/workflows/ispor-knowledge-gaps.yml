@@ -1,0 +1,51 @@
+name: Verify ISPOR knowledge gaps add-on
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ispor-intelligence/index.html"
+      - "ispor-intelligence/knowledge-gaps.js"
+      - "ispor-intelligence/knowledge-gaps.css"
+      - "ispor-intelligence/data/knowledge-gaps.json"
+      - "ispor-intelligence/tests/test_knowledge_gaps.py"
+      - ".github/workflows/ispor-knowledge-gaps.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-addition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate all 16 themes and source references
+        run: python3 -m unittest discover -s ispor-intelligence/tests -v
+      - name: Check add-on JavaScript syntax
+        run: node --check ispor-intelligence/knowledge-gaps.js
+      - name: Smoke-test rendering from the full index
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ispor-gaps-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS http://127.0.0.1:8765/ispor-intelligence/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          CHROME="$(command -v google-chrome || command -v chromium || true)"
+          test -n "$CHROME"
+          timeout 70 "$CHROME" --headless --no-sandbox --disable-gpu --virtual-time-budget=18000 --dump-dom \
+            http://127.0.0.1:8765/ispor-intelligence/index.html >/tmp/ispor-gaps-dom.html 2>/tmp/ispor-gaps-chrome.log
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path("/tmp/ispor-gaps-dom.html").read_text(encoding="utf-8")
+          expected = "16 of 16 themes · 32 proposed research directions"
+          assert expected in html, "Did not render 16 themes and 32 directions"
+          cards = html.count('class="kg-gap-theme"')
+          assert cards == 16, f"Expected 16 rendered theme cards, got {cards}"
+          assert 'id="kgGapsSource">Independent 2026 pre-conference archive (3,097 indexed records)' in html, \
+              "Did not attach the complete 3,097-record metadata index"
+          print("Knowledge gaps rendered: 16 themes, 32 research directions, 3,097 source records.")
+          PY
