@@ -45,7 +45,7 @@ jobs:
           assert expected in html, "Did not render 16 themes and 32 directions"
           cards = html.count('class="kg-gap-theme"')
           assert cards == 16, f"Expected 16 rendered theme cards, got {cards}"
-          assert 'id="kgGapsSource">Independent 2026 pre-conference archive (3,097 indexed records)' in html, \
-              "Did not attach the complete 3,097-record metadata index"
-          print("Knowledge gaps rendered: 16 themes, 32 research directions, 3,097 source records.")
+          assert 'id="kgGapsSource">ISPOR-configured search index (' in html, \
+              "Did not attach official ISPOR-index records"
+          print("Knowledge gaps rendered: 16 proposed themes, 32 directions, official source index.")
           PY
