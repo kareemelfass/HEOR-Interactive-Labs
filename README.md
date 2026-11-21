@@ -1,5 +1,15 @@
 # HEOR Interactive Labs
 
+## ISPOR Europe 2026 Research Atlas and Knowledge Graph
+
+**[Open the ISPOR Europe 2026 research dashboard](https://kareemelfass.github.io/HEOR-Interactive-Labs/ispor-intelligence/)**
+
+Explore an interactive source-linked knowledge graph, search the 2026 abstract archive, compare topic co-mentions, export the metadata KG, and investigate original ISPOR presentations. The app distinguishes a verified official-presentation seed from the independent August 2026 pre-conference archive and does not infer audience discussion from abstract frequency.
+
+[Source, methods, and data-quality limitations](https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/ispor-intelligence)
+
+---
+
 A growing collection of interactive, browser-based learning tools for **health economics and outcomes research (HEOR)** and **health technology assessment (HTA)**.
 
 The focus is **learning by seeing and doing**: change model assumptions, follow calculations, inspect fitted and extrapolated curves, and see how methodological choices affect health economic models.
