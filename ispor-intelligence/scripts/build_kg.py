@@ -176,15 +176,22 @@ def build(source, *, allow_small=False):
         raise ValueError(f"Only {len(rows)} candidate input rows: refusing to replace full-corpus KG")
     result = []
     seen = set()
+    diagnostics = []
     for i, row in enumerate(rows):
         r = normalize(row, i)
         if not r:
+            diagnostics.append({"input_row": i, "reason": "missing or short title",
+                "code": flatten(get(row, "abstract_number")), "title": flatten(get(row, "title"))[:120]})
             continue
         key = r["url"] or re.sub(r"\s+", " ", r["title"].lower())
         if key in seen:
+            diagnostics.append({"input_row": i, "reason": "duplicate canonical URL/title",
+                "code": r["id"], "title": r["title"][:120], "url": r["url"]})
             continue
         seen.add(key)
         result.append(r)
+    if diagnostics:
+        print("Excluded rows and reasons:", json.dumps(diagnostics[:12], ensure_ascii=False))
     if len(result) < 1000 and not allow_small:
         raise ValueError(f"Only {len(result)} usable records: refusing partial-corpus KG")
     return result, len(rows)
