@@ -221,7 +221,7 @@
  function switchGraphFocus(t){state.graphFocus=t;el("graphFocus").value=t;renderGraph()}
  function showThemeDetail(t,matching){
   el("detailTitle").textContent=t;
-  el("detailText").textContent=format(matching.length)+" currently filtered presentations mention this theme. Links represent source-index topic classifications, not confirmed method use or findings.";
+  el("detailText").textContent=format(matching.length)+" filtered presentations have this ISPOR-index topic classification; classification does not establish method use or study findings.";
   el("detailLinks").replaceChildren();
   related(matching);
   renderReviewedClaims(matching,t);
@@ -240,7 +240,7 @@
   const codes=new Set(records.map(r=>r.code.toUpperCase()).filter(Boolean));
   const matches=reviewedClaims.filter(c=>
    (urls.has(c.source_url) || codes.has(c.presentation_code.toUpperCase())) &&
-   (!topic || c.topic===topic || records.some(r=>r.tags.includes(topic)))
+   (!topic || !c.topic || c.topic.toLowerCase()===topic.toLowerCase())
   );
   matches.slice(0,8).forEach(c=>{
    const card=h("div","claim-card");
@@ -269,7 +269,7 @@
    const title=h("h3");const a=sourceLink(r)?h("a","",r.title):h("span","",r.title);
    if(sourceLink(r)){a.href=r.url;a.rel="noopener noreferrer";a.target="_blank"}
    title.append(a);
-   const caption=h("p","",r.sourceType+(sourceLink(r)?" · Search-index URL, not yet individually page-checked":" · Official link not available in source"));
+   const caption=h("p","",r.sourceType+(sourceLink(r)?" · Indexed ISPOR URL; direct page verification not complete":" · Indexed source link unavailable"));
    const tags=h("div","tags");r.tags.forEach(t=>tags.append(h("span","",t)));
    article.append(head,title,caption,tags);target.append(article);
   });
@@ -339,7 +339,7 @@
   const blob=new Blob([text],{type:type||"application/json"}),url=URL.createObjectURL(blob),a=h("a");a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
  }
  function exportCsv(){
-  const cols=["id","title","url","tags","diseases","year"];
+  const cols=["code","id","title","url","tags","diseases","year"];
   const quote=v=>'"'+String(v===undefined?"":Array.isArray(v)?v.join("; "):v).replace(/"/g,'""')+'"';
   const csv=[cols.join(","),...state.filtered.map(r=>cols.map(c=>quote(r[c])).join(","))].join("\r\n");
   download("ispor_europe_2026_filtered.csv",csv,"text/csv;charset=utf-8");
@@ -351,7 +351,7 @@
   const status=comparison.archive_reconciliation_status||{};
   const meta=summary.metadata||{};
   const values=[
-    ["Official-index items captured",meta.records],
+    ["Official-index items captured (presentations and sessions)",meta.records],
     ["Indexed research presentations",(summary.official_index_content_kinds||{})["Confex Presentation"]||0],
     ["Indexed conference sessions",(summary.official_index_content_kinds||{})["Confex Session"]||0],
     ["Archive records",comparison.archive_records],
@@ -359,7 +359,7 @@
     ["Changed URL, matching code and title",status.code_title_match_url_changed||0],
     ["Same code, differing title or URL",status.code_exists_but_title_or_url_different||0],
     ["Archive only, not in captured official index",status.archive_only_not_in_official_index||0],
-    ["Official-index items without archive match",comparison.official_index_not_matched_to_archive||0]
+    ["Index items unmatched to archived records (including sessions)",comparison.official_index_not_matched_to_archive||0]
   ];
   target.replaceChildren(...values.map(([label,count])=>{
     const box=h("div","quality-box");
@@ -373,9 +373,9 @@
   const counts=audit.counts||{};
   const separatelyConfirmed=(audit.results||[]).filter(r=>r.reconciliation_status==="archive_only_not_in_official_index" && r.page_status==="official_page_title_code_verified").length;
   const labels={
-    official_page_title_code_verified:"Official page verified (title and code)",
-    official_page_reachable_content_mismatch:"Official page reachable, title/code unresolved",
-    http_404:"Official page returned HTTP 404",
+    official_page_title_code_verified:"Archived code and title matched when checked",
+    official_page_reachable_content_mismatch:"Page reachable; archived title mismatch, code needs review",
+    http_404:"Archived URL returned HTTP 404 at check time (unconfirmed)",
     http_403:"Official page returned HTTP 403",
     network_error:"Network error, not verified",
     invalid_or_missing_url:"No valid ISPOR page URL",
