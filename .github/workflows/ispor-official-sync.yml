@@ -32,6 +32,7 @@ jobs:
           g=json.loads((p/"official-index-graph.json").read_text())
           q=json.loads((p/"official-reconciliation.json").read_text())
           s=json.loads((p/"official-index-summary.json").read_text())
+          m=json.loads((p/"official-index-scan-manifest.json").read_text())
           rec=r["records"]
           assert len(rec)==r["metadata"]["records"]==len(set(x["uid"] for x in rec))
           assert len(rec)==len(set(x["url"] for x in rec))
@@ -40,6 +41,12 @@ jobs:
           assert all(e["source"] in ids and e["target"] in ids for e in g["edges"])
           assert all(not e["provenance"]["inferred"] for e in g["edges"])
           assert len(q["archive_to_official"])==q["archive_records"]
+          assert len(m["record_membership"])==len(rec)
+          assert all(uid in m["record_membership"] for uid in [r["uid"] for r in rec])
+          assert all(r["seen_in_scans"]==m["record_membership"][r["uid"]] for r in rec)
+          assert len(m["pages"])>=len(m["metadata"]["capture_scans"] * [1])
+          assert sum(n["type"]=="presentation" for n in g["nodes"])==sum(r["index_content_kind"]=="Confex Presentation" for r in rec)
+          assert sum(n["type"]=="session" for n in g["nodes"])==sum(r["index_content_kind"]=="Confex Session" for r in rec)
           assert all(x["record_source"]=="ISPOR website configured SearchBlox index" for x in rec)
           assert all(not x["official_detail_link_present"] or x["url"].startswith("https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/") for x in rec)
           assert all(x["event"]=="2026-11, ISPOR Europe 2026, Vienna, Austria" for x in rec)
@@ -52,6 +59,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ispor-intelligence/data/official-index-records.json \
                   ispor-intelligence/data/official-index-graph.json \
+                  ispor-intelligence/data/official-index-scan-manifest.json \
                   ispor-intelligence/data/official-index-summary.json \
                   ispor-intelligence/data/official-reconciliation.json
           if git diff --cached --quiet; then exit 0; fi
