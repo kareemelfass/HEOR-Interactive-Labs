@@ -146,7 +146,9 @@ def source_labels(value):
 
 def normalize(row, index):
     title = flatten(get(row, "title", "presentation_title", "abstract_title", "name", "paper_title")).strip()
-    if len(title) < 8:
+    # Two official 2026 records have unusually short titles (EE81 and EE219).
+    # Preserve them if their source URL is official rather than imposing length >= 8.
+    if not title or (len(title) < 8 and not official_url(row)):
         return None
     parts = [get(row, key) for key in ABSTRACT_KEYS]
     abstract = flatten([x for x in parts if x is not None])
