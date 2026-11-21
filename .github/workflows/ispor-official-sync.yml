@@ -44,7 +44,7 @@ jobs:
           assert len(m["record_membership"])==len(rec)
           assert all(uid in m["record_membership"] for uid in [r["uid"] for r in rec])
           assert all(r["seen_in_scans"]==m["record_membership"][r["uid"]] for r in rec)
-          assert len(m["pages"])>=len(m["metadata"]["capture_scans"] * [1])
+          assert len(m["pages"]) >= m["metadata"]["capture_scans"]
           assert sum(n["type"]=="presentation" for n in g["nodes"])==sum(r["index_content_kind"]=="Confex Presentation" for r in rec)
           assert sum(n["type"]=="session" for n in g["nodes"])==sum(r["index_content_kind"]=="Confex Session" for r in rec)
           assert all(x["record_source"]=="ISPOR website configured SearchBlox index" for x in rec)
