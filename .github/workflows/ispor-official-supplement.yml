@@ -1,13 +1,12 @@
 name: Publish individually verified ISPOR page supplement
 on:
-  push:
-    branches: [main]
-    paths:
-      - "ispor-intelligence/scripts/build_official_supplement.py"
-      - ".github/workflows/ispor-official-supplement.yml"
   workflow_dispatch:
 permissions:
   contents: write
+
+concurrency:
+  group: ispor-source-write
+  cancel-in-progress: false
 jobs:
   publish:
     runs-on: ubuntu-latest
