@@ -9,7 +9,7 @@ from importlib.machinery import SourceFileLoader
 ROOT=Path(__file__).resolve().parents[1]
 builder=SourceFileLoader("build_source_graph",str(ROOT/"scripts"/"build_source_graph.py")).load_module()
 envelope=builder.load_source(builder.SOURCE)
-raw=envelope["records"] if isinstance(envelope,dict) and isinstance(envelope.get("records"),list) else envelope
+raw=envelope["abstracts"] if isinstance(envelope,dict) and isinstance(envelope.get("abstracts"),list) else envelope
 index=json.loads((ROOT/"data"/"source-records.json").read_text(encoding="utf-8"))
 graph=json.loads((ROOT/"data"/"source-knowledge-graph.json").read_text(encoding="utf-8"))
 coverage=json.loads((ROOT/"data"/"source-coverage.json").read_text(encoding="utf-8"))
