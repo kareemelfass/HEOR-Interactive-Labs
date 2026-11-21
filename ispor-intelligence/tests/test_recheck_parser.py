@@ -4,6 +4,10 @@ import sys
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
+from urllib.error import HTTPError
+import verify_discrepant_pages as pagecheck
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from verify_discrepant_pages import PrimaryPage, heading_matches, code_in, spaced_404_observation, select_controls
@@ -68,6 +72,37 @@ class DiscrepantPageParserTests(unittest.TestCase):
         self.assertFalse(page.has_main)
         self.assertFalse(code_in(" ".join(page.body_chunks), "P41"))
         self.assertTrue(code_in(" ".join(page.body_chunks), "P42"))
+
+    def test_failed_http_control_marks_run_invalid(self):
+        from verify_discrepant_pages import HOST_PREFIX
+        rows = [{"status": "url_match", "archive_url": HOST_PREFIX + str(i)} for i in range(10)]
+        class FakeResponse:
+            status = 200
+            headers = {"Content-Type": "text/html"}
+            def __init__(self, url):
+                self.url = url
+            def __enter__(self):
+                return self
+            def __exit__(self, *args):
+                return False
+            def geturl(self):
+                return self.url
+
+        def fake_open(req, timeout):
+            if req.full_url.endswith("/9"):
+                raise HTTPError(req.full_url, 404, "Not Found", {}, None)
+            return FakeResponse(req.full_url)
+
+        with TemporaryDirectory() as tmp:
+            with patch.object(pagecheck, "CONTROL_OUT", Path(tmp) / "controls.json"), \
+                 patch.object(pagecheck.time, "sleep", return_value=None):
+                result = pagecheck.check_transport_controls(
+                    {"archive_to_official": rows},
+                    {"metadata": {"retrieved_at_utc": "2026-11-21T13:00:00+00:00"}},
+                    opener=fake_open,
+                )
+                self.assertFalse(result["metadata"]["controls_passed"])
+                self.assertTrue((Path(tmp) / "controls.json").exists())
 
     def test_control_selection_is_deterministic_and_without_duplicates(self):
         from verify_discrepant_pages import HOST_PREFIX
