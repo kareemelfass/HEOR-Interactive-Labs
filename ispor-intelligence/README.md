@@ -10,6 +10,12 @@ This is a **search-index capture**, not certification of the final conference un
 
 The captured ISPOR metadata comprise UIDs, presentation codes where provided, titles, URLs, raw authors/affiliations, topic groups and subtopic paths, disease categories, session labels, publication dates, citable flags, and available indexed media links. **Full abstract bodies are not republished.** Text hashes preserve a source identity check.
 
+## Individual official-page reconciliation
+
+Direct checks were run against all 374 historical-archive candidates that lacked an exact captured search-index URL. The [full official-page audit](data/official-page-checks.json) recorded **46 pages matching both title and presentation code**, **13 reachable pages with unresolved title/code differences**, and **315 archive URLs returning HTTP 404**. These are outcomes for the archived URLs, not a determination that all 315 underlying presentations were invalid.
+
+Among 333 archive-only candidates, **30 had title-and-code-confirmed official pages**, despite not appearing in the captured search index. They are retained in the [separate verified supplement](data/official-page-verified-supplement.json), without inflating the official-index denominator. This is evidence of why the index cannot be presented as a complete final-conference census.
+
 ## Captured record status
 
 A verified workflow captured **2,917 distinct items across two scans**, including **2,778 citable presentation records** and **139 conference-session records**. This is a *union*, not a complete, stable point-in-time census. The official index reported fluctuating totals during collection.
