@@ -49,6 +49,7 @@ jobs:
           manifest=json.loads((p/"official-index-scan-manifest.json").read_text())
           recon=json.loads((p/"official-reconciliation.json").read_text())
           check=json.loads((p/"official-page-recheck-latest.json").read_text())
+          controls=json.loads((p/"official-page-controls-latest.json").read_text())
           supplement=json.loads((p/"official-page-verified-supplement.json").read_text())
           uids=[r["uid"] for r in records]
           assert len(uids)==len(set(uids))==len(manifest["record_membership"])
@@ -56,6 +57,11 @@ jobs:
           assert len({r["url"] for r in records})==len(records)
           assert len(check["results"])==sum(r["status"]!="url_match" for r in recon["archive_to_official"])
           assert sum(check["counts"].values())==len(check["results"])
+          assert controls["metadata"]["controls_passed"] and check["metadata"]["controls_passed"]
+          assert controls["metadata"]["index_capture_utc"]==check["metadata"]["index_capture_utc"]
+          assert check["metadata"]["registered_targets"]==len(check["results"])
+          assert check["metadata"]["checked_targets"]==sum(bool(r["observations"]) for r in check["results"])
+          assert supplement["metadata"]["verification_basis"]=="latest_controlled_recheck"
           assert sum(n["type"]=="presentation" for n in graph["nodes"])==sum(r["index_content_kind"]=="Confex Presentation" for r in records)
           assert sum(n["type"]=="session" for n in graph["nodes"])==sum(r["index_content_kind"]=="Confex Session" for r in records)
           assert supplement["metadata"]["not_added_to_search_index_denominator"]
@@ -86,6 +92,24 @@ jobs:
             sleep 1
           done
           python ispor-intelligence/scripts/smoke_claims_browser.py
+          python ispor-intelligence/scripts/smoke_dashboard_dom.py
+
+      - name: Preserve generated snapshot and failed-run observations as an artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ispor-refresh-candidate-${{ github.run_id }}
+          path: |
+            ispor-intelligence/data/official-index-records.json
+            ispor-intelligence/data/official-index-graph.json
+            ispor-intelligence/data/official-index-scan-manifest.json
+            ispor-intelligence/data/official-index-summary.json
+            ispor-intelligence/data/official-reconciliation.json
+            ispor-intelligence/data/official-page-controls-latest.json
+            ispor-intelligence/data/official-page-recheck-latest.json
+            ispor-intelligence/data/official-page-verified-supplement.json
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Commit all source-derived files together
         run: |
@@ -96,6 +120,7 @@ jobs:
                   ispor-intelligence/data/official-index-scan-manifest.json \
                   ispor-intelligence/data/official-index-summary.json \
                   ispor-intelligence/data/official-reconciliation.json \
+                  ispor-intelligence/data/official-page-controls-latest.json \
                   ispor-intelligence/data/official-page-recheck-latest.json \
                   ispor-intelligence/data/official-page-verified-supplement.json
           if git diff --cached --quiet; then
@@ -104,7 +129,11 @@ jobs:
             git commit -m "Refresh verified ISPOR index and page-check snapshot"
             for attempt in 1 2 3 4; do
               git fetch origin main
-              git rebase origin/main
+              if ! git rebase origin/main; then
+                git rebase --abort || true
+                echo "REBASE_CONFLICT: review preserved candidate artifact; no partial snapshot published"
+                exit 1
+              fi
               if git push origin HEAD:main; then
                 echo "SOURCE_REFRESH_PUBLISHED"
                 break
