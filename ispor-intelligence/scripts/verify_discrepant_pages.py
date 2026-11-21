@@ -15,6 +15,7 @@ import html
 import json
 import re
 import time
+import os
 import unicodedata
 from collections import Counter
 from datetime import datetime, timezone, timedelta
@@ -27,6 +28,8 @@ DATA = Path(__file__).resolve().parents[1] / "data"
 RECON = DATA / "official-reconciliation.json"
 INDEX = DATA / "official-index-records.json"
 OUT = DATA / "official-page-recheck-latest.json"
+CONTROL_OUT = DATA / "official-page-controls-latest.json"
+RECHECK_BUDGET_SECONDS = 55 * 60
 HOST_PREFIX = "https://www.ispor.org/heor-resources/presentations-database/"
 USER_AGENT = "Mozilla/5.0 (ISPOR metadata integrity recheck; serial; no abstract redistribution)"
 
@@ -124,7 +127,7 @@ def examine(url, archived_title, current_title, code):
         attempt = {"checked_at_utc": now(), "http_status": None}
         try:
             req = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html"})
-            with urlopen(req, timeout=35) as response:
+            with urlopen(req, timeout=12) as response:
                 attempt["http_status"] = response.status
                 attempt["final_url"] = response.geturl()
                 raw = response.read(2_000_000).decode("utf-8", "replace")
@@ -168,9 +171,9 @@ def examine(url, archived_title, current_title, code):
         return "repeated_http_403_unconfirmed", attempts
     return "inconsistent_http_or_network_unverified", attempts
 
-def spaced_404_observation(status, previous, checked_at=None):
+def spaced_404_observation(status, previous, checked_at=None, previous_controls_passed=False):
     """Return prior observation time only for HTTP 404 seen on runs >=1 hour apart."""
-    if status != "repeated_http_404_unconfirmed" or not previous:
+    if status != "repeated_http_404_unconfirmed" or not previous or not previous_controls_passed:
         return None
     if previous.get("classification") not in ("repeated_http_404_unconfirmed",
                                               "cross_run_http_404_unconfirmed"):
@@ -188,9 +191,75 @@ def spaced_404_observation(status, previous, checked_at=None):
         return None
     return None
 
+def select_controls(reconciliation, n=10):
+    """Stable, independently identifiable URL-matched controls from the same index."""
+    candidates = {}
+    for row in reconciliation.get("archive_to_official", []):
+        url = row.get("archive_url") or ""
+        if row.get("status") == "url_match" and url.startswith(HOST_PREFIX):
+            candidates[url] = row
+    ordered = sorted(candidates, key=lambda url: hashlib.sha256(url.encode("utf-8")).hexdigest())
+    if len(ordered) < n:
+        raise RuntimeError(f"Need {n} matched controls, found {len(ordered)}")
+    return [candidates[url] for url in ordered[:n]]
+
+
+def check_transport_controls(reconciliation, index_payload, opener=urlopen):
+    """A control returning 404/403/5xx indicates an unreliable runner or URL sample.
+
+    This guard is deliberately conservative: one failed control aborts the recheck,
+    but a pass does not prove that every negative response is genuine.
+    """
+    controls = select_controls(reconciliation)
+    observations = []
+    for row in controls:
+        url = row["archive_url"]
+        item = {"url": url, "checked_at_utc": now(), "http_status": None}
+        try:
+            req = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "text/html"})
+            with opener(req, timeout=12) as response:
+                item["http_status"] = response.status
+                item["final_url"] = response.geturl()
+                # Basic source check, without redistributing copyrighted content.
+                item["content_type"] = response.headers.get("Content-Type", "")
+                item["is_ispor_response"] = item["final_url"].startswith(HOST_PREFIX)
+        except HTTPError as exc:
+            item["http_status"] = exc.code
+        except (URLError, TimeoutError, ConnectionError) as exc:
+            item["error"] = type(exc).__name__ + ": " + str(exc)[:100]
+        observations.append(item)
+        time.sleep(0.15)
+    passed = len(observations) == 10 and all(
+        o["http_status"] == 200 and o.get("is_ispor_response") for o in observations
+    )
+    payload = {
+        "metadata": {
+            "checked_at_utc": now(),
+            "index_capture_utc": index_payload.get("metadata", {}).get("retrieved_at_utc"),
+            "candidate_definition": "exact URL-matched archive-to-current-index records",
+            "sampling": "first 10 URLs in SHA-256 digest sort, deterministic for the snapshot",
+            "tested_controls": len(observations),
+            "controls_passed": passed,
+            "negative_responses_not_evidence_of_presentation_absence": True,
+        },
+        "results": observations,
+    }
+    CONTROL_OUT.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    if not passed:
+        print("CONTROL_CHECK_FAILED_NO_RECHECK_PUBLICATION", observations, flush=True)
+    else:
+        print("CONTROL_CHECK_PASS", len(observations), flush=True)
+    return payload
+
+
 def main():
+    start = time.monotonic()
     reconciliation = json.loads(RECON.read_text(encoding="utf-8"))
-    indexed = json.loads(INDEX.read_text(encoding="utf-8"))["records"]
+    index_payload = json.loads(INDEX.read_text(encoding="utf-8"))
+    indexed = index_payload["records"]
+    control_audit = check_transport_controls(reconciliation, index_payload)
+    if not control_audit["metadata"]["controls_passed"]:
+        raise RuntimeError("ISPOR transport-control check failed; do not publish page recheck")
     code_to_current_titles = {}
     for row in indexed:
         if row.get("code") and row.get("index_content_kind") == "Confex Presentation":
@@ -198,8 +267,10 @@ def main():
     targets = [r for r in reconciliation["archive_to_official"] if r["status"] != "url_match"]
     targets.sort(key=lambda r: (r.get("archive_code") or "", r.get("archive_url") or ""))
     previous = {}
+    previous_controls_passed = False
     if OUT.exists():
         prior = json.loads(OUT.read_text(encoding="utf-8"))
+        previous_controls_passed = bool(prior.get("metadata", {}).get("controls_passed"))
         previous = {(r["archive_code"], r["archived_url"]): r
                     for r in prior.get("results", [])}
     result = []
@@ -208,12 +279,14 @@ def main():
         url = task.get("archive_url") or ""
         current_titles = code_to_current_titles.get(code, set())
         current_title = list(current_titles)[0] if len(current_titles) == 1 else ""
-        if not url.startswith(HOST_PREFIX):
+        if time.monotonic() - start >= RECHECK_BUDGET_SECONDS:
+            status, attempts = "not_checked_run_time_budget", []
+        elif not url.startswith(HOST_PREFIX):
             status, attempts = "invalid_or_non_ispor_archive_url", []
         else:
             status, attempts = examine(url, task.get("archive_title") or "", current_title, code)
         old = previous.get((code, url))
-        previous_observation = spaced_404_observation(status, old)
+        previous_observation = spaced_404_observation(status, old, previous_controls_passed=previous_controls_passed)
         persistent_404_across_runs = previous_observation is not None
         if persistent_404_across_runs:
             status = "cross_run_http_404_unconfirmed"
@@ -233,11 +306,20 @@ def main():
             print("RECHECK_PROGRESS", i, len(targets), dict(Counter(x["classification"] for x in result)), flush=True)
         time.sleep(0.5)
     counts = Counter(x["classification"] for x in result)
+    completed = sum(bool(x["observations"]) for x in result)
     output = {
         "metadata": {
             "checked_at_utc": now(),
             "source": "Direct HTTP requests to archived ISPOR URLs",
-            "checked_targets": len(targets),
+            "registered_targets": len(targets),
+            "checked_targets": completed,
+            "not_checked_run_time_budget": counts.get("not_checked_run_time_budget", 0),
+            "run_time_budget_seconds": RECHECK_BUDGET_SECONDS,
+            "http_request_timeout_seconds": 12,
+            "controls_passed": True,
+            "control_audit_file": CONTROL_OUT.name,
+            "controls_count": control_audit["metadata"]["tested_controls"],
+            "index_capture_utc": index_payload.get("metadata", {}).get("retrieved_at_utc"),
             "worker_count": 1,
             "max_attempts_per_target": 3,
             "prior_initial_observations_preserved_in": "official-page-checks.json",
