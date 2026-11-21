@@ -84,7 +84,7 @@
  }
  function normalize(row,i){
   const title=str(field(row,["title","presentation_title","abstract_title","name","paper_title"])).trim();
-  if(title.length<8)return null;
+  if(!title || (title.length<8 && !guessUrl(row)))return null;
   const parts=["abstract_text","abstract","structured_abstract","abstract_body","summary","sections","objectives","objective","methods","results","conclusions","background","full_text","body"].map(k=>field(row,[k])).filter(x=>x!==undefined);
   const abstract=str(parts).replace(/\s+/g," ").slice(0,12000);
   const code=str(field(row,["abstract_number","presentation_code","presentation_id","abstract_id","code","number","id"])).trim().slice(0,80);
