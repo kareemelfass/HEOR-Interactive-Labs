@@ -360,6 +360,32 @@
     return box;
   }));
  }
+  function renderLatestPageRecheck(latest, historical){
+  const target=el("officialLatestRecheck");
+  if(!target)return;
+  const earlier=(historical && historical.results)||[];
+  const initial404=new Set(earlier.filter(x=>x.page_status==="http_404").map(x=>x.archive_url));
+  const initialRetitled=new Set(earlier.filter(x=>x.page_status==="official_page_reachable_content_mismatch").map(x=>x.archive_url));
+  const observed=(latest.results||[]);
+  const byUrl=new Map(observed.map(x=>[x.archived_url,x]));
+  const repeated404=new Set(["repeated_http_404_unconfirmed","cross_run_http_404_unconfirmed"]);
+  const last404=[...initial404].filter(url=>repeated404.has((byUrl.get(url)||{}).classification)).length;
+  const checked404=[...initial404].filter(url=>byUrl.has(url)).length;
+  const retitledVerified=[...initialRetitled].filter(url=>
+    ["heading_and_code_verified","revised_heading_and_code_verified"].includes((byUrl.get(url)||{}).classification)).length;
+  const crossRun=observed.filter(x=>x.persistent_404_observed_across_spaced_runs).length;
+  const results=[
+   [format(observed.length),"Discrepancies rechecked; each status is timestamped"],
+   [format(last404)+" / "+format(checked404),"Original 404 URLs still returning 404 on the latest check (unconfirmed)"],
+   [format(retitledVerified)+" / "+format(initialRetitled.size),"Original title-mismatch URLs with a latest title and code match"],
+   [format(crossRun),"404 URLs observed on runs at least one hour apart (still not evidence of withdrawal)"]
+  ];
+  target.replaceChildren(...results.map(([value,label])=>{
+   const box=h("div","quality-box");
+   box.append(h("strong","",value),h("span","",label));
+   return box;
+  }));
+ }
   function fromOfficial(items) {
   return items.map((r,i)=>({
     id:r.uid || "official"+i,
@@ -390,7 +416,15 @@
   setData(official,"Official ISPOR search index",true,presentations.length,"");
   el("sourceDetail").textContent="Indexed research presentations: "+format(official.length)+"; "+format(sessions)+" conference sessions excluded from analysis. Final conference census unresolved.";
   try{const response=await fetch("./data/official-index-summary.json",{cache:"no-store"});if(response.ok)renderOfficialReconciliation(await response.json())}catch(_e){}
-  try{const response=await fetch("./data/official-page-checks.json",{cache:"no-store"});if(response.ok)renderOfficialPageAudit(await response.json())}catch(_e){}
+  let historicalPageAudit=null;
+  try{
+   const response=await fetch("./data/official-page-checks.json",{cache:"no-store"});
+   if(response.ok){historicalPageAudit=await response.json();renderOfficialPageAudit(historicalPageAudit)}
+  }catch(_e){}
+  try{
+   const response=await fetch("./data/official-page-recheck-latest.json",{cache:"no-store"});
+   if(response.ok)renderLatestPageRecheck(await response.json(),historicalPageAudit);
+  }catch(_e){}
   try{
    const response=await fetch("./data/official-page-verified-supplement.json",{cache:"no-store"});
    if(response.ok){
