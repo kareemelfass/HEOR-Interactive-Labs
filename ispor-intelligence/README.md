@@ -28,6 +28,9 @@ The independent pre-conference archive has **3,097 records** with an **unverifie
 | --- | --- |
 | data/official-index-records.json | Direct ISPOR search-index metadata, with provenance |
 | data/official-index-graph.json | Literal topic, category-path, disease and session links |
+| data/official-index-scan-manifest.json | Generated on the next sync, with per-scan UID membership and source-page fingerprints |
+| data/official-page-recheck-latest.json | Generated on the next manual refresh, timestamped repeat archived-URL observations |
+| data/official-page-verified-supplement.json | First-check title/code matches outside the current indexed set; not current live-page certification |
 | data/official-index-summary.json | Indexed record counts, types and limitations |
 | data/official-reconciliation.json | Row-by-row comparison with the independent archive, including all unmatched items |
 | data/reviewed-claims.json | Ten author-reported statements from five abstracts (seven results, one limitation, one conclusion, one recommendation), not independent replication |
@@ -51,7 +54,11 @@ The **Proposed research questions** section is an editorial research agenda, not
 
 ## Rebuild and audit
 
-The official-index pipeline is in scripts/sync_official_index.py and may be manually refreshed through .github/workflows/ispor-official-sync.yml. Future runs preserve per-scan UID membership, page timestamps and response hashes (not full copyrighted abstract text). The original November 21 union **cannot** be retrospectively reconstructed at per-scan level. The official source and historical archive are independently recorded. Source refreshes are manual and serialised to avoid mixed snapshots; GitHub Pages deployment is gated on the unified official-source validation workflow.
+The recommended source refresh is the manually dispatched **.github/workflows/ispor-refresh-pipeline.yml**. It runs index sync, typed-graph repair, archived-URL recheck, supplement rebuilding, integrity and behavioural tests, browser smoke checks, and one atomic data commit in that order. It explicitly dispatches the UI-validation workflow after the generated commit because GitHub does not normally run downstream push workflows for a push made with the workflow token. The older individual writer workflows remain for targeted maintenance, but running a writer alone does not produce a coherent new cross-file snapshot.
+
+The index sync preserves per-scan UID membership, timestamps and response hashes (not full copyrighted abstract text). The original November 21 union **cannot** be retrospectively reconstructed at per-scan level. The recheck script uses short within-run HTTP retries only to record repeat observations; an extra status is assigned only when 404 responses persist across *separate runs at least one hour apart*. Even this is not proof of withdrawal or non-existence. The historical page-response ledger stays intact and the latest recheck appears separately after the first manual refresh.
+
+All pushes on main now invoke dashboard validation, including changes to other labs, and successful main validation gates the whole Pages deployment.
 
 The dashboard is static HTML, CSS and JavaScript published through GitHub Pages. No live API key is required.
 
