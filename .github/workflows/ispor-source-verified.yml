@@ -1,16 +1,14 @@
-name: Verify and publish source-only ISPOR knowledge graph
+name: Legacy archive graph (manual audit only)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "ispor-intelligence/scripts/build_source_graph.py"
-      - "ispor-intelligence/scripts/verify_source_graph.py"
-      - ".github/workflows/ispor-source-verified.yml"
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: ispor-source-write
+  cancel-in-progress: false
 
 jobs:
   source-fidelity:
