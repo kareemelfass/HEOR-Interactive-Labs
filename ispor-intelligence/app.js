@@ -87,8 +87,12 @@
   const topicsRaw=str(field(row,["topic_groups","topics","topic","categories","category","topic_area"]));
   const diseaseRaw=str(field(row,["disease_areas","disease_area","diseases","disease"]));
   const haystack=[title,abstract,topicsRaw].join(" ");
-  const tags=TOPICS.filter(x=>x.re.test(haystack)).map(x=>x.name);
-  const diseases=DISEASES.filter(x=>x.re.test([title,abstract,diseaseRaw].join(" "))).map(x=>x.name);
+  const inputTags=field(row,["tags"]);
+  const inputDiseases=field(row,["diseases"]);
+  const tagNames=Array.isArray(inputTags)?inputTags:[];
+  const diseaseNames=Array.isArray(inputDiseases)?inputDiseases:[];
+  const tags=[...new Set([...TOPICS.filter(x=>x.re.test(haystack)).map(x=>x.name),...tagNames.filter(x=>TOPICS.some(t=>t.name===x))])];
+  const diseases=[...new Set([...DISEASES.filter(x=>x.re.test([title,abstract,diseaseRaw].join(" "))).map(x=>x.name),...diseaseNames.filter(x=>DISEASES.some(t=>t.name===x))])];
   return {id:code || "r"+i,title,abstract,code,url,tags,diseases,topicsRaw,diseaseRaw,sourceType:"Archive record",year:2026};
  }
  function fromSeed(items){
@@ -296,6 +300,14 @@
   const body=await response.json();
   setData(fromSeed(body.records||[]),"Verified official ISPOR seed",false,(body.records||[]).length,"");
  }
+ async function loadLocalIndex(){
+  const response=await fetch("./data/records-index.json",{cache:"no-store"});
+  if(!response.ok)throw Error("No prebuilt full metadata index");
+  const body=await response.json();
+  const rows=extractRows(body);
+  if(rows.length<1000)throw Error("Incomplete local metadata index");
+  setData(rows,"Prebuilt 2026 metadata KG index",true,rows.length,"");
+ }
  async function loadArchive(){
   el("sourceName").textContent="Retrieving 2026 archive...";
   try{
@@ -310,7 +322,7 @@
   }catch(e){
    const reason=e&&e.message?e.message:String(e);
    if(state.records.length===0){el("sourceName").textContent="Unable to load research records";el("sourceDetail").textContent=reason}
-   else{el("sourceName").textContent="Verified official ISPOR seed";el("sourceDetail").textContent="Full archive unavailable: "+reason+". Showing curated selection only.";state.error=reason;renderQuality()}
+   else{el("sourceName").textContent=state.source;el("sourceDetail").textContent="Live archive fetch unavailable: "+reason+". Displaying "+(state.isFull?"the prebuilt metadata index":"the verified seed")+".";state.error=reason;renderQuality()}
   }
  }
  async function importFile(file){
@@ -343,5 +355,5 @@
   el("exportKg").addEventListener("click",()=>download("ispor_europe_2026_knowledge_graph.json",JSON.stringify(makeGraph(state.records),null,2)));
  }
  bind();
- loadSeed().then(loadArchive).catch(e=>{el("sourceName").textContent="Data unavailable";el("sourceDetail").textContent=e.message});
+ loadSeed().then(async()=>{try{await loadLocalIndex()}catch(_e){}await loadArchive()}).catch(e=>{el("sourceName").textContent="Data unavailable";el("sourceDetail").textContent=e.message});
 })();
