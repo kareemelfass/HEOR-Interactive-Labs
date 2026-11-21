@@ -15,7 +15,6 @@ import html
 import json
 import re
 import time
-import os
 import unicodedata
 from collections import Counter
 from datetime import datetime, timezone, timedelta
@@ -55,12 +54,15 @@ class PrimaryPage(HTMLParser):
         self._in_h1 = 0
         self._in_main = 0
         self._in_body = 0
+        self._in_furniture = 0
         self._skip = 0
 
     def handle_starttag(self, tag, attrs):
         attr = dict(attrs)
         if tag in ("script", "style", "noscript"):
             self._skip += 1
+        elif tag in ("header", "footer", "nav", "aside"):
+            self._in_furniture += 1
         elif tag == "title":
             self._in_title += 1
         elif tag == "h1":
@@ -76,6 +78,8 @@ class PrimaryPage(HTMLParser):
     def handle_endtag(self, tag):
         if tag in ("script", "style", "noscript") and self._skip:
             self._skip -= 1
+        elif tag in ("header", "footer", "nav", "aside") and self._in_furniture:
+            self._in_furniture -= 1
         elif tag == "title" and self._in_title:
             self._in_title -= 1
         elif tag == "h1" and self._in_h1:
@@ -97,7 +101,7 @@ class PrimaryPage(HTMLParser):
             self.headings.append(value)
         if self._in_main:
             self.main_chunks.append(value)
-        if self._in_body:
+        if self._in_body and not self._in_furniture:
             self.body_chunks.append(value)
 
 def code_in(text, code):
@@ -145,7 +149,7 @@ def examine(url, archived_title, current_title, code):
                 "current_index_title_match_heading_or_meta": current_match,
                 "code_match_in_primary_content": code_match,
                 "code_match_in_main": code_match if parser.has_main else None,
-                "code_match_scope": "main" if parser.has_main else "body_fallback",
+                "code_match_scope": "main" if parser.has_main else "body_excluding_navigation_furniture",
                 "page_has_main_content": bool(parser.main_chunks),
             })
             attempts.append(attempt)
@@ -327,6 +331,7 @@ def main():
             "title_comparison_requires_primary_heading_or_meta": True,
             "code_comparison_requires_main_content": False,
             "code_comparison_uses_body_only_if_main_absent": True,
+            "body_fallback_excludes_header_footer_nav_aside": True,
             "cross_run_404_confirmation_minimum_spacing_hours": 1,
             "cross_run_404_remains_unconfirmed_as_absence": True,
             "fully_exhaustive_final_programme_verified": False,
