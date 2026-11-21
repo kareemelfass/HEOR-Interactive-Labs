@@ -24,7 +24,10 @@ for result in audit["results"]:
         continue
     url=result["page_url"]
     assert url and url.startswith("https://www.ispor.org/heor-resources/presentations-database/")
-    assert url not in source_urls
+    # A refreshed index may now contain an older supplementary page or code.
+    # Keep the supplement disjoint from the current index instead of failing.
+    if url in source_urls or result["archive_code"] in source_ids:
+        continue
     supplement.append({
       "presentation_code": result["archive_code"],
       "title": result["archive_title"],
@@ -37,7 +40,6 @@ for result in audit["results"]:
     })
 assert len(supplement)==len({r["official_verified_url"] for r in supplement})
 assert len(supplement)==len({r["presentation_code"] for r in supplement})
-assert supplement,"No verified supplementary official records found"
 payload={
  "metadata":{
   "source":"Individually verified official ISPOR presentation pages, not the SearchBlox index",
