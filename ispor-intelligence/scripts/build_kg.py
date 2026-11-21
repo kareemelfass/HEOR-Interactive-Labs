@@ -35,7 +35,7 @@ PATTERNS = {
     "PICO": r"\bPICO\b|population.intervention.comparator.outcome",
     "Estimands": r"\bestimands?\b|intercurrent event",
     "Patient-reported outcomes": r"patient.reported outcome|\bPROMs?\b|\bEQ.5D\b|health.utility",
-    "Medical devices": r"medical devices?|digital therapeutics|health technology|diagnostic accuracy",
+    "Medical devices": r"medical devices?|medical technolog(?:y|ies)|\bmedtech\b|implantable devices?|\bin vitro diagnostic|\bIVD\b|digital therapeutics|robotic surgery",
 }
 DISEASES = {
     "Oncology": r"\boncolog|\bcancer\b|\btumou?r\b|\bcarcinoma\b|\bleukemia\b|\bmyeloma\b",
