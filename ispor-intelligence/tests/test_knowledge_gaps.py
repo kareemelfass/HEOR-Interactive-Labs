@@ -64,7 +64,8 @@ class KnowledgeGapsTests(unittest.TestCase):
     def test_addon_does_not_mutate_existing_dashboard_app(self):
         self.assertNotIn("window.location =", self.js)
         self.assertNotIn(".innerHTML", self.js)
-        self.assertIn('getJson("./data/records-index.json")', self.js)
+        self.assertIn('getJson("./data/official-index-records.json")', self.js)
+        self.assertNotIn('getJson("./data/records-index.json")', self.js)
         self.assertIn('getJson("./data/reviewed-claims.json")', self.js)
         self.assertIn("sourceUrl(", self.js)
 
