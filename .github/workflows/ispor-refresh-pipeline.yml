@@ -2,6 +2,10 @@ name: Refresh and publish ISPOR Europe 2026 source snapshot
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'ispor-intelligence/refresh-request.json'
 
 permissions:
   contents: write
