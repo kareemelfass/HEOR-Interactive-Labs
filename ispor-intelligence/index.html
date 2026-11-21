@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#101b31">
-  <meta name="description" content="Source-linked ISPOR Europe 2026 research landscape and interactive knowledge graph. Counts are of abstract keyword signals, not audience discussion.">
+  <meta name="description" content="Source-linked ISPOR Europe 2026 research landscape and interactive knowledge graph. Counts describe indexed presentation classifications, not verified research activity or conference completeness.">
   <title>ISPOR Europe 2026 | Research Intelligence & Knowledge Graph</title>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./knowledge-gaps.css">
@@ -26,13 +26,13 @@
   <div class="source-meta"><span class="live-dot" id="liveDot"></span><strong id="sourceName">Loading official ISPOR index...</strong><span id="sourceDetail" class="muted">Source metadata loading</span></div>
   <div class="toolbar-actions">
     <label class="import-label" for="importJson">Import JSON <input id="importJson" type="file" accept=".json,application/json" hidden></label>
-    <button id="refreshData" type="button">Reload archive</button>
+    <button id="refreshData" type="button">Reload official index snapshot</button>
     <button id="exportKg" type="button">Export KG JSON</button>
   </div>
  </div>
  <section class="metrics" aria-label="Summary metrics">
-  <div class="metric"><div class="metric-name">Indexed ISPOR results</div><strong id="metricRecords">0</strong><small id="metricQualifier">Awaiting data</small></div>
-  <div class="metric"><div class="metric-name">Official topic groups</div><strong id="metricThemes">0</strong><small>Keyword based, multi-label</small></div>
+  <div class="metric"><div class="metric-name">Indexed research presentations</div><strong id="metricRecords">0</strong><small id="metricQualifier">Awaiting data</small></div>
+  <div class="metric"><div class="metric-name">Official topic groups</div><strong id="metricThemes">0</strong><small>Official index categories, multi-label</small></div>
   <div class="metric"><div class="metric-name">Topic associations</div><strong id="metricEdges">0</strong><small>Index-assigned categories</small></div>
   <div class="metric"><div class="metric-name">Indexed ISPOR source URLs</div><strong id="metricLinks">0</strong><small>Original source paths</small></div>
  </section>
@@ -41,24 +41,24 @@
   <button class="tab" type="button" data-tab="graph" aria-selected="false">Knowledge graph</button>
   <button class="tab" type="button" data-tab="explorer" aria-selected="false">Evidence explorer</button>
   <button class="tab" type="button" data-tab="method" aria-selected="false">Methods & intersections</button>
-  <button class="tab" type="button" data-tab="gaps" aria-selected="false">Knowledge gaps & future directions</button>
+  <button class="tab" type="button" data-tab="gaps" aria-selected="false">Proposed research questions</button>
   <button class="tab" type="button" data-tab="about" aria-selected="false">Data & methods</button>
  </nav>
  <div class="filter-bar" aria-label="Data filters">
   <label class="search-group">Search titles, authors and topics <input id="search" type="search" placeholder="e.g., oncology, reimbursement, economic evaluation"></label>
-  <label>Theme signal <select id="themeFilter"><option value="">All themes</option></select></label>
-  <label>Presentation text <select id="textMode"><option value="all">Title, authors and source metadata</option><option value="title">Title only</option></select></label>
+  <label>Official topic group <select id="themeFilter"><option value="">All themes</option></select></label>
+  <label>Search scope <select id="textMode"><option value="all">Title, authors and source metadata</option><option value="title">Title only</option></select></label>
   <button id="clearFilters" type="button" class="text-button">Clear filters</button>
  </div>
  <section class="view active" id="panel-overview" aria-labelledby="overviewHeading">
-  <div class="section-head"><div><div class="eyebrow dark">LANDSCAPE</div><h2 id="overviewHeading">What researchers presented</h2><p class="muted">Counts refer to records matching your filters. Multiple themes can appear in one abstract.</p></div><span class="count-chip" id="filteredCount">0 matching</span></div>
+  <div class="section-head"><div><div class="eyebrow dark">LANDSCAPE</div><h2 id="overviewHeading">What researchers presented</h2><p class="muted">Counts use filtered indexed presentations only. Official topics are multi-label classifications, not proof of methods used.</p></div><span class="count-chip" id="filteredCount">0 matching</span></div>
   <div class="two-col">
    <article class="panel"><h3>ISPOR index topic groups</h3><p class="panel-note">Categories supplied by the ISPOR-configured search index. Click a bar to filter.</p><div id="themeBars" class="bars"></div></article>
    <article class="panel"><h3>Official index disease-area categories</h3><p class="panel-note">Disease categories copied from the ISPOR-configured search index.</p><div id="diseaseBars" class="bars"></div></article>
   </div>
   <div class="two-col" style="margin-top:16px">
    <article class="panel"><h3>ISPOR topic and subtopic paths</h3><p class="panel-note">Exact topic paths from the official search index. Multi-label counts.</p><div id="sourceTopicBars" class="bars"></div></article>
-   <article class="panel"><h3>Indexed disease classifications</h3><p class="panel-note">Direct search-index disease-area fields; multiple labels may apply.</p><div id="sourceDiseaseBars" class="bars"></div></article>
+   <article class="panel"><h3>Disease-area coverage</h3><p class="panel-note">Entries labelled “No Additional Disease &amp; Conditions/Specialized Treatment Areas” are treated as unassigned, not a disease.</p><p class="muted" id="diseaseMissing">Calculating unassigned classification count…</p></article>
   </div>
   <div class="panel insights"><div class="panel-kicker">Descriptive distribution</div><h3 id="insightTitle">Source-linked exploratory evidence</h3><p id="insightText">We calculate the descriptive patterns from the loaded records, without claiming audience engagement.</p><div id="insightSources"></div></div>
  </section>
@@ -75,7 +75,7 @@
   <div class="pagination"><button id="loadMore" type="button">Load more</button></div>
  </section>
  <section class="view" id="panel-method" aria-labelledby="methodHeading">
-  <div class="section-head"><div><div class="eyebrow dark">INTERSECTIONS</div><h2 id="methodHeading">Methods crossing research themes</h2><p class="muted">Cell counts represent official topic co-classifications, not method comparisons.</p></div></div>
+  <div class="section-head"><div><div class="eyebrow dark">INTERSECTIONS</div><h2 id="methodHeading">How official topics co-occur</h2><p class="muted">Cell counts represent official topic co-classifications, not method comparisons.</p></div></div>
   <article class="panel"><h3>Official topic co-classification</h3><div id="matrix" class="matrix-wrap"></div></article>
   <article class="panel" style="margin-top:16px"><h3>Most connected topic pairs</h3><div id="pairs" class="pairs"></div></article>
  </section>
@@ -84,13 +84,13 @@
   <div class="section-head">
    <div>
     <div class="eyebrow dark">RESEARCH AGENDA</div>
-    <h2 id="gapsHeading">Knowledge gaps and future directions</h2>
-    <p class="kg-gap-intro">A research agenda for each of the 16 existing themes. Each topic identifies unresolved questions, concrete study designs, and decision implications. Where available, specific findings are linked to reviewed ISPOR abstracts.</p>
+    <h2 id="gapsHeading">Proposed research questions</h2>
+    <p class="kg-gap-intro">An editorial research agenda organised into 16 methodological topics inherited from a legacy taxonomy. These are hypothetical questions, not verified missing evidence. Selected ISPOR statements provide context only.</p>
    </div>
   </div>
   <div class="kg-gap-disclosure">
-   <strong>Evidence status: proposed research directions, not a measured consensus.</strong>
-   These gaps are analytical hypotheses informed by the themes, not automatically established from 3,097 abstracts. Reviewed author-reported findings are labelled separately and link to their original ISPOR source. Related presentations are examples, not proof of an evidence gap.
+   <strong>Evidence status: editorial proposals, not systematically established knowledge gaps.</strong>
+   These hypotheses have not been established by a systematic literature review or a census of conference abstracts. They are not official ISPOR topic groups. Selected author-reported statements are illustrative context, not evidence proving a particular research gap.
   </div>
   <div class="kg-gap-toolbar">
    <label>Find a theme or research question
@@ -106,8 +106,8 @@
  <section class="view" id="panel-about" aria-labelledby="aboutHeading">
   <div class="section-head"><div><div class="eyebrow dark">METHODS</div><h2 id="aboutHeading">What is included and what is not</h2></div></div>
   <div class="two-col">
-   <article class="panel"><h3>Data origin</h3><p>The primary data source is the live search service configured by <a href="https://www.ispor.org/heor-resources/presentations-database/results" target="_blank" rel="noopener noreferrer">ISPOR's presentations database</a>. The indexed conference count can fluctuate. The separately published August 2026 independent archive is used only for a discrepancy register, not as the dashboard's substitute source.</p><p>If the official index snapshot is unavailable, the dashboard displays an explicit source error. It does not silently substitute unverified archive results. Source-index URLs have not all been checked against individual presentation pages.</p><p>Import JSON is an optional local exploratory function. A user-imported file is not certified and must not be treated as an official ISPOR census.</p></article>
-   <article class="panel"><h3>Definitions and safeguards</h3><ul><li>A presentation is counted once after deduplication by official URL or stable title.</li><li>The main dashboard's displayed topic groups come directly from the ISPOR-configured search index. Separate methodological research suggestions are expressly non-evidence.</li><li>A displayed category edge means the official search index assigned that category to the presentation. It is not a scientific finding.</li><li>The chart denominator is the number of records in the loaded, filtered corpus.</li><li>Missing source URLs remain missing; no links are invented.</li><li>Only one conference year is analysed, so the dashboard does not estimate longitudinal growth. The official index and independent archive have conflicting totals.</li></ul></article>
+   <article class="panel"><h3>Data origin</h3><p>The primary data source is the live search service configured by <a href="https://www.ispor.org/heor-resources/presentations-database/results" target="_blank" rel="noopener noreferrer">ISPOR's presentations database</a>. The indexed conference count can fluctuate. A separately published independent pre-conference archive, with no verified collection date, is used only for a discrepancy register, not as the dashboard's substitute source.</p><p>If the official index snapshot is unavailable, the dashboard displays an explicit source error. It does not silently substitute unverified archive results. Source-index URLs have not all been checked against individual presentation pages.</p><p>Import JSON is an optional local exploratory function. A user-imported file is not certified and must not be treated as an official ISPOR census.</p></article>
+   <article class="panel"><h3>Definitions and safeguards</h3><ul><li>Only search-index records explicitly typed as presentations enter the analysis denominator; sessions are excluded. Records are deduplicated by source URL.</li><li>The main dashboard's displayed topic groups come directly from the ISPOR-configured search index. Separate methodological research suggestions are expressly non-evidence.</li><li>A displayed category edge means the official search index assigned that category to the presentation. It is not a scientific finding.</li><li>The chart denominator is the number of indexed presentations in the filtered analysis, not the full conference or session count.</li><li>Missing source URLs remain missing; no links are invented.</li><li>Only one conference year is analysed, so the dashboard does not estimate longitudinal growth. The official index and independent archive have conflicting totals.</li></ul></article>
   </div>
   <article class="panel" style="margin-top:16px">
    <h3>Official index vs historical archive: source discrepancy register</h3>
@@ -117,9 +117,9 @@
   </article>
   <article class="panel" style="margin-top:16px">
    <h3>Direct ISPOR page verification of disputed records</h3>
-   <p class="panel-note">Every old-archive record without an identical official-index URL is checked directly against ISPOR. A verified result requires a reachable official page and agreement on both presentation code and title. Broken links and ambiguous results remain unresolved.</p>
+   <p class="panel-note">The historical audit made one contemporaneous request per archived URL. HTTP 404 responses are unconfirmed, may be transient and do not establish withdrawal or non-existence. A positive title/code match verifies only the web page identity at the recorded check time.</p>
    <div class="quality" id="officialPageAudit"><p class="muted">Individual official-page verification is not yet available.</p></div>
-   <p><a href="https://github.com/kareemelfass/HEOR-Interactive-Labs/blob/main/ispor-intelligence/data/official-page-checks.json" target="_blank" rel="noopener noreferrer">Open individual page checks and verification statuses ↗</a></p>
+   <p><a href="https://github.com/kareemelfass/HEOR-Interactive-Labs/blob/main/ispor-intelligence/data/official-page-checks.json" target="_blank" rel="noopener noreferrer">Inspect historical page-response observations and unresolved statuses ↗</a></p>
   </article>
   <article class="panel" style="margin-top:16px"><h3>Data quality summary</h3><div id="quality" class="quality"></div><p class="panel-note">The project includes official-index collection, provenance-preserving graph generation, and a separate record-level discrepancy register. The search-index count is not asserted to be the definitive November conference census.</p></article>
  </section>
