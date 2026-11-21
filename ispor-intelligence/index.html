@@ -20,10 +20,10 @@
 <main id="main" class="inner">
  <section class="notice" aria-label="Evidence limitation">
   <span class="notice-icon" aria-hidden="true">i</span>
-  <div><strong>Interpretation matters.</strong> A keyword mention is not proof that a method was used or that a finding was validated. Presentation frequency is not audience discussion, and a single 2026 snapshot cannot show year-on-year trends. Every record should be checked at its original ISPOR link.</div>
+  <div><strong>Interpretation matters.</strong> The primary dataset now comes from the search service configured by ISPOR's own website. Its indexed result counts fluctuate and are not a verified final-conference census. A listed link is not proof that its presentation page remains accessible. Research proposals are not established findings.</div>
  </section>
  <div class="toolbar">
-  <div class="source-meta"><span class="live-dot" id="liveDot"></span><strong id="sourceName">Loading verified seed...</strong><span id="sourceDetail" class="muted">Source metadata loading</span></div>
+  <div class="source-meta"><span class="live-dot" id="liveDot"></span><strong id="sourceName">Loading official ISPOR index...</strong><span id="sourceDetail" class="muted">Source metadata loading</span></div>
   <div class="toolbar-actions">
     <label class="import-label" for="importJson">Import JSON <input id="importJson" type="file" accept=".json,application/json" hidden></label>
     <button id="refreshData" type="button">Reload archive</button>
@@ -31,10 +31,10 @@
   </div>
  </div>
  <section class="metrics" aria-label="Summary metrics">
-  <div class="metric"><div class="metric-name">Loaded presentations</div><strong id="metricRecords">0</strong><small id="metricQualifier">Awaiting data</small></div>
-  <div class="metric"><div class="metric-name">Distinct theme signals</div><strong id="metricThemes">0</strong><small>Keyword based, multi-label</small></div>
-  <div class="metric"><div class="metric-name">Graph relationships</div><strong id="metricEdges">0</strong><small>Presentation → theme</small></div>
-  <div class="metric"><div class="metric-name">Official source links</div><strong id="metricLinks">0</strong><small>Traceable source URLs</small></div>
+  <div class="metric"><div class="metric-name">Indexed ISPOR results</div><strong id="metricRecords">0</strong><small id="metricQualifier">Awaiting data</small></div>
+  <div class="metric"><div class="metric-name">Official topic groups</div><strong id="metricThemes">0</strong><small>Keyword based, multi-label</small></div>
+  <div class="metric"><div class="metric-name">Topic associations</div><strong id="metricEdges">0</strong><small>Index-assigned categories</small></div>
+  <div class="metric"><div class="metric-name">Presentation-detail links</div><strong id="metricLinks">0</strong><small>Search-index detail URLs</small></div>
  </section>
  <nav class="tabs" aria-label="Research views">
   <button class="tab active" type="button" data-tab="overview" aria-selected="true">Landscape</button>
@@ -45,38 +45,38 @@
   <button class="tab" type="button" data-tab="about" aria-selected="false">Data & methods</button>
  </nav>
  <div class="filter-bar" aria-label="Data filters">
-  <label class="search-group">Search titles and abstracts <input id="search" type="search" placeholder="e.g., JCA, survival, effect modifier"></label>
+  <label class="search-group">Search titles, authors and topics <input id="search" type="search" placeholder="e.g., oncology, reimbursement, economic evaluation"></label>
   <label>Theme signal <select id="themeFilter"><option value="">All themes</option></select></label>
-  <label>Presentation text <select id="textMode"><option value="all">Title and available abstract</option><option value="title">Title only</option></select></label>
+  <label>Presentation text <select id="textMode"><option value="all">Title, authors and source metadata</option><option value="title">Title only</option></select></label>
   <button id="clearFilters" type="button" class="text-button">Clear filters</button>
  </div>
  <section class="view active" id="panel-overview" aria-labelledby="overviewHeading">
   <div class="section-head"><div><div class="eyebrow dark">LANDSCAPE</div><h2 id="overviewHeading">What researchers presented</h2><p class="muted">Counts refer to records matching your filters. Multiple themes can appear in one abstract.</p></div><span class="count-chip" id="filteredCount">0 matching</span></div>
   <div class="two-col">
-   <article class="panel"><h3>Research theme signals</h3><p class="panel-note">Document mentions detected from keywords. Click a bar to filter.</p><div id="themeBars" class="bars"></div></article>
-   <article class="panel"><h3>Therapeutic-area signals</h3><p class="panel-note">Keyword-derived, not an official disease taxonomy.</p><div id="diseaseBars" class="bars"></div></article>
+   <article class="panel"><h3>ISPOR index topic groups</h3><p class="panel-note">Categories supplied by the ISPOR-configured search index. Click a bar to filter.</p><div id="themeBars" class="bars"></div></article>
+   <article class="panel"><h3>Official index disease-area categories</h3><p class="panel-note">Disease categories copied from the ISPOR-configured search index.</p><div id="diseaseBars" class="bars"></div></article>
   </div>
   <div class="two-col" style="margin-top:16px">
-   <article class="panel"><h3>ISPOR topic categories in the archive</h3><p class="panel-note">Preserved source classifications, not our keyword model. Multi-label counts.</p><div id="sourceTopicBars" class="bars"></div></article>
-   <article class="panel"><h3>Source disease classifications</h3><p class="panel-note">Archive disease-area fields, separate from inferred disease mentions.</p><div id="sourceDiseaseBars" class="bars"></div></article>
+   <article class="panel"><h3>ISPOR topic and subtopic paths</h3><p class="panel-note">Exact topic paths from the official search index. Multi-label counts.</p><div id="sourceTopicBars" class="bars"></div></article>
+   <article class="panel"><h3>Indexed disease classifications</h3><p class="panel-note">Direct search-index disease-area fields; multiple labels may apply.</p><div id="sourceDiseaseBars" class="bars"></div></article>
   </div>
-  <div class="panel insights"><div class="panel-kicker">Pattern worth investigating</div><h3 id="insightTitle">Source-linked exploratory evidence</h3><p id="insightText">We calculate the descriptive patterns from the loaded records, without claiming audience engagement.</p><div id="insightSources"></div></div>
+  <div class="panel insights"><div class="panel-kicker">Descriptive distribution</div><h3 id="insightTitle">Source-linked exploratory evidence</h3><p id="insightText">We calculate the descriptive patterns from the loaded records, without claiming audience engagement.</p><div id="insightSources"></div></div>
  </section>
  <section class="view" id="panel-graph" aria-labelledby="graphHeading">
-  <div class="section-head"><div><div class="eyebrow dark">KNOWLEDGE GRAPH</div><h2 id="graphHeading">Explore connected research</h2><p class="muted">Nodes represent presentations or keyword themes; links show co-mentions, not causation.</p></div></div>
+  <div class="section-head"><div><div class="eyebrow dark">KNOWLEDGE GRAPH</div><h2 id="graphHeading">Explore connected research</h2><p class="muted">Nodes represent indexed presentations and their official topic groups; links show co-classification, not causation.</p></div></div>
   <div class="graph-layout">
    <article class="panel graph-panel"><div class="graph-tools"><label>Focus on <select id="graphFocus"></select></label><button id="resetGraph" type="button">Reset</button></div><svg id="graphCanvas" viewBox="0 0 860 490" role="img" aria-label="Research topic and presentation network"></svg><div class="legend"><span><i class="legend-topic"></i> Research theme</span><span><i class="legend-record"></i> Presentation</span></div></article>
    <aside class="panel detail-panel"><h3 id="detailTitle">Select a node</h3><p id="detailText">Click a theme or presentation to inspect its neighbours and original source.</p><div id="detailLinks"></div><h4>Manually reviewed findings</h4><div id="claimsList" class="reviewed-claims"></div><h4>Related source records</h4><div id="graphRecordList" class="related-list"></div></aside>
   </div>
  </section>
  <section class="view" id="panel-explorer" aria-labelledby="explorerHeading">
-  <div class="section-head"><div><div class="eyebrow dark">SOURCE TRACEABILITY</div><h2 id="explorerHeading">Evidence explorer</h2><p class="muted">Search the underlying records and follow original ISPOR presentation links.</p></div><button id="exportCsv" type="button">Export filtered CSV</button></div>
+  <div class="section-head"><div><div class="eyebrow dark">SOURCE TRACEABILITY</div><h2 id="explorerHeading">Evidence explorer</h2><p class="muted">Search official index metadata and follow presentation-detail links where available.</p></div><button id="exportCsv" type="button">Export filtered CSV</button></div>
   <div id="resultList" class="results"></div>
   <div class="pagination"><button id="loadMore" type="button">Load more</button></div>
  </section>
  <section class="view" id="panel-method" aria-labelledby="methodHeading">
-  <div class="section-head"><div><div class="eyebrow dark">INTERSECTIONS</div><h2 id="methodHeading">Methods crossing research themes</h2><p class="muted">Cell counts represent abstracts mentioning both topics, not formal method comparisons.</p></div></div>
-  <article class="panel"><h3>Theme co-occurrence</h3><div id="matrix" class="matrix-wrap"></div></article>
+  <div class="section-head"><div><div class="eyebrow dark">INTERSECTIONS</div><h2 id="methodHeading">Methods crossing research themes</h2><p class="muted">Cell counts represent official topic co-classifications, not method comparisons.</p></div></div>
+  <article class="panel"><h3>Official topic co-classification</h3><div id="matrix" class="matrix-wrap"></div></article>
   <article class="panel" style="margin-top:16px"><h3>Most connected topic pairs</h3><div id="pairs" class="pairs"></div></article>
  </section>
 
@@ -106,10 +106,10 @@
  <section class="view" id="panel-about" aria-labelledby="aboutHeading">
   <div class="section-head"><div><div class="eyebrow dark">METHODS</div><h2 id="aboutHeading">What is included and what is not</h2></div></div>
   <div class="two-col">
-   <article class="panel"><h3>Data origin</h3><p>The default full-corpus endpoint is the independent <a href="https://justinsyu.github.io/ispor-eu-nov-2026/" target="_blank" rel="noopener noreferrer">ISPOR Europe 2026 Abstract Archive</a>, a <strong>24 August 2026 pre-conference snapshot</strong> transcribed from the official ISPOR presentations database. It is not an official verified final-conference census.</p><p>If fetching that archive fails, the application displays a smaller set of <strong>individually verified official ISPOR pages</strong>. The status strip and record count tell you which dataset is active.</p><p>Use Import JSON for a more complete or updated export. Imports are processed in your browser.</p></article>
-   <article class="panel"><h3>Definitions and safeguards</h3><ul><li>A presentation is counted once after deduplication by official URL or stable title.</li><li>Tags are multi-label and are detected with explicit regular expressions.</li><li>An edge means a keyword theme was detected in a record. It is not a research finding.</li><li>The chart denominator is the number of records in the loaded, filtered corpus.</li><li>Missing source URLs remain missing; no links are invented.</li><li>Only one conference year is available, so there are no claims of longitudinal growth.</li></ul></article>
+   <article class="panel"><h3>Data origin</h3><p>The primary data source is the live search service configured by <a href="https://www.ispor.org/heor-resources/presentations-database/results" target="_blank" rel="noopener noreferrer">ISPOR's presentations database</a>. The indexed conference count can fluctuate. The separately published August 2026 independent archive is used only for a discrepancy register, not as the dashboard's substitute source.</p><p>If the official index snapshot is unavailable, the dashboard displays an explicit source error. It does not silently substitute unverified archive results. Source-index URLs have not all been checked against individual presentation pages.</p><p>Import JSON is an optional local exploratory function. A user-imported file is not certified and must not be treated as an official ISPOR census.</p></article>
+   <article class="panel"><h3>Definitions and safeguards</h3><ul><li>A presentation is counted once after deduplication by official URL or stable title.</li><li>The main dashboard's displayed topic groups come directly from the ISPOR-configured search index. Separate methodological research suggestions are expressly non-evidence.</li><li>A displayed category edge means the official search index assigned that category to the presentation. It is not a scientific finding.</li><li>The chart denominator is the number of records in the loaded, filtered corpus.</li><li>Missing source URLs remain missing; no links are invented.</li><li>Only one conference year is analysed, so the dashboard does not estimate longitudinal growth. The official index and independent archive have conflicting totals.</li></ul></article>
   </div>
-  <article class="panel" style="margin-top:16px"><h3>Data quality summary</h3><div id="quality" class="quality"></div><p class="panel-note">The project includes a reproducible Python extraction script and a generated graph file. Rebuild full data only after checking the archive schema and permissions.</p></article>
+  <article class="panel" style="margin-top:16px"><h3>Data quality summary</h3><div id="quality" class="quality"></div><p class="panel-note">The project includes official-index collection, provenance-preserving graph generation, and a separate record-level discrepancy register. The search-index count is not asserted to be the definitive November conference census.</p></article>
  </section>
  <footer><div>ISPOR Europe 2026 Research Atlas · Independent research tool, not affiliated with ISPOR</div><div><a href="https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/ispor-intelligence" target="_blank" rel="noopener noreferrer">Source code</a> · <a href="https://www.ispor.org/heor-resources/presentations-database/results/ispor-europe-2026" target="_blank" rel="noopener noreferrer">Official records</a></div></footer>
 </main>
