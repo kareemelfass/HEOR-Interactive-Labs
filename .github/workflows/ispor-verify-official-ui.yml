@@ -1,13 +1,15 @@
 name: Validate official-source ISPOR dashboard
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "ispor-intelligence/**"
+      - ".github/workflows/ispor-verify-official-ui.yml"
   push:
     branches: [main]
     paths:
-      - "ispor-intelligence/app.js"
-      - "ispor-intelligence/index.html"
-      - "ispor-intelligence/knowledge-gaps.js"
-      - "ispor-intelligence/tests/test_official_source.py"
+      - "ispor-intelligence/**"
       - ".github/workflows/ispor-verify-official-ui.yml"
   workflow_dispatch:
 
@@ -17,42 +19,60 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 9
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Validate source fidelity, relationships and discrepancy coverage
+      - name: Prepare repaired source graph in PR working copy
+        if: github.event_name == 'pull_request'
+        run: python ispor-intelligence/scripts/repair_official_graph.py
+      - name: Reject stale graph types on default branch
+        if: github.event_name != 'pull_request'
+        run: python ispor-intelligence/scripts/repair_official_graph.py --check-only
+      - name: Validate dataset, node types and unverified research proposals
         run: python -m unittest discover -s ispor-intelligence/tests -v
-      - name: Check JavaScript syntax
+      - name: Validate Python and JavaScript syntax
         run: |
+          python -m py_compile \
+            ispor-intelligence/scripts/sync_official_index.py \
+            ispor-intelligence/scripts/repair_official_graph.py
           node --check ispor-intelligence/app.js
           node --check ispor-intelligence/knowledge-gaps.js
-      - name: Validate official data and reconciliation in rendered browser
+      - name: Test actual dashboard with headless Chromium
         run: |
-          python -m http.server 8765 --bind 127.0.0.1 > /tmp/ispor-official-ui-server.log 2>&1 &
+          python -m http.server 8765 --bind 127.0.0.1 > /tmp/ispor-server.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
           for i in 1 2 3 4 5 6 7 8 9 10; do
-            if curl -fsS http://127.0.0.1:8765/ispor-intelligence/index.html > /dev/null; then break; fi
+            if curl -fsS http://127.0.0.1:8765/ispor-intelligence/index.html >/dev/null; then break; fi
             sleep 1
           done
           CHROME="$(command -v google-chrome || command -v chromium || true)"
           test -n "$CHROME"
-          timeout 90 "$CHROME" --headless --no-sandbox --disable-gpu --virtual-time-budget=18000 --dump-dom \
-            http://127.0.0.1:8765/ispor-intelligence/index.html > /tmp/ispor-official-ui.html 2>/tmp/ispor-official-ui-chrome.log
+          timeout 90 "$CHROME" --headless --no-sandbox --disable-gpu \
+            --virtual-time-budget=20000 --dump-dom \
+            http://127.0.0.1:8765/ispor-intelligence/index.html \
+            > /tmp/ispor-live-dom.html 2>/tmp/ispor-chrome.log
           python - <<'PY'
           from pathlib import Path
           import json
-          text=Path("/tmp/ispor-official-ui.html").read_text(encoding="utf-8")
-          index=json.loads(Path("ispor-intelligence/data/official-index-records.json").read_text())
-          expected=f'{len(index["records"]):,}'
-          assert f'id="metricRecords">{expected}<' in text, "Dashboard did not render all captured official-index items"
-          assert 'id="sourceName">Official ISPOR search index<' in text, "Did not use official primary source"
-          assert "archive only, not in captured official index" in text.lower(), "Missing discrepancy register"
-          assert "16 of 16 themes · 32 proposed research directions" in text, "Proposed research questions missing"
-          assert "Independent 2026 abstract archive" not in text, "Archive was used as primary dataset"
-          print("OFFICIAL_BROWSER_SMOKE_PASS",{"indexed_items":expected,
-            "proposed_topics":16,"discrepancies_visible":True})
+          html=Path("/tmp/ispor-live-dom.html").read_text(encoding="utf-8")
+          rows=json.loads(Path("ispor-intelligence/data/official-index-records.json").read_text())["records"]
+          presentations=sum(r["index_content_kind"]=="Confex Presentation" for r in rows)
+          sessions=sum(r["index_content_kind"]=="Confex Session" for r in rows)
+          assert presentations==2778 and sessions==139
+          assert f'id="metricRecords">{presentations:,}<' in html, \
+            "Dashboard denominator includes sessions or other records"
+          assert 'id="sourceName">Official ISPOR search index<' in html
+          assert 'id="diseaseMissing">' in html
+          assert "16 of 16 editorial topics · 32 proposed hypotheses" in html
+          assert "Archived URL returned HTTP 404 at check time (unconfirmed)" in html
+          assert "archive only, not in captured official index" in html.lower()
+          assert "Related ISPOR presentations" not in html
+          print("ISPOR_CORRECTIVE_BROWSER_PASS",{
+            "presentations":presentations,"sessions_excluded":sessions,
+            "hypotheses":32,"provisional_404_label":True
+          })
           PY
