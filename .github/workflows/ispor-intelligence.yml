@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "ispor-intelligence/scripts/build_kg.py"
+      - "ispor-intelligence/tests/**"
       - ".github/workflows/ispor-intelligence.yml"
   workflow_dispatch:
   schedule:
