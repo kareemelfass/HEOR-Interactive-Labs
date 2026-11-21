@@ -7,6 +7,7 @@
   <meta name="description" content="Source-linked ISPOR Europe 2026 research landscape and interactive knowledge graph. Counts are of abstract keyword signals, not audience discussion.">
   <title>ISPOR Europe 2026 | Research Intelligence & Knowledge Graph</title>
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./knowledge-gaps.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to research dashboard</a>
@@ -40,6 +41,7 @@
   <button class="tab" type="button" data-tab="graph" aria-selected="false">Knowledge graph</button>
   <button class="tab" type="button" data-tab="explorer" aria-selected="false">Evidence explorer</button>
   <button class="tab" type="button" data-tab="method" aria-selected="false">Methods & intersections</button>
+  <button class="tab" type="button" data-tab="gaps" aria-selected="false">Knowledge gaps & future directions</button>
   <button class="tab" type="button" data-tab="about" aria-selected="false">Data & methods</button>
  </nav>
  <div class="filter-bar" aria-label="Data filters">
@@ -77,6 +79,30 @@
   <article class="panel"><h3>Theme co-occurrence</h3><div id="matrix" class="matrix-wrap"></div></article>
   <article class="panel" style="margin-top:16px"><h3>Most connected topic pairs</h3><div id="pairs" class="pairs"></div></article>
  </section>
+
+ <section class="view" id="panel-gaps" aria-labelledby="gapsHeading">
+  <div class="section-head">
+   <div>
+    <div class="eyebrow dark">RESEARCH AGENDA</div>
+    <h2 id="gapsHeading">Knowledge gaps and future directions</h2>
+    <p class="kg-gap-intro">A research agenda for each of the 16 existing themes. Each topic identifies unresolved questions, concrete study designs, and decision implications. Where available, specific findings are linked to reviewed ISPOR abstracts.</p>
+   </div>
+  </div>
+  <div class="kg-gap-disclosure">
+   <strong>Evidence status: proposed research directions, not a measured consensus.</strong>
+   These gaps are analytical hypotheses informed by the themes, not automatically established from 3,097 abstracts. Reviewed author-reported findings are labelled separately and link to their original ISPOR source. Related presentations are examples, not proof of an evidence gap.
+  </div>
+  <div class="kg-gap-toolbar">
+   <label>Find a theme or research question
+    <input type="search" id="kgGapsSearch" placeholder="e.g., survival, PICO, treatment switching" autocomplete="off">
+   </label>
+   <button type="button" id="kgGapsExpand">Expand all</button>
+   <button type="button" id="kgGapsCollapse">Collapse all</button>
+   <button type="button" id="kgGapsExport">Export research agenda CSV</button>
+  </div>
+  <div class="kg-gap-caption"><span id="kgGapsCount">Loading research agenda…</span> · <span id="kgGapsSource">Loading source coverage…</span></div>
+  <div id="kgGapsContent" class="kg-gap-theme-list" aria-live="polite"></div>
+ </section>
  <section class="view" id="panel-about" aria-labelledby="aboutHeading">
   <div class="section-head"><div><div class="eyebrow dark">METHODS</div><h2 id="aboutHeading">What is included and what is not</h2></div></div>
   <div class="two-col">
@@ -88,5 +114,6 @@
  <footer><div>ISPOR Europe 2026 Research Atlas · Independent research tool, not affiliated with ISPOR</div><div><a href="https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/ispor-intelligence" target="_blank" rel="noopener noreferrer">Source code</a> · <a href="https://www.ispor.org/heor-resources/presentations-database/results/ispor-europe-2026" target="_blank" rel="noopener noreferrer">Official records</a></div></footer>
 </main>
 <script src="./app.js" defer></script>
+<script src="./knowledge-gaps.js" defer></script>
 </body>
 </html>
