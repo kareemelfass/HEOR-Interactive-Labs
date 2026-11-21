@@ -78,15 +78,21 @@
   const m=all.match(/https:\/\/(?:www\.)?ispor\.org\/[^\s"'<>]+/i);
   return m?safeUrl(m[0]):"";
  }
+ function asLabels(v){
+  const values=Array.isArray(v)?v:v===null||v===undefined?[]:[v];
+  return [...new Set(values.map(x=>typeof x==="object"&&x!==null?(field(x,["name","label","category","topic","disease"])||""):x).map(str).map(x=>x.trim()).filter(Boolean))];
+ }
  function normalize(row,i){
   const title=str(field(row,["title","presentation_title","abstract_title","name","paper_title"])).trim();
   if(title.length<8)return null;
-  const parts=["abstract_text","abstract","structured_abstract","abstract_body","summary","objectives","objective","methods","results","conclusions","background","full_text","body"].map(k=>field(row,[k])).filter(x=>x!==undefined);
+  const parts=["abstract_text","abstract","structured_abstract","abstract_body","summary","sections","objectives","objective","methods","results","conclusions","background","full_text","body"].map(k=>field(row,[k])).filter(x=>x!==undefined);
   const abstract=str(parts).replace(/\s+/g," ").slice(0,12000);
   const code=str(field(row,["abstract_number","presentation_code","presentation_id","abstract_id","code","number","id"])).trim().slice(0,80);
   const url=guessUrl(row);
-  const topicsRaw=str(field(row,["topic_groups","topics","topic","categories","category","topic_area"]));
-  const diseaseRaw=str(field(row,["disease_areas","disease_area","diseases","disease"]));
+  const sourceCategories=asLabels(field(row,["source_categories","categories","topic_groups","topic","category"]));
+  const sourceDiseases=asLabels(field(row,["source_diseases","diseases","disease_areas","disease"]));
+  const topicsRaw=sourceCategories.join(" ");
+  const diseaseRaw=sourceDiseases.join(" ");
   const haystack=[title,abstract,topicsRaw].join(" ");
   const inputTags=field(row,["tags"]);
   const inputDiseases=field(row,["diseases"]);
@@ -94,10 +100,10 @@
   const diseaseNames=Array.isArray(inputDiseases)?inputDiseases:[];
   const tags=[...new Set([...TOPICS.filter(x=>x.re.test(haystack)).map(x=>x.name),...tagNames.filter(x=>TOPICS.some(t=>t.name===x))])];
   const diseases=[...new Set([...DISEASES.filter(x=>x.re.test([title,abstract,diseaseRaw].join(" "))).map(x=>x.name),...diseaseNames.filter(x=>DISEASES.some(t=>t.name===x))])];
-  return {id:code || "r"+i,title,abstract,code,url,tags,diseases,topicsRaw,diseaseRaw,sourceType:"Archive record",year:2026};
+  return {id:code || "r"+i,title,abstract,code,url,tags,diseases,sourceCategories,sourceDiseases,topicsRaw,diseaseRaw,sourceType:"Archive record",year:2026};
  }
  function fromSeed(items){
-  return items.map((r,i)=>({id:r.id||"seed"+i,title:r.title,abstract:"",code:r.id||"",url:safeUrl(r.url),tags:r.tags||[],diseases:DISEASES.filter(x=>x.re.test(r.title)).map(x=>x.name),topicsRaw:"",diseaseRaw:"",sourceType:"Verified official presentation",year:2026}));
+  return items.map((r,i)=>({id:r.id||"seed"+i,title:r.title,abstract:"",code:r.id||"",url:safeUrl(r.url),tags:r.tags||[],diseases:DISEASES.filter(x=>x.re.test(r.title)).map(x=>x.name),sourceCategories:[],sourceDiseases:[],topicsRaw:"",diseaseRaw:"",sourceType:"Verified official presentation",year:2026}));
  }
  function clean(rows){
   const seen=new Set(),out=[];
@@ -159,7 +165,7 @@
    parent.append(b);
   });
  }
- function renderBars(){drawBars("themeBars",counts("tags"),true);drawBars("diseaseBars",counts("diseases"),false)}
+ function renderBars(){drawBars("themeBars",counts("tags"),true);drawBars("diseaseBars",counts("diseases"),false);drawBars("sourceTopicBars",counts("sourceCategories"),false);drawBars("sourceDiseaseBars",counts("sourceDiseases"),false)}
  function renderInsights(){
   const top=counts("tags")[0]; const pct=top&&state.filtered.length?Math.round(100*top.count/state.filtered.length):0;
   el("insightTitle").textContent=top?top.name+" appears in "+format(top.count)+" matching records":"No records match these filters";
@@ -290,20 +296,36 @@
    [format(valid),"ISPOR-domain URLs"],
    [format(abstract),"Records with text"],
    [format(tagged),"Records with topic signal"],
+   [format(state.records.filter(r=>r.sourceCategories.length>0).length),"Archive category coverage"],
    [state.isFull?"External snapshot":"Verified seed","Data coverage"]
   ];
   el("quality").replaceChildren(...items.map(([v,label])=>{const box=h("div","quality-box");box.append(h("strong","",v),h("span","",label));return box}));
  }
  function makeGraph(records){
-  const topics=[...new Set(records.flatMap(r=>r.tags))].sort();
-  const nodes=topics.map(t=>({id:"topic:"+t,type:"theme",label:t,provenance:"Keyword-detected text mention"}));
-  const edges=[];
+  const themes=[...new Set(records.flatMap(r=>r.tags))].sort();
+  const categories=[...new Set(records.flatMap(r=>r.sourceCategories))].sort();
+  const diseases=[...new Set(records.flatMap(r=>r.sourceDiseases))].sort();
+  const nodes=themes.map(t=>({id:"topic:"+t,type:"theme",label:t,provenance:"Keyword-detected text mention"}));
+  categories.forEach(t=>nodes.push({id:"ispor_topic:"+t,type:"archive_topic_group",label:t}));
+  diseases.forEach(t=>nodes.push({id:"disease_area:"+t,type:"archive_disease_area",label:t}));
+  const edges=[],recordByUrl=new Map();
   records.forEach((r,i)=>{
    const id="presentation:"+(r.code||"index"+i).replace(/[^a-z0-9_-]/gi,"_")+"_"+i;
    nodes.push({id,type:"presentation",label:r.title,url:sourceLink(r)||null,abstract_code:r.code||null});
-   r.tags.forEach(t=>edges.push({source:id,target:"topic:"+t,relation:"MENTIONS",provenance:"Reproducible rule-based classification, not a finding"}));
+   if(sourceLink(r))recordByUrl.set(r.url,id);
+   r.tags.forEach(t=>edges.push({source:id,target:"topic:"+t,relation:"MENTIONS",provenance:"Rule-based keyword classification, not an author-reported finding"}));
+   r.sourceCategories.forEach(t=>edges.push({source:id,target:"ispor_topic:"+t,relation:"ARCHIVE_CLASSIFIES_AS"}));
+   r.sourceDiseases.forEach(t=>edges.push({source:id,target:"disease_area:"+t,relation:"ARCHIVE_DISEASE_AREA"}));
   });
-  return {metadata:{conference:"ISPOR Europe 2026",records:records.length,source:state.source,full_archive:state.isFull,created_utc:new Date().toISOString(),interpretation:"Edges are keyword mentions and are NOT validated clinical or methodological findings."},nodes,edges};
+  reviewedClaims.forEach(c=>{
+   const pid=recordByUrl.get(c.source_url);
+   if(!pid)return;
+   const cid="claim:"+c.id;
+   nodes.push({id:cid,type:"reported_claim",label:c.claim,qualifier:c.qualifier,source_url:c.source_url});
+   edges.push({source:pid,target:cid,relation:"REPORTS",provenance:"Manually checked author-reported claim"});
+   if(themes.includes(c.topic))edges.push({source:cid,target:"topic:"+c.topic,relation:"ABOUT"});
+  });
+  return {metadata:{conference:"ISPOR Europe 2026",records:records.length,source:state.source,full_archive:state.isFull,created_utc:new Date().toISOString(),interpretation:"Keyword and archive-classification edges are not scientific findings. Claims are author-reported."},nodes,edges};
  }
  function download(filename,text,type){
   const blob=new Blob([text],{type:type||"application/json"}),url=URL.createObjectURL(blob),a=h("a");a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
