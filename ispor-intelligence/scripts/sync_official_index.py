@@ -127,7 +127,7 @@ def main():
                     continue
                 retrieved[uid]=r
             print("OFFICIAL_SCAN",attempt,"page",page,"of",pages,
-                  "index_hits":count,"unique_captured":len(retrieved),flush=True)
+                  "index_hits",count,"unique_captured",len(retrieved),flush=True)
             time.sleep(.12)
     data=list(retrieved.values())
     n=len(data)
