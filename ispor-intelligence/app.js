@@ -31,6 +31,7 @@
  ];
  const el = id => document.getElementById(id);
  const state = {records:[],source:"",snapshot:"",isFull:false,rawCount:0,filtered:[],shown:20,graphFocus:"JCA",filter:"",query:"",searchMode:"all",error:""};
+ let reviewedClaims=[];
  const h = (tag,cls,text) => { const n=document.createElement(tag); if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n; };
  const safeUrl = v => typeof v==="string" && /^https:\/\/(www\.)?ispor\.org\//i.test(v) ? v : "";
  const sourceLink = r => safeUrl(r.url);
@@ -206,6 +207,7 @@
   el("detailText").textContent=format(matching.length)+" currently filtered presentations mention this theme. Links represent keyword mentions, not confirmed method use or findings.";
   el("detailLinks").replaceChildren();
   related(matching);
+  renderReviewedClaims(matching,t);
  }
  function showRecordDetail(r){
   el("detailTitle").textContent=r.title;
@@ -213,6 +215,24 @@
   const out=el("detailLinks");out.replaceChildren();
   if(sourceLink(r)){const a=h("a","","Open original ISPOR presentation ↗");a.href=r.url;a.target="_blank";a.rel="noopener noreferrer";out.append(a)}
   related([r]);
+  renderReviewedClaims([r]);
+ }
+ function renderReviewedClaims(records,topic){
+  const target=el("claimsList");target.replaceChildren();
+  const urls=new Set(records.map(r=>r.url).filter(Boolean));
+  const codes=new Set(records.map(r=>r.code.toUpperCase()).filter(Boolean));
+  const matches=reviewedClaims.filter(c=>
+   (urls.has(c.source_url) || codes.has(c.presentation_code.toUpperCase())) &&
+   (!topic || c.topic===topic || records.some(r=>r.tags.includes(topic)))
+  );
+  matches.slice(0,8).forEach(c=>{
+   const card=h("div","claim-card");
+   card.append(h("div","claim-kind",c.type.replace(/_/g," ")),h("p","",c.claim),h("small","",c.qualifier));
+   const a=h("a","","Original ISPOR abstract ↗");
+   a.href=c.source_url;a.target="_blank";a.rel="noopener noreferrer";card.append(a);
+   target.append(card);
+  });
+  if(!matches.length)target.append(h("p","muted","No manually reviewed finding is linked to these displayed records. A keyword connection alone does not establish a result."));
  }
  function related(items){
   const out=el("graphRecordList");out.replaceChildren();
@@ -354,6 +374,17 @@
   el("exportCsv").addEventListener("click",exportCsv);
   el("exportKg").addEventListener("click",()=>download("ispor_europe_2026_knowledge_graph.json",JSON.stringify(makeGraph(state.records),null,2)));
  }
+ async function init(){
+  try{
+   const response=await fetch("./data/reviewed-claims.json");
+   if(response.ok){const raw=await response.json();reviewedClaims=(raw.claims||[]).filter(c=>safeUrl(c.source_url));}
+  }catch(_e){}
+  try{
+   await loadSeed();
+   try{await loadLocalIndex()}catch(_e){}
+   await loadArchive();
+  }catch(e){el("sourceName").textContent="Data unavailable";el("sourceDetail").textContent=e.message}
+ }
  bind();
- loadSeed().then(async()=>{try{await loadLocalIndex()}catch(_e){}await loadArchive()}).catch(e=>{el("sourceName").textContent="Data unavailable";el("sourceDetail").textContent=e.message});
+ init();
 })();
