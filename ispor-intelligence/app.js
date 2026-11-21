@@ -29,7 +29,7 @@
   {name:"Infectious disease",re:/\binfection\b|\bHIV\b|\bviral\b|\bantibiotic\b/i}
  ];
  const el = id => document.getElementById(id);
- const state = {records:[],source:"",snapshot:"",isFull:false,rawCount:0,filtered:[],shown:20,graphFocus:"",filter:"",isOfficial:false,query:"",searchMode:"all",error:""};
+ const state = {records:[],source:"",snapshot:"",isFull:false,rawCount:0,sessionCount:0,filtered:[],shown:20,graphFocus:"",filter:"",isOfficial:false,query:"",searchMode:"all",error:""};
  let reviewedClaims=[];
  const h = (tag,cls,text) => { const n=document.createElement(tag); if(cls)n.className=cls;if(text!==undefined)n.textContent=String(text);return n; };
  const safeUrl = v => typeof v==="string" && /^https:\/\/(www\.)?ispor\.org\//i.test(v) ? v : "";
@@ -115,6 +115,7 @@
  }
  function setData(records,source,full,rawCount,error){
   state.records=clean(records); state.rawCount=rawCount||records.length;state.source=source;state.isFull=full;state.isOfficial=(source==="Official ISPOR search index");state.error=error||"";
+  if(!state.isOfficial)state.sessionCount=0;
   state.shown=20;
   updateThemeSelect();updateGraphSelect();applyFilters();
   el("sourceName").textContent=source;
@@ -298,6 +299,7 @@
   const tagged=state.records.filter(r=>r.tags.length>0).length;
   const items=[
    [format(state.records.length),"Indexed presentations in analysis"],
+   [format(state.sessionCount),"Indexed conference sessions excluded"],
    [format(valid),"ISPOR-domain source URLs (not all page-verified)"],
    [format(tagged),"Presentations with indexed topic group"],
    [format(state.records.filter(r=>r.sourceCategories.length>0).length),"Official index category coverage"],
@@ -327,7 +329,7 @@
     ["Archive records",comparison.archive_records],
     ["Exact URL matches",status.url_match||0],
     ["Changed URL, matching code and title",status.code_title_match_url_changed||0],
-    ["Same code, differing title or URL",status.code_exists_but_title_or_url_different||0],
+    ["Same code, revised title or URL candidate",status.code_exists_but_title_or_url_different||0],
     ["Archive only, not in captured official index",status.archive_only_not_in_official_index||0],
     ["Index items unmatched to archived records (including sessions)",comparison.official_index_not_matched_to_archive||0]
   ];
@@ -344,7 +346,7 @@
   const separatelyConfirmed=(audit.results||[]).filter(r=>r.reconciliation_status==="archive_only_not_in_official_index" && r.page_status==="official_page_title_code_verified").length;
   const labels={
     official_page_title_code_verified:"Archived code and title matched when checked",
-    official_page_reachable_content_mismatch:"Page reachable; archived title mismatch, code needs review",
+    official_page_reachable_content_mismatch:"Archived title differs; code matched during original check; current title unverified",
     http_404:"Archived URL returned HTTP 404 at check time (unconfirmed)",
     http_403:"Official page returned HTTP 403",
     network_error:"Network error, not verified",
@@ -380,10 +382,11 @@
   if(!response.ok)throw Error("Official-index file unavailable, HTTP "+response.status);
   const data=await response.json();
   if(!Array.isArray(data.records)||data.records.length<1000)throw Error("Official-index corpus incomplete");
+  const sessions=data.records.filter(r=>r.index_content_kind==="Confex Session").length;
+  state.sessionCount=sessions;
   const presentations=data.records.filter(r=>r.index_content_kind==="Confex Presentation");
   const official=fromOfficial(presentations);
   setData(official,"Official ISPOR search index",true,presentations.length,"");
-  const sessions=data.records.filter(r=>r.index_content_kind==="Confex Session").length;
   el("sourceDetail").textContent="Indexed research presentations: "+format(official.length)+"; "+format(sessions)+" conference sessions excluded from analysis. Final conference census unresolved.";
   try{const response=await fetch("./data/official-index-summary.json",{cache:"no-store"});if(response.ok)renderOfficialReconciliation(await response.json())}catch(_e){}
   try{const response=await fetch("./data/official-page-checks.json",{cache:"no-store"});if(response.ok)renderOfficialPageAudit(await response.json())}catch(_e){}
