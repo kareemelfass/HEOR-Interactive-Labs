@@ -47,7 +47,7 @@ DISEASES = {
     "Infectious disease": r"\binfection\b|\bHIV\b|\bviral\b|\bantibiotic\b",
 }
 ABSTRACT_KEYS = ("abstract_text", "abstract", "structured_abstract", "abstract_body",
-                 "summary", "objectives", "objective", "methods", "results",
+                 "summary", "sections", "objectives", "objective", "methods", "results",
                  "conclusions", "background", "full_text", "body")
 
 
@@ -124,6 +124,26 @@ def classify(text, patterns):
     return [name for name, pattern in patterns.items() if re.search(pattern, text, flags=re.I)]
 
 
+
+def source_labels(value):
+    """Preserve the archive's category and disease labels without guessing labels."""
+    if isinstance(value, (list, tuple)):
+        values = value
+    elif isinstance(value, str):
+        values = [value]
+    elif isinstance(value, dict):
+        values = list(value.values())
+    else:
+        values = []
+    clean = []
+    for value in values:
+        if isinstance(value, dict):
+            value = get(value, "name", "label", "category", "topic", "disease") or ""
+        label = flatten(value).strip()
+        if label and label not in clean:
+            clean.append(label)
+    return clean
+
 def normalize(row, index):
     title = flatten(get(row, "title", "presentation_title", "abstract_title", "name", "paper_title")).strip()
     if len(title) < 8:
@@ -143,6 +163,9 @@ def normalize(row, index):
         "year": 2026,
         "tags": classify(txt, PATTERNS),
         "diseases": classify(" ".join([title, abstract, diseases]), DISEASES),
+        "source_categories": source_labels(get(row, "categories", "topic_groups", "topic")),
+        "source_diseases": source_labels(get(row, "diseases", "disease_areas", "disease")),
+        "session_type": flatten(get(row, "session_type", "session")).strip()[:150],
         "has_abstract": len(abstract.strip()) > 40,
     }
 
@@ -169,10 +192,16 @@ def build(source, *, allow_small=False):
 
 def outputs(records, input_rows, source_url):
     themes = sorted({tag for r in records for tag in r["tags"]})
+    categories = sorted({tag for r in records for tag in r["source_categories"]})
+    disease_areas = sorted({tag for r in records for tag in r["source_diseases"]})
     nodes = [
         {"id": "topic:" + t, "label": t, "type": "theme",
          "provenance": "Reproducible keyword mention"} for t in themes
     ]
+    nodes.extend({"id": "ispor_topic:" + c, "label": c, "type": "archive_topic_group",
+                  "provenance": "Independent archive category field"} for c in categories)
+    nodes.extend({"id": "disease_area:" + c, "label": c, "type": "archive_disease_area",
+                  "provenance": "Independent archive disease field"} for c in disease_areas)
     edges = []
     for i, r in enumerate(records):
         pid = "presentation:" + re.sub(r"[^a-zA-Z0-9_-]", "_", r["id"]) + "_" + str(i)
@@ -180,7 +209,13 @@ def outputs(records, input_rows, source_url):
                       "type": "presentation", "url": r["url"], "abstract_code": r["id"]})
         for t in r["tags"]:
             edges.append({"source": pid, "target": "topic:" + t, "relation": "MENTIONS",
-                          "provenance": "Keyword pattern applied to title and abstract; not a validated finding"})
+                          "provenance": "Keyword pattern applied to presentation title and abstract; not a validated finding"})
+        for t in r["source_categories"]:
+            edges.append({"source": pid, "target": "ispor_topic:" + t, "relation": "ARCHIVE_CLASSIFIES_AS",
+                          "provenance": "Independent archive's preserved topic category field"})
+        for t in r["source_diseases"]:
+            edges.append({"source": pid, "target": "disease_area:" + t, "relation": "ARCHIVE_DISEASE_AREA",
+                          "provenance": "Independent archive's preserved disease category field"})
     metadata = {
         "conference": "ISPOR Europe 2026",
         "input": source_url,
@@ -192,6 +227,10 @@ def outputs(records, input_rows, source_url):
         "unique_usable_records": len(records),
         "linked_ispor_records": sum(bool(r["url"]) for r in records),
         "abstract_text_present": sum(r["has_abstract"] for r in records),
+        "archive_topic_group_count": len(categories),
+        "archive_disease_area_count": len(disease_areas),
+        "records_with_archive_topic": sum(bool(r["source_categories"]) for r in records),
+        "records_with_archive_disease": sum(bool(r["source_diseases"]) for r in records),
     }
     graph = {"metadata": metadata, "nodes": nodes, "edges": edges}
     index = {
@@ -202,6 +241,8 @@ def outputs(records, input_rows, source_url):
         "metadata": metadata,
         "themes": dict(collections.Counter(t for r in records for t in r["tags"]).most_common()),
         "diseases": dict(collections.Counter(t for r in records for t in r["diseases"]).most_common()),
+        "archive_topic_groups": dict(collections.Counter(t for r in records for t in r["source_categories"]).most_common()),
+        "archive_disease_areas": dict(collections.Counter(t for r in records for t in r["source_diseases"]).most_common()),
     }
     return graph, index, summary
 
