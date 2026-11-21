@@ -206,6 +206,45 @@ def outputs(records, input_rows, source_url):
     return graph, index, summary
 
 
+
+def attach_reviewed_claims(graph, claims_payload):
+    """Add manually checked author-claim nodes to the keyword graph."""
+    record_ids = {n.get("url"): n["id"] for n in graph["nodes"]
+                  if n.get("type") == "presentation" and n.get("url")}
+    known_nodes = {n["id"] for n in graph["nodes"]}
+    topic_ids = {n["id"] for n in graph["nodes"] if n.get("type") in ("topic", "theme")}
+    applied = 0
+    for c in claims_payload.get("claims", []):
+        url = c.get("source_url")
+        if not url or not ISPOR_HOST.match(url):
+            continue
+        pid = record_ids.get(url)
+        if pid is None:
+            pid = "presentation:verified:" + re.sub(r"[^a-zA-Z0-9_-]", "_", c["presentation_code"])
+            if pid not in known_nodes:
+                graph["nodes"].append({"id": pid, "type": "presentation",
+                    "label": "Verified ISPOR " + c["presentation_code"],
+                    "url": url, "abstract_code": c["presentation_code"],
+                    "provenance": "Manually checked official ISPOR page"})
+                known_nodes.add(pid)
+            record_ids[url] = pid
+        cid = "claim:" + c["id"]
+        graph["nodes"].append({"id": cid, "type": "reported_claim",
+            "label": c["claim"], "claim_type": c["type"],
+            "qualifier": c["qualifier"], "source_section": c["source_section"],
+            "source_url": url, "reviewed_on": claims_payload["metadata"]["reviewed_on"]})
+        graph["edges"].append({"source": pid, "target": cid,
+            "relation": "REPORTS",
+            "provenance": "Author-reported abstract finding, manually checked, not independently validated"})
+        tid = "topic:" + c["topic"]
+        if tid in topic_ids:
+            graph["edges"].append({"source": cid, "target": tid,
+                "relation": "ABOUT", "provenance": "Manual claim-topic classification"})
+        applied += 1
+    graph["metadata"]["reviewed_claims"] = applied
+    graph["metadata"]["claim_scope"] = "Author-reported findings; no independent validation"
+    return graph
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", default=DEFAULT_SOURCE, help="HTTP(S) JSON URL or local JSON file")
@@ -221,6 +260,10 @@ def main():
             raw = json.load(f)
     records, input_rows = build(raw, allow_small=args.allow_small)
     graph, index, summary = outputs(records, input_rows, args.source)
+    claim_path = Path(__file__).resolve().parents[1] / "data" / "reviewed-claims.json"
+    if claim_path.exists():
+        claims_payload = json.loads(claim_path.read_text(encoding="utf-8"))
+        attach_reviewed_claims(graph, claims_payload)
     path = Path(args.output_dir)
     path.mkdir(parents=True, exist_ok=True)
     for name, payload in [
