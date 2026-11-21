@@ -62,8 +62,16 @@ def normalised_text_items(row, field):
 
 
 def build(data, source_url: str, expected: int = EXPECTED):
-    if not isinstance(data, list):
-        raise ValueError("The pinned archive must be a JSON array, not an inferred nested structure")
+    # Explicitly require the known archive envelope and its records array.
+    # Do not hunt through arbitrary nested JSON arrays.
+    envelope = data
+    if isinstance(envelope, dict) and isinstance(envelope.get("records"), list):
+        data = envelope["records"]
+    elif isinstance(envelope, list):
+        data = envelope
+    else:
+        raise ValueError("Expected source JSON array or an explicit records array. Root keys: " +
+                         ", ".join(envelope.keys() if isinstance(envelope, dict) else []))
     if len(data) != expected:
         raise ValueError(f"Source snapshot changed: expected {expected}, observed {len(data)}. "
                          "Stop rather than silently representing the changed source as a validated snapshot.")
@@ -175,7 +183,7 @@ def build(data, source_url: str, expected: int = EXPECTED):
             if nonempty(row.get(field)):
                 available[field] += 1
     missing = {k: counts[k] - available[k] for k in FIELDS + TEXT_FIELDS}
-    sourcehash = sha(data)
+    sourcehash = sha(envelope)
     foundation = {
         "dataset": "ISPOR Europe 2026 presentation archive",
         "source_url": source_url,
