@@ -340,21 +340,44 @@
   const csv=[cols.join(","),...state.filtered.map(r=>cols.map(c=>quote(r[c])).join(","))].join("\r\n");
   download("ispor_europe_2026_filtered.csv",csv,"text/csv;charset=utf-8");
  }
- function fromOfficial(items) {
+ function renderOfficialReconciliation(summary){
+  const target=el("officialReconciliation");
+  if(!target)return;
+  const comparison=summary.comparison||{};
+  const status=comparison.archive_reconciliation_status||{};
+  const meta=summary.metadata||{};
+  const values=[
+    ["Official-index items captured",meta.records],
+    ["Indexed research presentations",(summary.official_index_content_kinds||{})["Confex Presentation"]||0],
+    ["Indexed conference sessions",(summary.official_index_content_kinds||{})["Confex Session"]||0],
+    ["Archive records",comparison.archive_records],
+    ["Exact URL matches",status.url_match||0],
+    ["Changed URL, matching code and title",status.code_title_match_url_changed||0],
+    ["Same code, differing title or URL",status.code_exists_but_title_or_url_different||0],
+    ["Archive only, not in captured official index",status.archive_only_not_in_official_index||0],
+    ["Official-index items without archive match",comparison.official_index_not_matched_to_archive||0]
+  ];
+  target.replaceChildren(...values.map(([label,count])=>{
+    const box=h("div","quality-box");
+    box.append(h("strong","",format(count)),h("span","",label));
+    return box;
+  }));
+ }
+  function fromOfficial(items) {
   return items.map((r,i)=>({
     id:r.uid || "official"+i,
     code:r.code || "",
     title:r.title,
     abstract:"",
     authorText:r.authors_affiliations_text || "",
-    url:r.official_detail_link_present?safeUrl(r.url):"",
+    url:safeUrl(r.url),
     tags:r.topic_groups || [],
     diseases:r.disease_areas || [],
     sourceCategories:r.category_paths || [],
     sourceDiseases:r.disease_areas || [],
     topicsRaw:(r.category_paths||[]).join(" "),
     diseaseRaw:(r.disease_areas||[]).join(" "),
-    sourceType:"ISPOR search index",
+    sourceType:r.index_content_kind==="Confex Session"?"Official indexed conference session":"Official indexed research presentation",
     year:2026
   }));
  }
@@ -365,8 +388,9 @@
   if(!Array.isArray(data.records)||data.records.length<1000)throw Error("Official-index corpus incomplete");
   const official=fromOfficial(data.records);
   setData(official,"Official ISPOR search index",true,data.records.length,"");
-  const flagged=data.records.filter(r=>!r.official_detail_link_present).length;
-  el("sourceDetail").textContent="Official index: "+format(data.records.length)+" results; "+format(flagged)+" lack presentation-detail URLs. Final ISPOR denominator unresolved.";
+  const sessions=data.records.filter(r=>r.index_content_kind==="Confex Session").length;
+  el("sourceDetail").textContent="Official indexed items: "+format(data.records.length)+" ("+format(data.records.length-sessions)+" presentations, "+format(sessions)+" sessions). Index count changed during collection; final census unresolved.";
+  try{const response=await fetch("./data/official-index-summary.json",{cache:"no-store"});if(response.ok)renderOfficialReconciliation(await response.json())}catch(_e){}
   return data;
  }
   async function loadSeed(){
