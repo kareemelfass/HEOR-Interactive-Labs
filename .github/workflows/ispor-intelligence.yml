@@ -1,0 +1,43 @@
+name: ISPOR 2026 research intelligence refresh
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ispor-intelligence/scripts/build_kg.py"
+      - ".github/workflows/ispor-intelligence.yml"
+  workflow_dispatch:
+  schedule:
+    - cron: "15 4 * * 1"
+
+permissions:
+  contents: write
+
+jobs:
+  build-metadata-graph:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate Python pipeline
+        run: python -m unittest discover -s ispor-intelligence/tests -v
+      - name: Refresh graph from public archive
+        run: python ispor-intelligence/scripts/build_kg.py
+      - name: Commit refreshed derived metadata only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ispor-intelligence/data/knowledge-graph.json ispor-intelligence/data/records-index.json ispor-intelligence/data/summary.json
+          if git diff --cached --quiet; then
+            echo "No changes to publish"
+          else
+            git commit -m "Refresh ISPOR Europe 2026 derived metadata graph"
+            git push
+          fi
