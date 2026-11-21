@@ -65,12 +65,12 @@ def build(data, source_url: str, expected: int = EXPECTED):
     # Explicitly require the known archive envelope and its records array.
     # Do not hunt through arbitrary nested JSON arrays.
     envelope = data
-    if isinstance(envelope, dict) and isinstance(envelope.get("records"), list):
-        data = envelope["records"]
+    if isinstance(envelope, dict) and isinstance(envelope.get("abstracts"), list):
+        data = envelope["abstracts"]
     elif isinstance(envelope, list):
         data = envelope
     else:
-        raise ValueError("Expected source JSON array or an explicit records array. Root keys: " +
+        raise ValueError("Expected source JSON array or an explicit abstracts array. Root keys: " +
                          ", ".join(envelope.keys() if isinstance(envelope, dict) else []))
     if len(data) != expected:
         raise ValueError(f"Source snapshot changed: expected {expected}, observed {len(data)}. "
