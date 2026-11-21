@@ -28,6 +28,9 @@ with sync_playwright() as p:
         "(n) => document.getElementById('metricRecords').textContent.replace(/,/g,'') === String(n)",
         arg=len(records), timeout=20000
     )
+    # The graph selector lives inside a tab-hidden panel until the user opens it.
+    page.locator('button[data-tab="graph"]').click()
+    page.locator("#graphFocus").wait_for(state="visible")
     positives = 0
     for topic in topics:
         members = [r for r in records if topic in r.get("topic_groups", [])]
