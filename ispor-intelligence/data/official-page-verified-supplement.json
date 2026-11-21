@@ -1,0 +1,313 @@
+{
+  "metadata": {
+    "source": "Individually verified official ISPOR presentation pages, not the SearchBlox index",
+    "scope": "archive-only candidates validated by HTTP 200 + full matching title + code",
+    "count": 30,
+    "last_checked_at_utc": "2026-11-21T13:45:39.402918+00:00",
+    "generated_at_utc": "2026-11-21T13:47:37.636313+00:00",
+    "not_added_to_search_index_denominator": true,
+    "cannot_certify_complete_final_conference": true
+  },
+  "records": [
+    {
+      "presentation_code": "CO14",
+      "title": "PHONE-BASED ASSESSMENT OF THE INCAT DISABILITY SCALE IN CHRONIC INFLAMMATORY DEMYELINATING POLYRADICULONEUROPATHY(CIDP) - ASPECTS OF VALIDITY AND RELIABILITY, AND CONGRUENCE WITH SITE-BASED ASSESSMENT",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/phone-based-assessment-of-the-incat-disability-scale-in-chronic-inflammatory-demyelinating-polyradiculoneuropathy-cidp--aspects-of-validity-and-reliability-and-congruence-with-site-based-assessment",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "e06ed65bc4054eeaf913f77ab2743f4b20953f8dfd6c9bc8c991791fce2b55de",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "CO155",
+      "title": "RECONSTRUCTING TRIAL-SPECIFIC TIME-ZERO IN REAL-WORLD DATA: A GENETIC ALGORITHM APPROACH TO VALIDATE INDIGO TRIAL OUTCOMES",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/reconstructing-trial-specific-time-zero-in-real-world-data-a-genetic-algorithm-approach-to-validate-indigo-trial-outcomes",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "74bccb66255a8317514ee75832186f28d74523503b5e4af1617fc2205c1b5693",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE1",
+      "title": "RETURN ON INVESTMENT OF ONE-TIME LIPOPROTEIN(A) TESTING FOR CARDIOVASCULAR RISK PREVENTION IN BULGARIA",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/return-on-investment-of-one-time-lipoprotein-a-testing-for-cardiovascular-risk-prevention-in-bulgaria",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "0f553ea2df5b3b8cef26bdf80239b4a690e9926a038299c94d9ce798b04779fe",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE126",
+      "title": "ECONOMIC IMPACT OF LONG VERSUS SHORT PERIPHERAL VENOUS CATHETERS: A BUDGET IMPACT ANALYSIS IN HOSPITALIZED PATIENTS",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/economic-impact-of-long-versus-short-peripheral-venous-catheters-a-budget-impact-analysis-in-hospitalized-patients",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "2b04904f038aa7c7e62dc667ea6c6f9a2c26a0e586832d95a07cee8374d9c3d5",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE161",
+      "title": "DIRECT COSTS AND ECONOMIC BURDEN OF ACUTE ISCHEMIC STROKE IN THE BRAZILIAN PRIVATE HEALTH SYSTEM: A REAL-WORLD RETROSPECTIVE COHORT",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/direct-costs-and-economic-burden-of-acute-ischemic-stroke-in-the-brazilian-private-health-system-a-real-world-retrospective-cohort",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "3d862b92b58763a55ac73da017c24709d511e7fd780b9d40c8dd3cc5d92695d1",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE401",
+      "title": "MAXIMUM COST-EFFECTIVE PRICE OF SERPLULIMAB FOR FIRST-LINE EXTENSIVE-STAGE SMALL-CELL LUNG CANCER: A THRESHOLD ANALYSIS FOR THE PERUVIAN PRIVATE HEALTH SYSTEM",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-3-4/maximum-cost-effective-price-of-serplulimab-for-first-line-extensive-stage-small-cell-lung-cancer-a-threshold-analysis-for-the-peruvian-private-health-system",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "a81774044fcdec34b21a3b32d92963a1436f7539649d4caf4d6b0136e5d4c941",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE438",
+      "title": "KIDNEY TRANSPLANT REALLOCATION: QUANTIFYING COST SAVINGS AND QALY GAINS FROM DISEASE-MODIFYING TREATMENTS FOR THE UK NHS",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-3-4/kidney-transplant-reallocation-quantifying-cost-savings-and-qaly-gains-from-disease-modifying-treatments-for-the-uk-nhs",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "61c2559cc699101bab5062b17b80f11ce1cc0eef8ffd1ff6c0feb6d70113d602",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE457",
+      "title": "THE HIDDEN NUMERICAL ERRORS IN EXCEL AND WHAT THEY MEAN FOR VALIDATING R-BASED COST-EFFECTIVENESS MODELS USING EXCEL",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-3-4/the-hidden-numerical-errors-in-excel-and-what-they-mean-for-validating-r-based-cost-effectiveness-models-using-excel",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "6284cefb172f9638fa7b99eb18278da3ec4904bbb778e7efd0bed7f5c097fff8",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE474",
+      "title": "OBESITY AND WORKPLACE PRODUCTIVITY IN EUROPE: A TARGETED REVIEW OF THE EVIDENCE BASE FOR HEALTH ECONOMIC MODELING",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/obesity-and-workplace-productivity-in-europe-a-targeted-review-of-the-evidence-base-for-health-economic-modeling",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "7d24c5aba2f231342653030a97042c93770faa97def2fede834d65326b21aebe",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE636",
+      "title": "PROJECTED WIDER SOCIETAL AND FISCAL IMPACT OF SEMAGLUTIDE IN THE UNITED KINGDOM",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-5-4/projected-wider-societal-and-fiscal-impact-of-semaglutide-in-the-united-kingdom",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "a9671f7c2d5f857d69342e57644165c5eff892f0794445ca621663849d5931fb",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE643",
+      "title": "ECONOMIC VALUES OF POLICY INTERVENTIONS TO REDUCE ANTIMICROBIAL RESISTANCE USE: A SCOPING REVIEW OF MODEL-BASED ECONOMIC EVALUATION STUDIES",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-5-4/economic-values-of-policy-interventions-to-reduce-antimicrobial-resistance-use-a-scoping-review-of-model-based-economic-evaluation-studies",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "a4890391dc267b3ec88a5c403839282a0e341cf923f8340ed4d445aaaba018a1",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE661",
+      "title": "INCORPORATING RISK PREFERENCES INTO VALUE ASSESSMENT FOR ALZHEIMER'S DISEASE: A DISCRETE CHOICE EXPERIMENT USING THE GRACE FRAMEWORK",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-5-4/incorporating-risk-preferences-into-value-assessment-for-alzheimer-s-disease-a-discrete-choice-experiment-using-the-grace-framework",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "ea92e55a28919ce915746652748823f730fc6da47fdc4a535081b2bee56b1abf",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EE671",
+      "title": "COMPREHENSIVE SOCIETAL RETURN ON INVESTMENT OF PHARMACEUTICALS FOR MULTIPLE SCLEROSIS: A LIFETIME MARKOV MODEL",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-5-4/comprehensive-societal-return-on-investment-of-pharmaceuticals-for-multiple-sclerosis-a-lifetime-markov-model",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "580466155c7a0154e4cfbe4e1b5c34aeffe16763424f42d837b82872041199d8",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EPH103",
+      "title": "PUBLIC HEALTH IMPACT AND COST-EFFECTIVENESS OF EXPANDED PAEDIATRIC INFLUENZA IMMUNIZATION WITH LIVE ATTENUATED VACCINE IN FRANCE: A DYNAMIC TRANSMISSION MODEL",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/public-health-impact-and-cost-effectiveness-of-expanded-paediatric-influenza-immunization-with-live-attenuated-vaccine-in-france-a-dynamic-transmission-model",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "c6c24a7e229372560a0d26b0352f350a2965feec29a66d09e921033b561622ec",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EPH145",
+      "title": "CHANGES IN CLINICAL SEVERITY OF RESPIRATORY SYNCYTIAL VIRUS INFECTION IN CHILDREN BEFORE, DURING, AND AFTER THE COVID-19 PANDEMIC IN SOUTH KOREA",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-3-4/changes-in-clinical-severity-of-respiratory-syncytial-virus-infection-in-children-before-during-and-after-the-covid-19-pandemic-in-south-korea",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "fece9bfe2ef50e1bd47db00d4b384824697cc89bce404aa4c58aeda291ec595a",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EPH207",
+      "title": "SYSTEMATIC LITERATURE REVIEW ON THE PERFORMANCE OF DYNAMIC TRANSMISSION MODELS IN PNEUMOCOCCAL DISEASE",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/systematic-literature-review-on-the-performance-of-dynamic-transmission-models-in-pneumococcal-disease",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "268f8f7b880256f3d521265cd4775780e85f937617f0d04328cd68dc1561bf9e",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "EPH53",
+      "title": "CHANGES IN THE NUMBER OF PREGNANCY AND LACTATION POST-MARKETING REQUIREMENTS/COMMITMENTS ISSUED BY THE FDA AFTER THE RELEASE OF THE DRAFT POSTAPPROVAL PREGNANCY SAFETY STUDIES GUIDELINES IN 2019",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/changes-in-the-number-of-pregnancy-and-lactation-post-marketing-requirements-commitments-issued-by-the-fda-after-the-release-of-the-draft-postapproval-pregnancy-safety-studies-guidelines-in-2019",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "7fb6396043b5cd2961230e2657dfa5a77b8520359015d26a6c0df4514d3fc227",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "HPR38",
+      "title": "PRICE NEGOTIATION FOR HIGH-COST THERAPIES: A REVIEW OF THEORIES, STRATEGIES AND FACTORS INFLUENCING BARGAINING POWER",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/price-negotiation-for-high-cost-therapies-a-review-of-theories-strategies-and-factors-influencing-bargaining-power",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "9fb5a811003f475c1823c85a8c712d38d7d97acd2612dc79aac1327be241a725",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "HTA315",
+      "title": "BRIDGING THE EVIDENCE GAP: LEVERAGING EVIDENCE FROM JCA FOR RAPID REVIEWS IN IRELAND",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/bridging-the-evidence-gap-leveraging-evidence-from-jca-for-rapid-reviews-in-ireland",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "57db05735827dd2c919944e0a4a832f864e6f62ddad2c1b423eedd4a6733fb29",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "MSR106",
+      "title": "ESTIMATING PHARMACEUTICAL LIST-TO-NET PRICE TRENDS: A SYSTEMATIC REVIEW OF EMPIRICAL, STATISTICAL, AND MACHINE-LEARNING APPROACHES",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/estimating-pharmaceutical-list-to-net-price-trends-a-systematic-review-of-empirical-statistical-and-machine-learning-approaches",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "269e7f4f7b9b7b85d0ba6d7c8fd8d996539d52e1b10135d07993a7dca57b45fe",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "MSR124",
+      "title": "WHY ARE HTA REVIEWERS STILL HUNTING FOR CODING ERRORS? AN AI VALIDATOR AGENT AS A FIRST-LINE QA LAYER FOR SUBMITTED MODELS",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/why-are-hta-reviewers-still-hunting-for-coding-errors-an-ai-validator-agent-as-a-first-line-qa-layer-for-submitted-models",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "371cc4c060b02da361ada376688a95bb40aa7c5eeecb4eed1a33baec8771614a",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "MSR167",
+      "title": "EVALUATING AUTOMATED DEDUPLICATION: A PERFORMANCE COMPARISON OF EASYSLR AND ENDNOTE IN MULTI-DATABASE SYSTEMATIC LITERATURE REVIEWS",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-3-4/evaluating-automated-deduplication-a-performance-comparison-of-easyslr-and-endnote-in-multi-database-systematic-literature-reviews",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "8f38aa3c699fb7d99a698e281a600cefeb3981a6ef41a06513268eace4ff83ae",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "MSR169",
+      "title": "A BAYESIAN LONGITUDINAL MULTILEVEL NETWORK META-REGRESSION MODEL FOR REPEATED CONTINUOUS OUTCOMES",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-3-4/a-bayesian-longitudinal-multilevel-network-meta-regression-model-for-repeated-continuous-outcomes",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "c8ea6d1f2151ee6488c8e1fd5b7835e85b393305c6e62d006fd4a2b18319e716",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "MSR175",
+      "title": "A SCENARIO-BASED SIMULATION FRAMEWORK TO BRIDGE EFFICACY TO REAL-WORLD EFFECTIVENESS FOR NEWLY APPROVED THERAPIES",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-3-4/a-scenario-based-simulation-framework-to-bridge-efficacy-to-real-world-effectiveness-for-newly-approved-therapies",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "3b70248ac3e05849e92e34734a676e5338edafe9add231127658260904d5b395",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "MSR187",
+      "title": "ENHANCING KAP ASSESSMENT WITH EXPERIMENTAL VIGNETTES: MODELING HEALTHCARE PROFESSIONAL DECISION-MAKING IN OBESITY CARE",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/enhancing-kap-assessment-with-experimental-vignettes-modeling-healthcare-professional-decision-making-in-obesity-care",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "19fce1178df1fb483dc4308aa8e55c67189d49530f90cdf3892a706c728ede1b",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "PCR251",
+      "title": "FERTILITY INTENTIONS, CONCERNS AND SERVICE PREFERENCES AMONG WOMEN IN HONG KONG: FOCUS GROUP FINDINGS INFORMING A DISCRETE CHOICE EXPERIMENT",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-5-4/fertility-intentions-concerns-and-service-preferences-among-women-in-hong-kong-focus-group-findings-informing-a-discrete-choice-experiment",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "8053df7801a4154dd525cd27954eb5468e99f1d7c2e147be4115e1b584ae8e80",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "PCR36",
+      "title": "MULTIDIMENSIONAL BURDEN OF CHRONIC OBSTRUCTIVE PULMONARY DISEASE (COPD) ON HEALTH-RELATED QUALITY OF LIFE (HRQOL) AND FAMILY IMPACT IN ALGERIA: A PHYSICIAN REPORTED ASSESSMENT",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/multidimensional-burden-of-chronic-obstructive-pulmonary-disease-copd-on-health-related-quality-of-life-hrqol-and-family-impact-in-algeria-a-physician-reported-assessment",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "2ac133175f7fa9f9611db76d39926055f708092f083969c2b927eaa5a309258b",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "PCR6",
+      "title": "MAPPING PATIENT EXPERIENCES WITH GLP-1 RECEPTOR AGONISTS TO THE EQ-5D-5L FRAMEWORK USING ONLINE COMMUNITY FORUMS",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-1-5/mapping-patient-experiences-with-glp-1-receptor-agonists-to-the-eq-5d-5l-framework-using-online-community-forums",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "cccdb497df7ed3c8932591094f2ce04e63c8d033f7c48c2f68e36f5653a87d89",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "RWD131",
+      "title": "A FRAMEWORK FOR EVALUATING THE ROBUSTNESS OF EXTERNAL CONTROL ARMS IN OVARIAN CANCER VIA GENERATIVE SYNTHETIC SIMULATION",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/a-framework-for-evaluating-the-robustness-of-external-control-arms-in-ovarian-cancer-via-generative-synthetic-simulation",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "7528d3655540ce344b20e7a421be21b26a28647eed227cd35dfafd000ab34fd4",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    },
+    {
+      "presentation_code": "RWD96",
+      "title": "REFILL INTERVALS AS MARKERS OF CALENDAR-TIME CYCLE TIMING IN CYCLIC ORAL ANTICANCER THERAPY: VALIDATION USING AN INTRAVENOUS CYCLE ANCHOR IN GASTRIC CANCER REAL-WORLD DATA",
+      "official_verified_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-3-4/refill-intervals-as-markers-of-calendar-time-cycle-timing-in-cyclic-oral-anticancer-therapy-validation-using-an-intravenous-cycle-anchor-in-gastric-cancer-real-world-data",
+      "verification_method": "Official ISPOR page returned HTTP 200; normalized full title and presentation code both matched",
+      "page_text_sha256": "bcc070ba0349b4b1b0177260ba2400922a5665a54eb719b43d67f00045202f17",
+      "verdict": "verified_official_page_absent_from_captured_search_index",
+      "source_text_not_redistributed": true,
+      "claims_about_authors_methods_results": null
+    }
+  ]
+}
