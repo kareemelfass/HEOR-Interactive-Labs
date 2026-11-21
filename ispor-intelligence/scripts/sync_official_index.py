@@ -85,6 +85,9 @@ def record(raw):
         "abstract_character_count":len(txt),
         "abstract_sha256":digest(txt),
         "record_source":"ISPOR website configured SearchBlox index",
+        "index_content_kind":str(raw.get("module") or ""),
+        "index_collection":str(raw.get("colname") or ""),
+        "official_detail_link_present":official_url(url),
         "web_page_independently_checked":False,
     }
 
@@ -142,8 +145,20 @@ def main():
         if not r["title"] or not r["uid"]:failures.append({"position":i,"code":r["code"],"reason":"missing_id_or_title"})
     dup_urls=[u for u,nc in Counter(urls).items() if nc>1]
     dup_uids=[u for u,nc in Counter(ids).items() if nc>1]
-    if dup_urls or dup_uids or failures:
-        raise RuntimeError(f"Source index integrity failure: duplicate URLs {len(dup_urls)}, IDs {len(dup_uids)}, invalid {failures[:10]}")
+    if failures:
+        print("OFFICIAL_NONPRESENTATION_INDEX_ITEMS",json.dumps({
+            "count":len(failures),
+            "examples":[{"code":data[f["position"]]["code"],
+                         "title":data[f["position"]]["title"],
+                         "url":data[f["position"]]["url"],
+                         "module":data[f["position"]]["index_content_kind"],
+                         "collection":data[f["position"]]["index_collection"]}
+                         for f in failures[:8]]
+        },ensure_ascii=False),flush=True)
+    # Retain and explicitly type backend hits, but never misrepresent links
+    # lacking a presentation detail route as verified presentation pages.
+    if dup_urls or dup_uids or any(f["reason"]!="invalid_official_url" for f in failures):
+        raise RuntimeError(f"Index integrity failure: dup URLs {len(dup_urls)}, IDs {len(dup_uids)}, invalid: {failures[:10]}")
     created=datetime.now(timezone.utc).isoformat()
     metadata={
         "conference":EVENT,"source":"Official ISPOR website configured search service",
@@ -154,6 +169,7 @@ def main():
         "reproduces_official_search_index_not_final_conference_census":True,
         "all_record_urls_page_verified":False,
         "abstract_text_republished":False,
+        "indexed_items_without_presentation_detail":sum(not r["official_detail_link_present"] for r in data),
         "source_count_discrepancy_unresolved":True,
     }
     nodes=[]
@@ -181,7 +197,7 @@ def main():
     archive=fetch_json(ARCHIVE)
     candidates=archive.get("abstracts",[])
     if not isinstance(candidates,list):raise ValueError("Archive abstracts list not found")
-    official_by_url={r["url"]:r for r in data}
+    official_by_url={r["url"]:r for r in data if r["official_detail_link_present"]}
     official_by_code=defaultdict(list)
     for r in data:
         official_by_code[r["code"]].append(r)
@@ -218,6 +234,8 @@ def main():
         "official_index_citable":dict(Counter(r["citable"] for r in data)),
         "official_index_missing_abstracts":sum(not r["abstract_present"] for r in data),
         "official_index_with_media_link":sum(bool(r["presentation_media_url"]) for r in data),
+        "official_index_without_presentation_detail_link":sum(not r["official_detail_link_present"] for r in data),
+        "official_index_content_kinds":dict(Counter(r["index_content_kind"] for r in data)),
         "comparison":{"archive_records":len(candidates),"official_index_records":len(data),
                       "archive_reconciliation_status":dict(Counter(x["status"] for x in recon)),
                       "official_index_not_matched_to_archive":len(official_only)}
