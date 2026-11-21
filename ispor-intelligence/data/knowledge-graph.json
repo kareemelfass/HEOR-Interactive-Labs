@@ -6,7 +6,9 @@
     "scope": "Titles and topics only",
     "is_full_corpus": false,
     "created": "2026-11-21",
-    "records": 16
+    "records": 16,
+    "reviewed_claims": 10,
+    "claim_scope": "Individual author-reported claims manually checked against official ISPOR abstract pages; not independently audited"
   },
   "nodes": [
     {
@@ -194,6 +196,106 @@
       "label": "READINESS OF HEALTH TECHNOLOGY DEVELOPERS FOR EU JOINT CLINICAL ASSESSMENT: EVIDENCE REQUIREMENTS, OPERATIONAL CHALLENGES, AND NATIONAL HTA IMPLICATIONS",
       "type": "presentation",
       "url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/novel-value-elements-and-approaches-in-hta/readiness-of-health-technology-developers-for-eu-joint-clinical-assessment-evidence-requirements-operational-challenges-and-national-hta-implications"
+    },
+    {
+      "id": "claim:p41-coverage",
+      "type": "reported_claim",
+      "label": "The authors reported that six of eight scoped PICOs lacked comparative data, one was excluded because comparator evidence was abstract-only, and one MAIC was assessed.",
+      "claim_type": "reported_result",
+      "qualifier": "Authors' evaluation of the published tovorafenib JCA; not independently re-analysed.",
+      "source_section": "RESULTS",
+      "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/addressing-the-challenges-in-rare-disease-methods/eu-joint-clinical-assessment-of-tovorafenib-methodological-learnings-for-future-orphan-dossiers",
+      "reviewed_on": "2026-11-21"
+    },
+    {
+      "id": "claim:p41-sap",
+      "type": "reported_claim",
+      "label": "The authors reported insufficient documentation of prognostic variables and effect modifiers, and no designated primary analysis in the indirect comparison statistical analysis plan.",
+      "claim_type": "reported_limitation",
+      "qualifier": "Authors' critical appraisal, not an independent regulatory finding.",
+      "source_section": "RESULTS",
+      "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/addressing-the-challenges-in-rare-disease-methods/eu-joint-clinical-assessment-of-tovorafenib-methodological-learnings-for-future-orphan-dossiers",
+      "reviewed_on": "2026-11-21"
+    },
+    {
+      "id": "claim:msr252-difference",
+      "type": "reported_claim",
+      "label": "In a simulated multiple myeloma validation case, the maximum absolute difference between conditional mean-covariate and marginalised survival curves was 1.6 percentage points.",
+      "claim_type": "reported_result",
+      "qualifier": "Simulation and hypothetical treatment-economic inputs; not a general accuracy guarantee.",
+      "source_section": "RESULTS",
+      "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-5-4/integrating-multilevel-network-meta-regression-ml-nmr-into-excel-cost-effectiveness-models-using-conditional-m-spline-survival-curves",
+      "reviewed_on": "2026-11-21"
+    },
+    {
+      "id": "claim:msr252-psa",
+      "type": "reported_claim",
+      "label": "The authors stated that a 1,000-run Excel probabilistic sensitivity analysis executed within seconds under their conditional approximation.",
+      "claim_type": "reported_result",
+      "qualifier": "Demonstration using a specific model; performance depends on implementation.",
+      "source_section": "RESULTS",
+      "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-5-4/integrating-multilevel-network-meta-regression-ml-nmr-into-excel-cost-effectiveness-models-using-conditional-m-spline-survival-curves",
+      "reviewed_on": "2026-11-21"
+    },
+    {
+      "id": "claim:msr231-reporting",
+      "type": "reported_claim",
+      "label": "Among 86 AI-enabled evidence-synthesis abstracts from ISPOR Philadelphia 2026, 42 (49%) reported no core performance metric according to the presenting authors.",
+      "claim_type": "reported_result",
+      "qualifier": "This Europe 2026 presentation analysed abstracts from the separate Philadelphia conference; denominator is not ISPOR Europe 2026.",
+      "source_section": "RESULTS",
+      "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/a-minimum-performance-reporting-standard-for-ai-in-systematic-literature-review-in-abstracts-presented-in-ispor",
+      "reviewed_on": "2026-11-21"
+    },
+    {
+      "id": "claim:msr231-wss",
+      "type": "reported_claim",
+      "label": "The authors found that none of the 86 reviewed abstracts reported Work Saved over Sampling, their selected screening-efficiency metric.",
+      "claim_type": "reported_result",
+      "qualifier": "Study-specific content analysis, not an audit of all ISPOR Europe presentations.",
+      "source_section": "RESULTS",
+      "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/a-minimum-performance-reporting-standard-for-ai-in-systematic-literature-review-in-abstracts-presented-in-ispor",
+      "reviewed_on": "2026-11-21"
+    },
+    {
+      "id": "claim:hpr213-positions",
+      "type": "reported_claim",
+      "label": "The authors reported public MFN-related positions in 14 of 17 European Economic Area countries assessed under their GDP-threshold definition.",
+      "claim_type": "reported_result",
+      "qualifier": "Secondary targeted review and author classification; country policies not independently verified.",
+      "source_section": "RESULTS",
+      "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/managing-mfn-uncertainty-european-responses-and-implications-for-pricing-and-access-strategy",
+      "reviewed_on": "2026-11-21"
+    },
+    {
+      "id": "claim:hpr213-reforms",
+      "type": "reported_claim",
+      "label": "The authors concluded that tangible MFN-related European reforms remained limited, with most responses representing signalling or early-stage initiatives.",
+      "claim_type": "author_conclusion",
+      "qualifier": "Interpretation offered in the presentation, not a comprehensive independent policy audit.",
+      "source_section": "CONCLUSIONS",
+      "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-4-4/managing-mfn-uncertainty-european-responses-and-implications-for-pricing-and-access-strategy",
+      "reviewed_on": "2026-11-21"
+    },
+    {
+      "id": "claim:msr87-drift",
+      "type": "reported_claim",
+      "label": "Across four oncology target trial emulations, the authors reported shifts in population, endpoint or intercurrent-event handling compared with the initial estimand.",
+      "claim_type": "reported_result",
+      "qualifier": "Four registry-based case studies, not an estimate of the prevalence of estimand drift.",
+      "source_section": "RESULTS",
+      "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/estimand-drift-in-oncology-target-trial-emulations-lessons-learned-from-four-real-world-case-studies",
+      "reviewed_on": "2026-11-21"
+    },
+    {
+      "id": "claim:msr87-before-after",
+      "type": "reported_claim",
+      "label": "The authors proposed presenting intended and realised estimands side by side in before-and-after tables to document estimand changes.",
+      "claim_type": "author_recommendation",
+      "qualifier": "Author recommendation, not an established reporting requirement.",
+      "source_section": "CONCLUSIONS",
+      "source_url": "https://www.ispor.org/heor-resources/presentations-database/presentation-cti/ispor-europe-2026/poster-session-2-5/estimand-drift-in-oncology-target-trial-emulations-lessons-learned-from-four-real-world-case-studies",
+      "reviewed_on": "2026-11-21"
     }
   ],
   "edges": [
@@ -448,6 +550,126 @@
       "target": "topic:Market access",
       "type": "TAGGED_WITH",
       "basis": "Curator-assigned from presentation title; not a validated finding"
+    },
+    {
+      "source": "record:P41",
+      "target": "claim:p41-coverage",
+      "type": "REPORTS",
+      "basis": "Manual abstraction of author-reported statement from official ISPOR abstract"
+    },
+    {
+      "source": "claim:p41-coverage",
+      "target": "topic:JCA",
+      "type": "ABOUT",
+      "basis": "Manual claim-topic classification"
+    },
+    {
+      "source": "record:P41",
+      "target": "claim:p41-sap",
+      "type": "REPORTS",
+      "basis": "Manual abstraction of author-reported statement from official ISPOR abstract"
+    },
+    {
+      "source": "claim:p41-sap",
+      "target": "topic:Indirect comparisons",
+      "type": "ABOUT",
+      "basis": "Manual claim-topic classification"
+    },
+    {
+      "source": "record:MLNMR-EXCEL",
+      "target": "claim:msr252-difference",
+      "type": "REPORTS",
+      "basis": "Manual abstraction of author-reported statement from official ISPOR abstract"
+    },
+    {
+      "source": "claim:msr252-difference",
+      "target": "topic:ML-NMR",
+      "type": "ABOUT",
+      "basis": "Manual claim-topic classification"
+    },
+    {
+      "source": "record:MLNMR-EXCEL",
+      "target": "claim:msr252-psa",
+      "type": "REPORTS",
+      "basis": "Manual abstraction of author-reported statement from official ISPOR abstract"
+    },
+    {
+      "source": "claim:msr252-psa",
+      "target": "topic:Economic evaluation",
+      "type": "ABOUT",
+      "basis": "Manual claim-topic classification"
+    },
+    {
+      "source": "record:AI-SLR",
+      "target": "claim:msr231-reporting",
+      "type": "REPORTS",
+      "basis": "Manual abstraction of author-reported statement from official ISPOR abstract"
+    },
+    {
+      "source": "claim:msr231-reporting",
+      "target": "topic:AI",
+      "type": "ABOUT",
+      "basis": "Manual claim-topic classification"
+    },
+    {
+      "source": "record:AI-SLR",
+      "target": "claim:msr231-wss",
+      "type": "REPORTS",
+      "basis": "Manual abstraction of author-reported statement from official ISPOR abstract"
+    },
+    {
+      "source": "claim:msr231-wss",
+      "target": "topic:Evidence synthesis",
+      "type": "ABOUT",
+      "basis": "Manual claim-topic classification"
+    },
+    {
+      "source": "record:MFN-EU",
+      "target": "claim:hpr213-positions",
+      "type": "REPORTS",
+      "basis": "Manual abstraction of author-reported statement from official ISPOR abstract"
+    },
+    {
+      "source": "claim:hpr213-positions",
+      "target": "topic:MFN pricing",
+      "type": "ABOUT",
+      "basis": "Manual claim-topic classification"
+    },
+    {
+      "source": "record:MFN-EU",
+      "target": "claim:hpr213-reforms",
+      "type": "REPORTS",
+      "basis": "Manual abstraction of author-reported statement from official ISPOR abstract"
+    },
+    {
+      "source": "claim:hpr213-reforms",
+      "target": "topic:Market access",
+      "type": "ABOUT",
+      "basis": "Manual claim-topic classification"
+    },
+    {
+      "source": "record:ESTIMAND-DRIFT",
+      "target": "claim:msr87-drift",
+      "type": "REPORTS",
+      "basis": "Manual abstraction of author-reported statement from official ISPOR abstract"
+    },
+    {
+      "source": "claim:msr87-drift",
+      "target": "topic:Estimands",
+      "type": "ABOUT",
+      "basis": "Manual claim-topic classification"
+    },
+    {
+      "source": "record:ESTIMAND-DRIFT",
+      "target": "claim:msr87-before-after",
+      "type": "REPORTS",
+      "basis": "Manual abstraction of author-reported statement from official ISPOR abstract"
+    },
+    {
+      "source": "claim:msr87-before-after",
+      "target": "topic:Causal inference",
+      "type": "ABOUT",
+      "basis": "Manual claim-topic classification"
     }
   ]
 }
