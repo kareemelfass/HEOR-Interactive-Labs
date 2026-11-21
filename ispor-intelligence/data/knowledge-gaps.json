@@ -1,13 +1,13 @@
 {
   "metadata": {
-    "title": "Knowledge gaps and future research directions across ISPOR Europe 2026 themes",
+    "title": "Editorial research hypotheses and possible future investigations",
     "created": "2026-11-21",
-    "revision": "1.0",
-    "scope": "Analyst-formulated research questions and proposed study designs, not conference-wide verified evidence gaps",
-    "source_note": "Related presentations are illustrative keyword matches from the pre-conference archive; only manually reviewed claims are identified as author-reported evidence.",
-    "coverage": "16 existing theme signals; two proposed gaps and research directions per theme",
-    "archive": "https://justinsyu.github.io/ispor-eu-nov-2026/",
-    "primary_source": "https://www.ispor.org/heor-resources/presentations-database/"
+    "revision": "2.0-corrective-audit",
+    "scope": "32 unverified proposed hypotheses across 16 historical editorial method labels; no evidence-gap review has been conducted",
+    "source_note": "The 16 labels came from a retired legacy regex taxonomy and are not the 12 official ISPOR topic groups. Contextual author-reported statements do not establish that a particular research gap exists.",
+    "coverage": "16 editorial legacy-method themes, 2 proposed hypotheses each; not a conference-level evidence assessment",
+    "primary_source": "https://www.ispor.org/heor-resources/presentations-database/",
+    "claim_link_semantics": "Illustrative contextual statements only; support versus contradiction versus irrelevance has not been independently assessed"
   },
   "themes": [
     {
@@ -33,7 +33,10 @@
           "direction": "Compare pre-specified versus post-hoc adjustment sets using documented clinical justification, available aggregate covariates and sensitivity analyses; test how conclusions change.",
           "decision": "Separates avoidable analytical limitations from genuine evidence gaps."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "AI",
@@ -57,7 +60,10 @@
           "direction": "Run paired human versus human-plus-AI studies with blinded adjudication; record model version, prompt, human corrections and downstream impact of missed evidence.",
           "decision": "Shows when AI accelerates work without reducing decision quality."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "Economic evaluation",
@@ -81,7 +87,10 @@
           "direction": "Link cost-effectiveness, budget impact, uptake constraints and distributional outcomes using consistent eligible populations and time horizons.",
           "decision": "Tests whether a cost-effective intervention can be implemented equitably within payer constraints."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "RWE",
@@ -103,7 +112,10 @@
           "direction": "Evaluate overlap, transport weights, subgroup heterogeneity and external calibration against independent datasets.",
           "decision": "Defines which payer population can reasonably use the evidence."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "Causal inference",
@@ -127,7 +139,10 @@
           "direction": "Pre-specify overlap diagnostics, negative controls and quantitative bias analyses; report effect estimates under alternative target populations.",
           "decision": "Identifies when causal conclusions remain fragile despite good measured covariate balance."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "Indirect comparisons",
@@ -151,7 +166,10 @@
           "direction": "Benchmark anchored and unanchored approaches in simulation scenarios with known treatment effects and realistic between-study heterogeneity.",
           "decision": "Separates statistical precision from identification of a credible treatment contrast."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "ML-NMR",
@@ -175,7 +193,10 @@
           "direction": "Benchmark Excel implementations against independently validated R or Stan models over PSA runs and complex survival functions, documenting runtime and numerical tolerances.",
           "decision": "Balances reproducibility and speed against bias in long-term predictions."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "Survival modelling",
@@ -199,7 +220,10 @@
           "direction": "Validate linked endpoint and treatment-duration assumptions using available patient-level information, independent data and structural stress tests.",
           "decision": "Prevents apparently precise model outputs from masking poorly identified long-term pathways."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "Bayesian methods",
@@ -221,7 +245,10 @@
           "direction": "Report weak, sceptical and evidence-informed prior scenarios, posterior predictive checks and the resulting reimbursement decision probabilities.",
           "decision": "Makes the incremental influence of expert and external evidence transparent."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "MFN pricing",
@@ -246,7 +273,10 @@
           "direction": "Model and, where data permit, estimate net expenditure, access volume and launch decisions jointly rather than using list prices alone.",
           "decision": "Identifies the price-access trade-off relevant to patients and payers."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "Market access",
@@ -270,7 +300,10 @@
           "direction": "Examine launch sequence, confidential arrangements and patient access jointly across markets; adjust for regulatory and clinical-demand differences.",
           "decision": "Tests whether pricing strategies improve access overall or redistribute delays."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "Evidence synthesis",
@@ -295,7 +328,10 @@
           "direction": "Publish versioned searches, deduplication rules, model prompts where appropriate, rejected-study logs and repeatable audit trails.",
           "decision": "Keeps downstream treatment comparisons traceable to the underlying study universe."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "PICO",
@@ -319,7 +355,10 @@
           "direction": "Map trial eligibility, endpoint timing and outcome definitions to decision populations and rerun analyses for material mismatches.",
           "decision": "Makes evidence applicability a testable rather than assumed property."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "Estimands",
@@ -344,7 +383,10 @@
           "direction": "Develop matched protocol diagrams and benchmark treatment-policy, hypothetical and per-protocol effects using common endpoint definitions.",
           "decision": "Improves transfer of clinical effectiveness evidence into HTA."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "Patient-reported outcomes",
@@ -366,7 +408,10 @@
           "direction": "Compare missing-data mechanisms and joint or pattern-mixture sensitivity analyses, including language and subgroup measurement equivalence.",
           "decision": "Tests whether apparent quality-of-life gains depend on who remains observed."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     },
     {
       "theme": "Medical devices",
@@ -388,7 +433,10 @@
           "direction": "Use post-market registries and version-specific reassessments with clear linkage between the assessed device and observed outcomes.",
           "decision": "Avoids using historical evidence for a materially changed technology without validation."
         }
-      ]
+      ],
+      "theme_basis": "legacy_editorial_not_official_index_topic_group",
+      "evidence_status": "hypotheses_not_literature_verified",
+      "claim_relation": "context_only_not_support_established"
     }
   ]
 }
