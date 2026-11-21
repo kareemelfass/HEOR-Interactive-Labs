@@ -1,0 +1,50 @@
+name: Verify and publish source-only ISPOR knowledge graph
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ispor-intelligence/scripts/build_source_graph.py"
+      - "ispor-intelligence/scripts/verify_source_graph.py"
+      - ".github/workflows/ispor-source-verified.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  source-fidelity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build graph from pinned source, refusing schema or count changes
+        run: python ispor-intelligence/scripts/build_source_graph.py
+      - name: Independently validate all 3097 records and every relationship
+        run: python ispor-intelligence/scripts/verify_source_graph.py
+      - name: Publish only the newly verified source-derived files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ispor-intelligence/data/source-records.json \
+                  ispor-intelligence/data/source-knowledge-graph.json \
+                  ispor-intelligence/data/source-coverage.json \
+                  ispor-intelligence/data/source-summary.json
+          if git diff --cached --quiet; then
+            echo "No source-derived changes"
+            exit 0
+          fi
+          git commit -m "Publish source-verifiable ISPOR full metadata graph"
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then
+              echo "Verified source-only KG published"
+              exit 0
+            fi
+            sleep 3
+          done
+          exit 1
