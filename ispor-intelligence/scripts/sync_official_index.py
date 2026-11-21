@@ -96,46 +96,46 @@ def main():
         homepage=r.read().decode("utf-8","replace")
     if "isporsearch303.aws.mtxgp.net" not in homepage:
         raise RuntimeError("ISPOR's own search page no longer advertises this backend. Aborting.")
-    # Index contents can change while ISPOR is importing records. Restart on drift
-    # instead of stitching together incompatible pagination snapshots.
-    attempts_used=0
-    for attempt in range(1,7):
-        attempts_used=attempt
+    # The live index fluctuates by 1-3 hits within seconds. We therefore
+    # union TWO independent complete page scans. Every retained row originates
+    # from ISPOR's configured search index; the union is explicitly NOT a
+    # complete point-in-time census, and changes are auditable.
+    scans=2
+    observations=[]
+    retrieved={}
+    conflicts=[]
+    for attempt in range(1,scans+1):
         first=fetch_page(1)
         n=int(first["hits"])
-        pages=math.ceil(n/PAGE_SIZE)
-        if n<500:
-            raise RuntimeError(f"Unexpectedly small official dataset: {n}")
-        data=[]
-        unstable=False
+        if n<500:raise RuntimeError(f"Official search returned an implausible count: {n}")
+        pages=math.ceil((n+4)/PAGE_SIZE)
         for page in range(1,pages+1):
             body=first if page==1 else fetch_page(page)
-            if int(body["hits"])!=n or int(body["currentPage"])!=page:
-                print("OFFICIAL_INDEX_CHANGED_RESTART",json.dumps({
-                    "attempt":attempt,"page":page,"initial_hits":n,
-                    "current_hits":body.get("hits"),"returned_page":body.get("currentPage")}),flush=True)
-                unstable=True
-                break
+            count=int(body["hits"])
+            observations.append(count)
+            if int(body["currentPage"])!=page:
+                raise RuntimeError(f"Search backend returned page {body.get('currentPage')} instead of {page}")
             chunk=body.get("result") or []
-            expected=PAGE_SIZE if page<pages else n-PAGE_SIZE*(page-1)
-            if len(chunk)!=expected:
-                print("OFFICIAL_INDEX_SHORT_PAGE_RESTART",attempt,page,len(chunk),expected,flush=True)
-                unstable=True
-                break
-            data.extend(record(x) for x in chunk)
-            print("OFFICIAL_PAGE",page,"of",pages,"attempt",attempt,"cumulative",len(data),flush=True)
-            time.sleep(.15)
-        if not unstable and len(data)==n and len(set(r["uid"] for r in data))==n and len(set(r["url"] for r in data))==n:
-            # Recheck the count after collecting all pages: a stable extraction
-            # must agree with an independent final backend query.
-            final=int(fetch_page(1)["hits"])
-            if final==n:
-                print("OFFICIAL_STABLE_SNAPSHOT",n,"attempt",attempt,flush=True)
-                break
-            print("OFFICIAL_FINAL_COUNT_CHANGED",n,final,flush=True)
-        time.sleep(1.0)
-    else:
-        raise RuntimeError("ISPOR index changed on all six extraction attempts; no snapshot published.")
+            for x in chunk:
+                r=record(x)
+                uid=r["uid"]
+                if not uid:raise RuntimeError("An indexed record has no UID")
+                if uid in retrieved and (retrieved[uid]["title"]!=r["title"] or retrieved[uid]["url"]!=r["url"]):
+                    conflicts.append({"uid":uid,"first_title":retrieved[uid]["title"],
+                                      "second_title":r["title"],"first_url":retrieved[uid]["url"],
+                                      "second_url":r["url"]})
+                    continue
+                retrieved[uid]=r
+            print("OFFICIAL_SCAN",attempt,"page",page,"of",pages,
+                  "index_hits":count,"unique_captured":len(retrieved),flush=True)
+            time.sleep(.12)
+    data=list(retrieved.values())
+    n=len(data)
+    pages=math.ceil(n/PAGE_SIZE)
+    print("OFFICIAL_INDEX_CAPTURE",json.dumps({
+        "indexed_hits_min":min(observations),"indexed_hits_max":max(observations),
+        "unique_captured":len(data),"capture_scans":scans,
+        "conflicting_records":len(conflicts)}),flush=True)
     urls=[x["url"] for x in data]
     ids=[x["uid"] for x in data]
     failures=[]
@@ -157,14 +157,16 @@ def main():
         },ensure_ascii=False),flush=True)
     # Retain and explicitly type backend hits, but never misrepresent links
     # lacking a presentation detail route as verified presentation pages.
-    if dup_urls or dup_uids or any(f["reason"]!="invalid_official_url" for f in failures):
+    if dup_urls or dup_uids or any(f["reason"] not in ("invalid_official_url",) for f in failures):
         raise RuntimeError(f"Index integrity failure: dup URLs {len(dup_urls)}, IDs {len(dup_uids)}, invalid: {failures[:10]}")
     created=datetime.now(timezone.utc).isoformat()
     metadata={
         "conference":EVENT,"source":"Official ISPOR website configured search service",
         "search_page":SITE,"api_endpoint":API,"query":"* filtered by exact event string",
         "retrieved_at_utc":created,"records":len(data),"pages":pages,"page_size":PAGE_SIZE,
-        "extraction_attempts":attempts_used,"index_count_stable_during_extraction":True,
+        "capture_scans":scans,"index_hits_observed_min":min(observations),
+        "index_hits_observed_max":max(observations),"index_count_stable_during_extraction":len(set(observations))==1,
+        "point_in_time_census_verified":False,"conflicting_index_record_versions":conflicts,
         "independent_archive_not_used_for_official_records":True,
         "reproduces_official_search_index_not_final_conference_census":True,
         "all_record_urls_page_verified":False,
