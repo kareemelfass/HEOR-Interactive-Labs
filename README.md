@@ -4,6 +4,16 @@ A growing collection of interactive, browser-based learning tools for **health e
 
 The focus is **learning by seeing and doing**: change model assumptions, follow calculations, inspect fitted and extrapolated curves, and see how methodological choices affect health economic models.
 
+## Featured: Thinking in Hazards
+
+**[Open the Thinking in Hazards interactive tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/thinking-in-hazards/)**
+
+A comprehensive 36-chapter tutorial for biostatistics and HEOR, with numerical examples, nine interactive calculators, and practical applications of hazards and hazard ratios in survival analysis and economic modelling. Topics include baseline hazards, proportional and non-proportional hazards, causal interpretation, marginal and conditional effects, average hazards, competing risks, survival extrapolation, treatment waning and transition probabilities.
+
+**[Browse the source](https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/thinking-in-hazards)**
+
+---
+
 ## Featured: QALYs, DALYs, HALYs and PALYs Interactive Tutorial
 
 **[Open the QALY, DALY, HALY and PALY interactive tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/adjusted-life-years-lab/)**
