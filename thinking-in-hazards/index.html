@@ -438,8 +438,7 @@ their corrections</a></li>
 id="toc-l.-exercises-with-worked-solutions">L. Exercises with worked
 solutions</a></li>
 <li><a href="#m.-sources-and-additional-reading"
-id="toc-m.-sources-and-additional-reading">M. Sources and additional
-reading</a></li>
+id="toc-m.-sources-and-additional-reading">M. References</a></li>
 </ul></li>
 </ul>
 </nav><section id="interactive-labs" class="lab"><h2>Interactive learning labs</h2><p>Nine live examples are embedded in the relevant chapters. Select a topic to jump to its calculator. All figures are illustrative; no external libraries or network access are needed.</p><ul><li><a href="#lab-rate">Rate versus probability</a></li><li><a href="#lab-functions">From hazard to all five functions</a></li><li><a href="#lab-hrrisk">Same HR, different absolute benefit</a></li><li><a href="#lab-frailty">Depletion of susceptible survivors</a></li><li><a href="#lab-average">AH versus ordinary time-average hazard</a></li><li><a href="#lab-waning">Treatment waning: preserve earlier survival</a></li><li><a href="#lab-competing">Competing first exits</a></li><li><a href="#lab-extrap">Survival extrapolation and tail risk</a></li><li><a href="#lab-economic">From hazard to ICER</a></li></ul></section>
@@ -526,9 +525,7 @@ inappropriate.</p>
 </tr>
 </tbody>
 </table>
-<p>Source labels [S1]–[S6] refer to the six supplied documents; [R1]
-onward refer to additional methodological references listed in Appendix
-M. The examples are independently constructed or explicitly adapted from
+<p>Numbered citations refer to the unified reference list in Appendix M. The examples are independently constructed or explicitly adapted from
 these sources. Some source simplifications are qualified where their
 assumptions matter.</p>
 <hr />
@@ -570,7 +567,7 @@ mortality may still generate different survival-related costs and
 benefits because the timing of death differs.</p>
 <p><strong>Remember:</strong> survival analysis asks both whether and
 when an event occurs. The hazard describes the changing rate at which
-events occur. [S1, pp. 3–8]</p>
+events occur. [1, pp. 3–8]</p>
 <h2 id="what-exactly-is-a-hazard">2. What exactly is a hazard?</h2>
 <p>Imagine an uncensored cohort of 100 patients. During month 1, 10 die.
 During month 2, nine more die. In month 3, another nine die.</p>
@@ -696,7 +693,7 @@ Population hazard can also decline because high-risk individuals leave
 the risk set earlier, even if no individual’s own rate declines (Chapter
 12).</p>
 <p><strong>Remember:</strong> the hazard is a rate, not a probability;
-the risk set and time unit matter. [S1, pp. 10–12, 33]</p>
+the risk set and time unit matter. [1, pp. 10–12, 33]</p>
 <section class="lab" id="lab-rate" data-kind="rate"><h3>Rate versus probability</h3><p>Change the rate and interval. A rate can exceed 1; a probability cannot.</p><div class="lab-grid"><label>Hazard per year: <output id="rate-h-out">0.2</output><input type="range" data-k="h" min="0.05" max="3" step="0.05" value="0.2" data-default="0.2" aria-label="Hazard per year"></label><label>Interval (years): <output id="rate-dt-out">1</output><input type="range" data-k="dt" min="0.05" max="3" step="0.05" value="1" data-default="1" aria-label="Interval (years)"></label></div><button type="button" class="reset">Reset example</button><div class="results" aria-live="polite"></div><div class="graphic"></div><p class="note">Calculated from the assumptions displayed above. The example is for learning, not clinical evidence.</p></section><h2 id="how-hazards-turn-into-survival">3. How hazards turn into
 survival</h2>
 <p>Consider an annual mortality hazard of 0.2, constant for three years.
@@ -823,7 +820,7 @@ endpoint, survival need not tend to zero; all-cause survival ultimately
 should.</p>
 <p><strong>Remember:</strong> hazard is current rate; cumulative hazard
 is history; survival is the fraction expected to remain event-free;
-density accounts for the fraction still at risk. [S1, pp. 9–14]</p>
+density accounts for the fraction still at risk. [1, pp. 9–14]</p>
 <section class="lab" id="lab-functions" data-kind="functions"><h3>From hazard to all five functions</h3><p>Choose a Weibull shape and rate. The five functions describe the same event distribution.</p><div class="lab-grid"><label>PH rate parameter: <output id="functions-lam-out">0.15</output><input type="range" data-k="lam" min="0.02" max="0.5" step="0.01" value="0.15" data-default="0.15" aria-label="PH rate parameter"></label><label>Shape: <output id="functions-k-out">1.3</output><input type="range" data-k="k" min="0.5" max="2.5" step="0.1" value="1.3" data-default="1.3" aria-label="Shape"></label><label>Time (years): <output id="functions-t-out">3</output><input type="range" data-k="t" min="0.1" max="10" step="0.1" value="3" data-default="3" aria-label="Time (years)"></label></div><button type="button" class="reset">Reset example</button><div class="results" aria-live="polite"></div><div class="graphic"></div><p class="note">Calculated from the assumptions displayed above. The example is for learning, not clinical evidence.</p></section><h2 id="conditional-survival-isolating-one-interval">4. Conditional
 survival: isolating one interval</h2>
 <p>Suppose survival is 80% at year 1 and 60% at year 2. In an expected
@@ -860,7 +857,7 @@ time does not have this property. In a semi-Markov model, duration in a
 state may therefore matter.</p>
 <p><strong>Remember:</strong> dividing survival estimates removes prior
 history. Multiplying conditional survival puts history back together.
-[S3, §§3.3–3.5]</p>
+[3, §§3.3–3.5]</p>
 <hr />
 <h1 id="part-ii.-estimating-hazards-and-hazard-ratios">Part II.
 Estimating hazards and hazard ratios</h1>
@@ -1061,7 +1058,7 @@ drop out, ordinary KM may overestimate survival; inverse probability of
 censoring weighting (IPCW) can help if the censoring model and
 underlying assumptions are adequate.</p>
 <p><strong>Practice:</strong> calculate the KM survival after month 4,
-allowing for the censor at 2.5. It is not 6/10. See Appendix L. [S1,
+allowing for the censor at 2.5. It is not 6/10. See Appendix L. [1,
 pp. 3–5, 14–15, 31]</p>
 <h2 id="where-does-the-baseline-hazard-come-from">6. Where does the
 baseline hazard come from?</h2>
@@ -1153,7 +1150,7 @@ identify any of these baseline functions.</p>
 <p><strong>HEOR:</strong> before using a baseline curve, identify whose
 survival it represents. Is it a reference patient, the average of
 predictions over patients, the control-arm KM curve or a life table?
-These are not interchangeable. [S1, pp. 16–19; S2, terminology box]</p>
+These are not interchangeable. [1, pp. 16–19; 2, terminology box]</p>
 <h2 id="the-hazard-ratio-without-ambiguity">7. The hazard ratio without
 ambiguity</h2>
 <p>At a particular time, a control hazard of 0.4/year and a treatment
@@ -1314,7 +1311,7 @@ The treated median is 4.5 years. If instead the exponential shape were
 and time ratio are different quantities.</p>
 <p><strong>Remember:</strong> choose a statistical model for the
 scientific question, then check the hazard and survival predictions.
-[S1, pp. 18–24; R4]</p>
+[1, pp. 18–24; 10]</p>
 <hr />
 <h1 id="part-iii.-proportional-and-non-proportional-hazards">Part III.
 Proportional and non-proportional hazards</h1>
@@ -1398,8 +1395,8 @@ lifetime extrapolation if perpetuated. Diagnostic plots, effect-by-time
 estimates, clinical knowledge and alternative model predictions are
 complementary.</p>
 <p><strong>Remember:</strong> PH means the ratio is constant, not that
-hazards or absolute survival differences are constant. [S1, pp. 17,
-21–22; S2]</p>
+hazards or absolute survival differences are constant. [1, pp. 17,
+21–22; 2]</p>
 <h2 id="when-the-hazard-ratio-changes-with-time">10. When the hazard
 ratio changes with time</h2>
 <p>A hypothetical immunotherapy has early toxicity and delayed clinical
@@ -1488,7 +1485,7 @@ and censoring can change the compromise. It is not generally a simple
 arithmetic mean of the early and late HRs, nor necessarily a
 transportable treatment effect. A single HR may still be a prespecified
 statistical summary, but interpret its estimand and limitations
-explicitly. [S4; R1, R2]</p>
+explicitly. [4; 7, 8]</p>
 <h3 id="choosing-a-response">Choosing a response</h3>
 <p>If the scientific question is about the timing of benefit, estimate a
 piecewise HR or a smoothly time-varying treatment coefficient. Choose
@@ -1506,8 +1503,8 @@ summaries (Part V).</p>
 it. Changing survivor composition alone can produce a varying marginal
 HR, even when treatment works identically within every risk stratum.</p>
 <p><strong>HEOR:</strong> applying an averaged HR to every future cycle
-imposes a constant effect that the underlying trial may not support. [S3
-§7.6; R1, R6]</p>
+imposes a constant effect that the underlying trial may not support. [3
+§7.6; 7, 12]</p>
 <h2 id="does-a-ph-violation-invalidate-prediction">11. Does a PH
 violation invalidate prediction?</h2>
 <p>A model may estimate the wrong instantaneous rate yet predict the
@@ -1528,7 +1525,7 @@ justifies extrapolation.</p>
 <h3 id="published-study-austin-and-giardiello-2025">Published study:
 Austin and Giardiello (2025)</h3>
 <p>The authors investigated how PH violations affected calibration in
-Cox clinical prediction models [S5]. Their data-generating models were
+Cox clinical prediction models [5]. Their data-generating models were
 informed by a cohort of 19,559 patients hospitalised with acute
 myocardial infarction in Ontario in 2016. They simulated samples of
 2,000, allowing a coefficient for a continuous or binary covariate to
@@ -1560,7 +1557,7 @@ IV. Causal interpretation and population heterogeneity</h1>
 <h2 id="why-an-hr-can-change-even-if-treatment-works-the-same-way">12.
 Why an HR can change even if treatment works the same way</h2>
 <p>This chapter adapts the hypothetical trial in Bartlett, Magirr and
-Morris (2026), Table 1 and Figures 1–3 [S2]. The example is constructed,
+Morris (2026), Table 1 and Figures 1–3 [2]. The example is constructed,
 not observed trial data. Imagine 200 patients per arm, half low-risk and
 half high-risk. Risk status is initially balanced by randomisation but
 is unmeasured. The following rates are constant within each subgroup
@@ -1657,8 +1654,8 @@ causes. Think of selecting people who survived: in the control group,
 high-risk status makes survival harder; in the treatment group,
 effective treatment partly protects those patients. The selected groups
 are no longer comparable in risk composition.</p>
-<p>Hernán [R1] stresses the difficulty of interpreting HRs as causal
-effects in such settings. Bartlett et al. [S2] distinguish two claims:
+<p>Hernán [7] stresses the difficulty of interpreting HRs as causal
+effects in such settings. Bartlett et al. [2] distinguish two claims:
 the population hazard under an assigned treatment strategy is a
 meaningful counterfactual population quantity, so its ratio can be
 causal under identification assumptions; but it compares the survivors
@@ -1782,7 +1779,7 @@ not generally the correct treated marginal survival.</p>
 each relevant profile under each intervention and average using the
 target baseline distribution. Then derive the desired marginal hazard or
 HR if needed. Using mean covariates can be tested as a computational
-approximation, not as an identity. [S2; R5]</p>
+approximation, not as an identity. [2; 11]</p>
 <h2 id="causal-analysis-of-observational-survival-outcomes">14. Causal
 analysis of observational survival outcomes</h2>
 <p>Consider 100 intensive care patients on continuous renal replacement
@@ -1870,7 +1867,7 @@ baseline IPTW. Even perfectly adjusted marginal hazards still compare
 the different survivor populations.</p>
 <p><strong>HEOR:</strong> if the model requires population-level risks
 or occupancy, a standardised survival curve can be more directly useful
-than a conditional Cox coefficient. [S2; S4; S6 Appendix A; R5]</p>
+than a conditional Cox coefficient. [2; 4; 6 Appendix A; 11]</p>
 <hr />
 <h1
 id="part-v.-average-hazards-and-alternative-treatment-effect-measures">Part
@@ -1893,8 +1890,8 @@ Divide these two population quantities:</p>
 <p>The result is 0.2857/year, exactly the rate calculated earlier. This
 is the survival-weighted average hazard (AH). Uno and Horiguchi (2023)
 propose differences and ratios of this quantity to express treatment
-effects [R2]. Xiong et al. extend its evaluation to observational
-comparative effectiveness [S4].</p>
+effects [8]. Xiong et al. extend its evaluation to observational
+comparative effectiveness [4].</p>
 <h3 id="why-the-word-survival-weighted-matters">Why the word
 survival-weighted matters</h3>
 <p>Suppose a hazard is 0.5/year in the first year and 0.1/year in the
@@ -2008,7 +2005,7 @@ distinction is decisive in HEOR: the RAH is a summary, not a function
 that specifies how treatment multiplies each instantaneous rate. Do not
 normally use RAH as the exponent of a survival curve. DAH and RAH are
 also generally non-collapsible across subgroups, as discussed by Xiong
-et al. [S4, discussion].</p>
+et al. [4, discussion].</p>
 <h3 id="published-application-xiong-et-al.-2026">Published application:
 Xiong et al. (2026)</h3>
 <p>The authors integrated adjusted survival curves with AH-based
@@ -2023,7 +2020,7 @@ misspecification. Its implementation in the supplement depends on a
 correctly specified censoring mechanism and consistency of its estimated
 censoring survival, with either the treatment or outcome model correctly
 specified. This is not immunity to unmeasured confounding, extreme
-weights or all model failures. [S4, S6 Appendix A]</p>
+weights or all model failures. [4, 6 Appendix A]</p>
 <p>In CANVAS, the parent study compared direct oral anticoagulants
 (DOACs) and low-molecular-weight heparin (LMWH) for preventing recurrent
 venous thromboembolism (VTE) among patients with cancer. The AH paper
@@ -2111,11 +2108,11 @@ includes zero for DAH and 1 for RAH, so the data do not demonstrate a
 statistically significant mortality difference. They do not establish
 that mortality is identical. The ratio 0.690 is not precisely
 0.032/0.046 because the displayed quantities are rounded. The results
-are specific to their adjustment assumptions and horizon. [S4,
+are specific to their adjustment assumptions and horizon. [4,
 pp. 12–15, Table 7]</p>
 <h3 id="what-the-supplementary-analysis-adds">What the supplementary
 analysis adds</h3>
-<p>Appendix D of [S6] compares Cox HR and RAH in exponential scenarios
+<p>Appendix D of [6] compares Cox HR and RAH in exponential scenarios
 where both estimands equal 0.8. At severe censoring rates of 80%, 90% or
 95%, some simulated samples had no remaining risk set at the chosen
 horizon. The KM-based RAH was not estimable in those samples; the
@@ -2254,7 +2251,7 @@ horizon.</p>
 </table>
 <p>No single effect measure recovers an entire survival function. Report
 absolute effects and their uncertainty alongside relative measures when
-possible. [S2, S4; R2, R3]</p>
+possible. [2, 4; 8, 9]</p>
 <hr />
 <h1 id="part-vi.-how-to-manipulate-hazards-in-heor">Part VI. How to
 manipulate hazards in HEOR</h1>
@@ -2344,7 +2341,7 @@ are assumed; it does not fit the underlying individual-level Cox model
 or recover an instantaneous hazard at each jump.</p>
 <p><strong>Remember:</strong> multiply the hazard or cumulative hazard;
 raise survival to a power. Verify the HR refers to the same event and
-covariate scale. [S3 §§3–6]</p>
+covariate scale. [3 §§3–6]</p>
 <h2 id="applying-a-time-varying-hr-without-rewriting-history">19.
 Applying a time-varying HR without rewriting history</h2>
 <p>Now the initial HR is 0.7, but it becomes 1 after year 1. The new
@@ -2437,7 +2434,7 @@ If both curves eventually tend to zero, that absolute difference also
 tends to zero.</p>
 <p><strong>HEOR:</strong> an erroneous abrupt return to the reference
 can understate life years and QALYs. Chapter 28 develops the
-cost-effectiveness example. [S3 §§5, 7.5–7.6]</p>
+cost-effectiveness example. [3 §§5, 7.5–7.6]</p>
 <section class="lab" id="lab-waning" data-kind="waning"><h3>Treatment waning: preserve earlier survival</h3><p>The HR returns to 1 at the specified year. Compare correct chaining with direct powering.</p><div class="lab-grid"><label>Control hazard per year: <output id="waning-h-out">0.25</output><input type="range" data-k="h" min="0.05" max="0.8" step="0.05" value="0.25" data-default="0.25" aria-label="Control hazard per year"></label><label>Early HR: <output id="waning-hr-out">0.5</output><input type="range" data-k="hr" min="0.2" max="1" step="0.05" value="0.5" data-default="0.5" aria-label="Early HR"></label><label>Waning year: <output id="waning-w-out">3</output><input type="range" data-k="w" min="1" max="8" step="1" value="3" data-default="3" aria-label="Waning year"></label></div><button type="button" class="reset">Reset example</button><div class="results" aria-live="polite"></div><div class="graphic"></div><p class="note">Calculated from the assumptions displayed above. The example is for learning, not clinical evidence.</p></section><h2 id="combining-separating-and-transforming-hazards">20. Combining,
 separating and transforming hazards</h2>
 <p>Suppose a model has a baseline death hazard of 0.2/year, a treatment
@@ -2559,7 +2556,7 @@ of the actual living health state. A Fine–Gray HR can inform CIF
 prediction with a compatible baseline subdistribution; it cannot simply
 replace a cause-specific transition HR in a multi-state model.</p>
 <p><strong>Remember:</strong> to predict the probability of a specific
-exit, account for all competing exits. [S1 pp. 25–27; R9]</p>
+exit, account for all competing exits. [1 pp. 25–27; 15]</p>
 <hr />
 <h1
 id="part-vii.-practical-applications-in-health-economic-modelling">Part
@@ -2646,7 +2643,7 @@ scenarios before perpetuating it.</p>
 <p><strong>Decision process:</strong> establish reference risk in the
 payer population; determine compatible relative effects; reconstruct
 curves; validate predictions against observed or external evidence; then
-calculate economic outputs. [S3 §7.1; R4, R6]</p>
+calculate economic outputs. [3 §7.1; 10, 12]</p>
 <h2 id="adjusting-a-published-kaplanmeier-curve">23. Adjusting a
 published Kaplan–Meier curve</h2>
 <p>Suppose digitisation of a published curve gives survival estimates 1,
@@ -2721,7 +2718,7 @@ to a parametric tail at cut-off c, use
 after c for continuity. A pointwise HR adjustment is not a substitute
 for a joint uncertainty model. Reconstructed IPD or published confidence
 bands may help estimate uncertainty, but reconstructed data are
-approximations. [S3 §7.2; R4, R8]</p>
+approximations. [3 §7.2; 10, 14]</p>
 <h2 id="from-transition-hazards-to-cycle-probabilities">24. From
 transition hazards to cycle probabilities</h2>
 <h3 id="single-exit">Single exit</h3>
@@ -2808,7 +2805,7 @@ the PF→Dead probability is the remainder. In R,
 Time-varying transition intensities require a suitable time grid or
 numerical solution of the forward equations.</p>
 <p><strong>Remember:</strong> convert rates jointly, not independently;
-distinguish first exits from state occupancy. [S3 §7.3; R9, R10]</p>
+distinguish first exits from state occupancy. [3 §7.3; 15, 16]</p>
 <section class="lab" id="lab-competing" data-kind="competing"><h3>Competing first exits</h3><p>Reduce progression without changing death hazard. Observe the first-exit probabilities.</p><div class="lab-grid"><label>Progression hazard: <output id="competing-a-out">0.3</output><input type="range" data-k="a" min="0.02" max="1" step="0.02" value="0.3" data-default="0.3" aria-label="Progression hazard"></label><label>Death hazard: <output id="competing-b-out">0.1</output><input type="range" data-k="b" min="0.02" max="1" step="0.02" value="0.1" data-default="0.1" aria-label="Death hazard"></label><label>Progression HR: <output id="competing-hr-out">0.6</output><input type="range" data-k="hr" min="0.1" max="1.5" step="0.05" value="0.6" data-default="0.6" aria-label="Progression HR"></label><label>Cycle (years): <output id="competing-dt-out">1</output><input type="range" data-k="dt" min="0.1" max="2" step="0.1" value="1" data-default="1" aria-label="Cycle (years)"></label></div><button type="button" class="reset">Reset example</button><div class="results" aria-live="polite"></div><div class="graphic"></div><p class="note">Calculated from the assumptions displayed above. The example is for learning, not clinical evidence.</p></section><h2 id="semi-markov-and-multi-state-hazards">25. Semi-Markov and
 multi-state hazards</h2>
 <p>The same hazard may be a function of different clocks. Suppose
@@ -2875,7 +2872,7 @@ under specified strategies, with appropriate modelling and
 identification assumptions.</p>
 <p><strong>HEOR:</strong> choose the clock that represents the disease
 process rather than applying the same survival curve independently to
-everybody entering a state at different times. [S1 p. 27; R10]</p>
+everybody entering a state at different times. [1 p. 27; 16]</p>
 <h2 id="hazards-in-partitioned-survival-models">26. Hazards in
 partitioned survival models</h2>
 <p>In a conventional oncology partitioned survival model (PSM), PFS is
@@ -2972,7 +2969,7 @@ specification and underlying evidence rather than just clipping crossing
 curves mechanically.</p>
 <p>TOT may extend beyond progression when treatment continues, or end
 before progression because of toxicity. Do not equate PFS with TOT or
-assume that a PFS HR is a discontinuation HR. [R7; S1 p. 27]</p>
+assume that a PFS HR is a discontinuation HR. [13; 1 p. 27]</p>
 <h2 id="life-tables-smrs-and-excess-mortality">27. Life tables, SMRs and
 excess mortality</h2>
 <p>A national life table may supply age-specific annual probabilities of
@@ -3066,7 +3063,7 @@ multiplying both gives 0.96136, a different, stronger mortality
 assumption. Background as a lower bound on mortality is clinically
 reasonable for many disease cohorts, but healthy selection or population
 differences can violate it. Justify it for the target cohort and avoid
-treating a national life table as universal. [S3 §§7.4, 7.7]</p>
+treating a national life table as universal. [3 §§7.4, 7.7]</p>
 <h2 id="treatment-waning-and-discontinuation">28. Treatment waning and
 discontinuation</h2>
 <p>Treatment discontinuation means patients stop receiving the drug.
@@ -3147,8 +3144,8 @@ adherence; naively applying additional adherence corrections may double
 count discontinuation.</p>
 <p><strong>Decide the waning anchor, mechanism, start/end time and
 target hazard explicitly.</strong> Report sensitivity scenarios rather
-than claiming that trial evidence establishes a lifetime effect. [S3
-§§5, 7.5; R4, R11]</p>
+than claiming that trial evidence establishes a lifetime effect. [3
+§§5, 7.5; 10, 17]</p>
 <section class="lab" id="lab-economic" data-kind="economic"><h3>From hazard to ICER</h3><p>Compare persistent and abruptly waning effects over ten years. No discounting, illustrative inputs.</p><div class="lab-grid"><label>Control hazard/year: <output id="economic-h-out">0.25</output><input type="range" data-k="h" min="0.05" max="0.6" step="0.05" value="0.25" data-default="0.25" aria-label="Control hazard/year"></label><label>Initial HR: <output id="economic-hr-out">0.5</output><input type="range" data-k="hr" min="0.2" max="0.95" step="0.05" value="0.5" data-default="0.5" aria-label="Initial HR"></label><label>Waning year: <output id="economic-w-out">3</output><input type="range" data-k="w" min="1" max="9" step="1" value="3" data-default="3" aria-label="Waning year"></label><label>Utility: <output id="economic-u-out">0.75</output><input type="range" data-k="u" min="0.1" max="1" step="0.05" value="0.75" data-default="0.75" aria-label="Utility"></label><label>Incremental cost ($): <output id="economic-cost-out">35000</output><input type="range" data-k="cost" min="5000" max="100000" step="5000" value="35000" data-default="35000" aria-label="Incremental cost ($)"></label></div><button type="button" class="reset">Reset example</button><div class="results" aria-live="polite"></div><div class="graphic"></div><p class="note">Calculated from the assumptions displayed above. The example is for learning, not clinical evidence.</p></section><h2 id="extrapolating-survival-by-understanding-hazard-shapes">29.
 Extrapolating survival by understanding hazard shapes</h2>
 <p>Imagine a trial follows patients for two years. Standard parametric
@@ -3231,7 +3228,7 @@ and flexible models as appropriate; inspect KM, hazards and information
 criteria. Validate external time points and mortality. Calculate
 lifetime costs and outcomes under plausible alternatives. Do not select
 the model that gives the preferred ICER. NICE DSU TSD 14 and 21 provide
-guidance on standard and flexible methods. [S3 §7.1; R4]</p>
+guidance on standard and flexible methods. [3 §7.1; 10]</p>
 <hr />
 <section class="lab" id="lab-extrap" data-kind="extrap"><h3>Survival extrapolation and tail risk</h3><p>Both Weibull curves match the same two-year survival, but their shapes differ.</p><div class="lab-grid"><label>Survival at year 2 (%): <output id="extrap-p-out">60</output><input type="range" data-k="p" min="20" max="90" step="5" value="60" data-default="60" aria-label="Survival at year 2 (%)"></label><label>Model A shape: <output id="extrap-k1-out">0.6</output><input type="range" data-k="k1" min="0.4" max="2.5" step="0.1" value="0.6" data-default="0.6" aria-label="Model A shape"></label><label>Model B shape: <output id="extrap-k2-out">2</output><input type="range" data-k="k2" min="0.4" max="2.5" step="0.1" value="2" data-default="2" aria-label="Model B shape"></label></div><button type="button" class="reset">Reset example</button><div class="results" aria-live="polite"></div><div class="graphic"></div><p class="note">Calculated from the assumptions displayed above. The example is for learning, not clinical evidence.</p></section><h1 id="part-viii.-evidence-synthesis-and-advanced-applications">Part
 VIII. Evidence synthesis and advanced applications</h1>
@@ -3294,7 +3291,7 @@ Pooling their single HRs obscures the timing. If sufficient data exist,
 fit comparable time-dependent effects, use piecewise HRs with clinically
 justified cutpoints or synthesise survival functions. Fractional
 polynomials use flexible powers of time to describe hazard shapes;
-Jansen (2011) illustrates a multi-parameter NMA approach [R6]. RMST at a
+Jansen (2011) illustrates a multi-parameter NMA approach [12]. RMST at a
 shared supported horizon is an alternative summary, but it cannot
 determine a lifetime curve by itself.</p>
 <p><strong>HEOR:</strong> check model inputs on the same reference
@@ -3322,7 +3319,7 @@ distributions to connect individual predictions with aggregate outcomes.
 Each requires assumptions about the relevant covariates, common support
 and treatment contrasts. Unanchored comparisons also require adequate
 control of all important prognostic factors and effect modifiers, a
-stronger assumption than a valid anchored comparison [R5].</p>
+stronger assumption than a valid anchored comparison [11].</p>
 <h3 id="worked-population-example">Worked population example</h3>
 <p>Use the Chapter 12 risk strata and their constant treatment HR=0.5.
 In the target trial, 80% of patients are high-risk and 20% low-risk. At
@@ -3396,7 +3393,7 @@ implementation uses M-splines.</p>
 <p>For an Excel model, export a time grid of the fully marginalised
 predicted curves if feasible. Otherwise compare a simpler approximation
 against that benchmark, assess the impact on life years and QALYs, and
-disclose residual error. [R5; S2]</p>
+disclose residual error. [11; 2]</p>
 <h2 id="time-dependent-covariates-versus-time-varying-effects">32.
 Time-dependent covariates versus time-varying effects</h2>
 <p>A time-dependent covariate changes its value over time. A
@@ -3460,7 +3457,7 @@ those who survive to a specified time, changing the target population
 explicitly. Treatment switching in HTA also depends on the estimand: a
 treatment-policy effect includes switching as observed; a hypothetical
 no-switch effect requires a justified adjustment method rather than
-simply censoring switchers. [S1 p. 28; R11]</p>
+simply censoring switchers. [1 p. 28; 17]</p>
 <p><strong>HEOR:</strong> use the time origin that matches the effect
 and the economic strategy; don’t multiply a baseline HR by switches or
 discontinuation rates without checking what the original estimate
@@ -3501,8 +3498,8 @@ as a biomarker, with the event hazard using an estimated latent
 biomarker trajectory or shared random effects. This differs from a
 simple time-dependent Cox covariate with measurement error ignored.
 Joint modelling can be useful when repeated measurement and dropout or
-death are related; the link and model assumptions matter. [S1 pp. 29–30;
-R10]</p>
+death are related; the link and model assumptions matter. [1 pp. 29–30;
+16]</p>
 <hr />
 <h1 id="part-ix.-implementation-validation-and-integrated-examples">Part
 IX. Implementation, validation and integrated examples</h1>
@@ -4380,95 +4377,88 @@ calibration but an implausible hazard at year 15. Should it be accepted?
 observed follow-up does not verify extrapolation. Examine hazard
 plausibility, external evidence and sensitivity to alternative
 tails.</p>
-<h2 id="m.-sources-and-additional-reading">M. Sources and additional
-reading</h2>
-<h3 id="uploaded-materials-core-sources">Uploaded materials (core
-sources)</h3>
-<ul>
-<li><strong>[S1]</strong> StatHarbor Analytics. <em>Thinking in Hazards:
+<h2 id="m.-sources-and-additional-reading">M. References</h2>
+<ol type="1">
+<li id="reference-1">StatHarbor Analytics. <em>Thinking in Hazards:
 A Conceptual Overview of Survival Analysis</em>. Supplied 39-page
 educational slide deck. Especially pp. 9–17 (hazard, survival,
 baseline), 21–27 (diagnostics and extensions), 29–37 (recurrent events
 and pitfalls). The tutorial uses the concepts and develops original
 illustrations.</li>
-<li><strong>[S2]</strong> Bartlett JW, Magirr D, Morris TP. Hazard
+<li id="reference-2">Bartlett JW, Magirr D, Morris TP. Hazard
 ratios and their causal interpretation: challenges and guidance.
 <em>International Journal of Epidemiology</em>. 2026;55(6):dyag228.
 https://doi.org/10.1093/ije/dyag228. Table 1 and Figures 1–3 underpin
 the numerical frailty example. Its population-level causal
 interpretation is distinguished from individual-level
 interpretation.</li>
-<li><strong>[S3]</strong> <em>Applying Hazard Ratios to Survival Curves:
+<li id="reference-3"><em>Applying Hazard Ratios to Survival Curves:
 The interval (conditional survival) method: theory, worked calculations
 and seven applications in HEOR modelling</em>. Supplied tutorial, 17
 pages. All seven applications are addressed in Chapters 18–29. The
 original technical examples are checked independently; where necessary,
 the assumptions about SMRs, competing exits, mixture cure and digitised
 curves are stated explicitly.</li>
-<li><strong>[S4]</strong> Xiong H, Connors J, Schrag D, Uno H.
+<li id="reference-4">Xiong H, Connors J, Schrag D, Uno H.
 Comparative effectiveness research with average hazard for censored
 time-to-event outcomes: simulation study and application to
 observational data. <em>BMC Medical Research Methodology</em>.
 2026;26:13. https://doi.org/10.1186/s12874-025-02741-9. The CANVAS
 analysis, mortality outcomes and AH estimands are discussed in Chapter
 16.</li>
-<li><strong>[S5]</strong> Austin PC, Giardiello D. The impact of
+<li id="reference-5">Austin PC, Giardiello D. The impact of
 violation of the proportional hazards assumption on the calibration of
 the Cox proportional hazards model. <em>Statistics in Medicine</em>.
 2025;44:e70161. https://doi.org/10.1002/sim.70161. Chapter 11 focuses on
 its prediction setting and limits of extrapolation.</li>
-<li><strong>[S6]</strong> Xiong H, Connors J, Schrag D, Uno H.
-Supplementary Appendix to [S4]. Appendix A provides assumptions and
+<li id="reference-6">Xiong H, Connors J, Schrag D, Uno H.
+Supplementary Appendix to [4]. Appendix A provides assumptions and
 mathematics of adjustment; Appendix D compares RAH and Cox HR with
 varying censoring rates. The full study datasets are not included in the
 supplied files and the original simulations were not rerun here.</li>
-</ul>
-<h3 id="external-methodological-sources">External methodological
-sources</h3>
-<ul>
-<li><strong>[R1]</strong> Hernán MA. The hazards of hazard ratios.
+<li id="reference-7">Hernán MA. The hazards of hazard ratios.
 <em>Epidemiology</em>. 2010;21:13–15.
 https://doi.org/10.1097/EDE.0b013e3181c1ea43</li>
-<li><strong>[R2]</strong> Uno H, Horiguchi M. Ratio and difference of
+<li id="reference-8">Uno H, Horiguchi M. Ratio and difference of
 average hazard with survival weight: new measures to quantify survival
 benefit of new therapy. <em>Statistics in Medicine</em>.
 2023;42:936–952. https://doi.org/10.1002/sim.9651</li>
-<li><strong>[R3]</strong> Uno H et al. Moving beyond the hazard ratio in
+<li id="reference-9">Uno H et al. Moving beyond the hazard ratio in
 quantifying the between-group difference in survival analysis.
 <em>Journal of Clinical Oncology</em>. 2014;32:2380–2385.
 https://doi.org/10.1200/JCO.2014.55.2208</li>
-<li><strong>[R4]</strong> NICE Decision Support Unit. TSD 14: Survival
+<li id="reference-10">NICE Decision Support Unit. TSD 14: Survival
 analysis for economic evaluations alongside clinical trials; TSD 21:
 Flexible methods for survival analysis.
 https://sheffield.ac.uk/nice-dsu/tsds/survival-analysis</li>
-<li><strong>[R5]</strong> NICE Decision Support Unit. TSD 18: Methods
+<li id="reference-11">NICE Decision Support Unit. TSD 18: Methods
 for population-adjusted indirect comparisons in submissions to NICE. See
 https://sheffield.ac.uk/nice-dsu/tsds/full-list. This provides the
 population adjustment framework; the Chapter 31 ML-NMR example is a
 conceptual illustration, not a replication of a specific study.</li>
-<li><strong>[R6]</strong> Jansen JP. Network meta-analysis of survival
+<li id="reference-12">Jansen JP. Network meta-analysis of survival
 data with fractional polynomials. <em>BMC Medical Research
 Methodology</em>. 2011;11:61.
 https://doi.org/10.1186/1471-2288-11-61</li>
-<li><strong>[R7]</strong> NICE Decision Support Unit. TSD 19:
+<li id="reference-13">NICE Decision Support Unit. TSD 19:
 Partitioned survival analysis as a decision modelling tool.
 https://sheffield.ac.uk/nice-dsu/tsds/full-list</li>
-<li><strong>[R8]</strong> Guyot P et al. Enhanced secondary analysis of
+<li id="reference-14">Guyot P et al. Enhanced secondary analysis of
 survival data: reconstructing the data from published Kaplan–Meier
 survival curves. <em>BMC Medical Research Methodology</em>. 2012;12:9.
 https://doi.org/10.1186/1471-2288-12-9</li>
-<li><strong>[R9]</strong> Austin PC, Lee DS, Fine JP. Introduction to
+<li id="reference-15">Austin PC, Lee DS, Fine JP. Introduction to
 the analysis of survival data in the presence of competing risks.
 <em>Circulation</em>. 2016;133:601–609.
 https://doi.org/10.1161/CIRCULATIONAHA.115.017719</li>
-<li><strong>[R10]</strong> Andersen PK, Keiding N. Multi-state models
+<li id="reference-16">Andersen PK, Keiding N. Multi-state models
 for event history analysis. <em>Statistical Methods in Medical
 Research</em>. 2002;11:91–115.
 https://doi.org/10.1191/0962280202SM276ra</li>
-<li><strong>[R11]</strong> NICE Decision Support Unit. TSD 24: Adjusting
+<li id="reference-17">NICE Decision Support Unit. TSD 24: Adjusting
 survival time estimates in the presence of treatment switching.
 https://sheffield.ac.uk/nice-dsu/tsds/survival-analysis</li>
-</ul>
+</ol>
 <p><strong>Closing principle:</strong> a hazard is a description of a
 current rate, survival is the history of that rate, and an HR is a
 relative comparison whose meaning depends on its risk sets and model
