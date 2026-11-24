@@ -4,6 +4,16 @@ A growing collection of interactive, browser-based learning tools for **health e
 
 The focus is **learning by seeing and doing**: change model assumptions, follow calculations, inspect fitted and extrapolated curves, and see how methodological choices affect health economic models.
 
+## Featured: Understanding QALYs
+
+**[Open the interactive QALY tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/qaly-lab/)**
+
+An 18-chapter learning pathway from TTO, standard gamble, VAS and DCE to preference-based scoring, the published Egyptian EQ-5D-5L value set, patient trajectories, trial-based QALYs, decision trees, Markov and partitioned survival models, toxicity, ageing, discounting, ICER and net monetary benefit. Fifteen interactive experiments, MathJax equations, worked examples, methodological caveats and knowledge checks.
+
+**[Browse the source](https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/qaly-lab)**
+
+---
+
 ## Featured: Collapsibility and Non-collapsibility in Biostatistics and HEOR
 
 **[Open the interactive tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/collapsibility-lab/)**
