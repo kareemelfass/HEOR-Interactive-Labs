@@ -8,7 +8,7 @@ The focus is **learning by seeing and doing**: change model assumptions, follow 
 
 **[Open the interactive tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/collapsibility-lab/)**
 
-Fifteen chapters with shared interactive risk and survival examples, conditional and marginal HRs, MAIC/STC/ML-NMR, survival transformations, treatment waning, LYs/QALYs/ICERs, an illustrative atezolizumab transfer case, CSV export and knowledge checks. Based on the companion Word tutorial with 11 methodological references. All numerical examples are illustrative.
+Fourteen chapters with MathJax equations, shared interactive risk and survival examples, conditional and marginal HRs, MAIC/STC/ML-NMR, survival transformations, treatment waning, LYs/QALYs/ICERs, CSV export and knowledge checks. Based on the companion Word tutorial with 11 methodological references. All numerical examples are illustrative.
 
 **[Browse the source](https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/collapsibility-lab)**
 
