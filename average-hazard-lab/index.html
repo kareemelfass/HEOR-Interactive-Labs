@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Average Hazard Tutorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<script>
+/* MathJax config: SVG output needs no web fonts, so it works under the page's font policy. */
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+/* Layout idea: one reading column, each concept followed by a live widget that uses the same numbers as the text. */
+:root{
+  --bg:#f4f6f8; --surface:#ffffff; --ink:#14212b; --muted:#53636f; --line:#d9e0e6;
+  --accent:#0b6e75; --accent-soft:#d6eef0; --warm:#b4500a; --warm-soft:#fde8d6;
+  --good:#1d7a3a; --bad:#b3261e;
+  --font-display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-body:"Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1a21; --surface:#16242d; --ink:#e6eef2; --muted:#9fb2bd; --line:#2a3b46;
+    --accent:#4fc3cc; --accent-soft:#123a40; --warm:#ff9a52; --warm-soft:#3a2412;
+    --good:#6fd18a; --bad:#ff8a80;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1a21; --surface:#16242d; --ink:#e6eef2; --muted:#9fb2bd; --line:#2a3b46;
+  --accent:#4fc3cc; --accent-soft:#123a40; --warm:#ff9a52; --warm-soft:#3a2412;
+  --good:#6fd18a; --bad:#ff8a80;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:1.0625rem;line-height:1.65}
+.wrap{max-width:46rem;margin:0 auto;padding:2rem 1rem 4rem}
+header{padding:1rem 0 1.5rem}
+.kicker{font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+h1{font-family:var(--font-display);font-size:clamp(2rem,6vw,2.9rem);line-height:1.1;margin:.3rem 0 .8rem;text-wrap:balance}
+h2{font-family:var(--font-display);font-size:1.6rem;line-height:1.2;margin:0 0 .8rem;text-wrap:balance}
+h3{font-size:1.1rem;margin:1.4rem 0 .4rem}
+p{margin:0 0 1rem;max-width:65ch}
+section{margin-top:3rem;scroll-margin-top:1rem}
+.num{display:inline-block;min-width:2rem;color:var(--accent);font-family:var(--font-display)}
+ul,ol{padding-left:1.3rem;margin:0 0 1rem;max-width:65ch}
+li{margin:.3rem 0}
+em{font-style:italic}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.lead{font-size:1.2rem;color:var(--muted)}
+.toc{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:1rem 1.2rem;margin-top:1.2rem}
+.toc ol{columns:2;column-gap:2rem;margin:.4rem 0 0;padding-left:1.3rem}
+@media (max-width:520px){.toc ol{columns:1}}
+.callout{background:var(--accent-soft);border-left:4px solid var(--accent);padding:.9rem 1.1rem;border-radius:0 8px 8px 0;margin:1.2rem 0;max-width:65ch}
+.callout.warm{background:var(--warm-soft);border-left-color:var(--warm)}
+.callout p:last-child{margin-bottom:0}
+.formula{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:.6rem 1.1rem;margin:1.2rem 0;overflow-x:auto;overflow-y:hidden}
+.formula mjx-container[display="true"]{margin:.4rem 0 !important}
+mjx-container{color:inherit}
+table{border-collapse:collapse;width:100%;background:var(--surface)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;margin:1rem 0}
+th,td{padding:.55rem .8rem;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.85rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+td.tnum,th.tnum{text-align:right;font-variant-numeric:tabular-nums}
+.widget{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.1rem;margin:1.5rem 0}
+.widget h3{margin-top:0}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:1rem;margin-bottom:1rem}
+.controls label{display:block;font-weight:600;font-size:.95rem;margin-bottom:.25rem}
+.controls select,.controls input[type=number]{width:100%;font:inherit;padding:.45rem .5rem;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.controls input[type=range]{width:100%;accent-color:var(--accent)}
+.val{font-variant-numeric:tabular-nums;color:var(--accent);font-weight:700}
+svg#plot1{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;font-size:.9rem;color:var(--muted);margin:.4rem 0 1rem}
+.legend span{display:inline-flex;align-items:center;gap:.4rem}
+.sw{display:inline-block;width:1.6rem;height:0;border-top:3px solid var(--accent)}
+.sw.dash{border-top-style:dashed}
+.sw.dot{border-top-color:var(--warm);border-top-style:dotted;border-top-width:4px}
+.sw.area{height:.8rem;border:0;background:var(--accent);opacity:.3}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(10.5rem,1fr));gap:.7rem}
+.card{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.6rem .8rem}
+.card .k{font-size:.8rem;color:var(--muted);line-height:1.3}
+.card .v{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums}
+.card.a .v{color:var(--accent)}
+.card.w .v{color:var(--warm)}
+.readouts{display:grid;gap:.8rem;margin:1rem 0 1.4rem;max-width:65ch}
+.ro{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:0 8px 8px 0;padding:.7rem 1rem}
+.ro.a{border-left-color:var(--accent)}
+.ro.w{border-left-color:var(--warm)}
+.ro h4{margin:0 0 .3rem;font-size:1.02rem}
+.ro p{margin:.25rem 0}
+.ro .eq{overflow-x:auto;overflow-y:hidden}
+.sentence{margin:1rem 0 0;color:var(--muted)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:.5rem .9rem;border-radius:8px;text-align:left}
+button:hover{border-color:var(--accent)}
+code,pre{font-family:var(--font-mono);font-size:.9rem}
+pre{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:1rem;overflow-x:auto;line-height:1.5}
+.quiz .q{margin-bottom:1.6rem}
+.quiz .opts{display:grid;gap:.5rem;max-width:36rem}
+.quiz .opts button{width:100%}
+.quiz .opts button[data-state=right]{border-color:var(--good);background:var(--accent-soft)}
+.quiz .opts button[data-state=wrong]{border-color:var(--bad)}
+.quiz .fb{margin-top:.6rem;min-height:1.5rem}
+.fb strong.right{color:var(--good)} .fb strong.wrong{color:var(--bad)}
+.refs li{margin:.5rem 0}
+footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Survival analysis tutorial</div>
+  <h1>Average hazard, from first idea to HEOR use</h1>
+  <p class="lead">A plain-language walk through what average hazard is, how to calculate it, how to read it, and where it earns its place in biostatistics and health economics. Two small calculators let you try every idea with live numbers.</p>
+  <nav class="toc" aria-label="Contents">
+    <strong>What you will cover</strong>
+    <ol>
+      <li><a href="#speedometer">The speedometer idea</a></li>
+      <li><a href="#curves">Three linked curves</a></li>
+      <li><a href="#meaning">What average hazard means</a></li>
+      <li><a href="#calculate">Calculating it from data</a></li>
+      <li><a href="#reading">Reading the number</a></li>
+      <li><a href="#lookalikes">Two averages that look alike</a></li>
+      <li><a href="#uses">Where it is used</a></li>
+      <li><a href="#mistakes">Common mistakes</a></li>
+      <li><a href="#check">Quick check</a></li>
+      <li><a href="#refs">References</a></li>
+    </ol>
+  </nav>
+</header>
+
+<!-- 1 -->
+<section id="speedometer">
+  <h2><span class="num">1</span>The speedometer idea</h2>
+  <p>Picture a car trip. The <strong>speedometer</strong> shows how fast you are going <em>right now</em>. The <strong>odometer</strong> shows how far you have gone <em>in total</em>. If someone asks for your <strong>average speed</strong>, you divide the distance on the odometer by the time on the clock.</p>
+  <p>Survival data works the same way. Instead of kilometres, you collect <em>risk</em>.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Car trip</th><th>Survival analysis</th><th>Plain meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Speedometer</td><td><strong>Hazard</strong>, \(h(t)\)</td><td>How risky this moment is for someone still event-free</td></tr>
+      <tr><td>Odometer</td><td><strong>Cumulative hazard</strong>, \(H(t)\)</td><td>All the risk collected from the start up to time \(t\)</td></tr>
+      <tr><td>Average speed</td><td><strong>Average hazard</strong></td><td>Cumulative hazard divided by the time it took</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout"><p>Keep this picture in mind. Every formula below is just the car trip written in symbols.</p></div>
+</section>
+
+<!-- 2 -->
+<section id="curves">
+  <h2><span class="num">2</span>Three linked curves</h2>
+  <p>Before averaging anything, we need the three curves that describe a survival experience, and how they connect.</p>
+  <ul>
+    <li><strong>Hazard \(h(t)\)</strong> is the event rate at time \(t\), counted only among people who are still event-free. Its unit is events per unit of time, such as <em>per person-year</em>. It is a rate, so it is <em>not</em> a probability.</li>
+    <li><strong>Cumulative hazard \(H(t)\)</strong> is the area under the hazard curve from 0 to \(t\):
+      \[ H(t)=\int_0^t h(u)\,du \]
+      It only ever goes up.</li>
+    <li><strong>Survival \(S(t)\)</strong> is the chance of still being event-free at time \(t\).</li>
+  </ul>
+  <p>The link between them is the key identity of this whole tutorial:</p>
+  <div class="formula">\[ S(t)=e^{-H(t)} \qquad\text{which means}\qquad H(t)=-\ln S(t) \]</div>
+  <p><strong>Tiny example.</strong> Suppose the hazard stays at 0.10 per year for 5 years. The area under a flat line is height times width, so \(H(5)=0.10\times 5=0.50\). Then \(S(5)=e^{-0.5}=0.607\). About 61 in 100 people are still event-free at year 5.</p>
+</section>
+
+<!-- 3 -->
+<section id="meaning">
+  <h2><span class="num">3</span>What average hazard means</h2>
+  <p>The hazard usually changes over time. A single average gives you one number to report, to compare, or to feed into a model. Just like average speed, you take the total collected (the cumulative hazard) and divide by the length of the window.</p>
+  <div class="formula">\[ \text{average hazard over }[a,b]=\frac{H(b)-H(a)}{b-a} \]</div>
+  <ul>
+    <li>When the window starts at zero, it becomes \(H(t)/t\), which equals \(-\ln S(t)/t\).</li>
+    <li>In words: <em>it is the constant hazard that would collect the same total risk over the same window.</em></li>
+    <li>On a picture, the area under the real curve equals the area of a flat rectangle at the average height. That is the dashed box in the tool below.</li>
+  </ul>
+
+  <h3>The four numbers the tool reports</h3>
+  <p>The tool below shows four readouts for the window you choose. Here is what each one means, using one small story: <strong>100 people are event-free at the start of a 5-year window. By the end, 40 have had the event and 60 have not. Together they spend about 391 years at risk.</strong></p>
+  <div class="readouts">
+    <div class="ro">
+      <h4>1. Cumulative hazard in window</h4>
+      <p class="eq">\( H(b)-H(a)=\text{area under the hazard curve between } a \text{ and } b \)</p>
+      <p><strong>Meaning:</strong> the total risk collected during the window. It is the odometer reading for just that stretch of the trip. It has no unit of its own, because it is a rate multiplied by time.</p>
+      <p><strong>In the story:</strong> \(-\ln(60/100)=0.511\).</p>
+    </div>
+    <div class="ro a">
+      <h4>2. Time-average hazard (per year)</h4>
+      <p class="eq">\( \dfrac{\text{cumulative hazard in window}}{\text{window length}}=\dfrac{H(b)-H(a)}{b-a} \)</p>
+      <p><strong>Meaning:</strong> the single steady hazard that would collect the same total risk in the same time. This is the average speed. Every moment of the window counts equally.</p>
+      <p><strong>In the story:</strong> \(0.511/5=0.102\) per year.</p>
+    </div>
+    <div class="ro w">
+      <h4>3. Person-time weighted (per year)</h4>
+      <p class="eq">\( \dfrac{\text{events in window}}{\text{person-years at risk in window}} \)</p>
+      <p><strong>Meaning:</strong> the ordinary incidence rate. Moments count more when more people are still at risk, because those moments contribute more person-years. It is the version used in the survival-weighted average hazard of section 6.</p>
+      <p><strong>In the story:</strong> \(40/391=0.102\) per year.</p>
+    </div>
+    <div class="ro">
+      <h4>4. Chance of staying event-free through the window</h4>
+      <p class="eq">\( \dfrac{S(b)}{S(a)}=e^{-\left(H(b)-H(a)\right)} \)</p>
+      <p><strong>Meaning:</strong> for people still event-free at the start of the window, the probability they are still event-free at its end. It is a probability, so it runs from 0% to 100%, unlike the two rates above.</p>
+      <p><strong>In the story:</strong> \(e^{-0.511}=0.60\), so 60%.</p>
+    </div>
+  </div>
+  <ul>
+    <li><strong>How they connect.</strong> Number 2 is number 1 divided by the window length. Number 4 is number 1 turned into a probability with \(e^{-x}\). Number 3 needs the survival curve, because it counts person-years.</li>
+    <li><strong>Why 2 and 3 match in the story.</strong> The hazard in this story is steady. When the hazard changes over time, the two split apart, and the tool shows by how much.</li>
+  </ul>
+
+  <div class="widget" id="w1">
+    <h3>Try it: see the average on a real curve</h3>
+    <div class="controls">
+      <div>
+        <label for="shape">Shape of the hazard</label>
+        <select id="shape">
+          <option value="const">Steady risk</option>
+          <option value="rise">Risk rises over time</option>
+          <option value="fall" selected>Early spike, then falls</option>
+          <option value="hump">Rises, then falls</option>
+        </select>
+      </div>
+      <div>
+        <label for="wa">Window start: <span class="val" id="wa-v"></span> years</label>
+        <input type="range" id="wa" min="0" max="9.5" step="0.5" value="1">
+      </div>
+      <div>
+        <label for="wb">Window end: <span class="val" id="wb-v"></span> years</label>
+        <input type="range" id="wb" min="0.5" max="10" step="0.5" value="10">
+      </div>
+    </div>
+    <svg id="plot1" viewBox="0 0 640 300" role="img" aria-label="Hazard curve with the chosen window shaded and the average hazard shown as a flat line"></svg>
+    <div class="legend">
+      <span><i class="sw"></i>Hazard curve</span>
+      <span><i class="sw area"></i>Cumulative hazard in the window (area)</span>
+      <span><i class="sw dash"></i>Time average (flat box with the same area)</span>
+      <span><i class="sw dot"></i>Person-time weighted average (section 6)</span>
+    </div>
+    <div class="cards" aria-live="polite">
+      <div class="card"><div class="k">Cumulative hazard in window</div><div class="v" id="r-dh"></div></div>
+      <div class="card a"><div class="k">Time-average hazard (per year)</div><div class="v" id="r-ta"></div></div>
+      <div class="card w"><div class="k">Person-time weighted (per year)</div><div class="v" id="r-pw"></div></div>
+      <div class="card"><div class="k">Chance of staying event-free through the window</div><div class="v" id="r-sv"></div></div>
+    </div>
+    <p class="sentence" id="r-text"></p>
+  </div>
+
+  <h3>What to notice</h3>
+  <ul>
+    <li>With <em>steady risk</em>, both averages equal the hazard itself. Nothing is hidden.</li>
+    <li>With <em>early spike, then falls</em>, the average sits well above the late-year hazard and well below the early peak. One number cannot tell you the shape.</li>
+    <li>Move the window start to 1. The average drops sharply, because the spike now sits outside the window. <strong>The window changes the answer, so always report it.</strong></li>
+  </ul>
+</section>
+
+<!-- 4 -->
+<section id="calculate">
+  <h2><span class="num">4</span>Calculating it from real data</h2>
+  <p>With real patients you do not know the curve. You estimate the cumulative hazard from the observed events, then divide by the window length. The simplest estimator is the <strong>Nelson-Aalen estimator</strong> (the standard step-by-step way to estimate cumulative hazard).</p>
+  <ol>
+    <li><strong>Choose the window</strong> \([a,b]\), for example years 1 to 10.</li>
+    <li><strong>List each event time</strong> in the window. At each one, note \(d\) (events) and \(n\) (people still at risk just before).</li>
+    <li><strong>Add the steps</strong>: each event time contributes \(d/n\) to the cumulative hazard.</li>
+    <li><strong>Divide the sum by the window length</strong> \(b-a\).</li>
+    <li><strong>Standard error</strong>: divide the standard error of the summed cumulative hazard by the same length. The length is a fixed number, so it scales the estimate and its error equally.</li>
+  </ol>
+  <div class="formula">\[ \text{average hazard}=\frac{1}{b-a}\sum_{a\lt t_i\le b}\frac{d_i}{n_i} \]</div>
+  <p>This is the method in Bull and Spiegelhalter (1997, Section 6.2, p. 1057). Their Table VI reports an average hazard of 0.043 per year for years 1 to 10 in one group, built from steps of 0.077, 0.111 and 0.200 over a 9-year window:</p>
+  <div class="formula">\[ \frac{0.077+0.111+0.200}{9}=0.0431 \]</div>
+  <p>If you already have a survival curve, use the matching version:</p>
+  <div class="formula">\[ \text{average hazard}=\frac{-\ln\!\left[\dfrac{S(b)}{S(a)}\right]}{b-a} \]</div>
+  <p>The two routes estimate the same thing but are not identical in small samples, because \(-\ln\) of a Kaplan-Meier estimate is always a little larger than the Nelson-Aalen sum. The tool below shows the gap.</p>
+
+  <div class="widget" id="w2">
+    <h3>Try it: Nelson-Aalen versus Kaplan-Meier</h3>
+    <p style="margin-bottom:.6rem">Edit the numbers. The starting values give the steps 1/13, 1/9 and 1/5, which match the three step sizes in the paper's table. The risk-set sizes are my reading of those fractions, so treat the example as an illustration.</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Event time</th><th>Events \(d\)</th><th>At risk \(n\)</th><th class="tnum">Step \(d/n\)</th></tr></thead>
+      <tbody id="steps"></tbody>
+    </table></div>
+    <div class="controls">
+      <div>
+        <label for="T">Window length (years)</label>
+        <input type="number" id="T" min="0.1" step="0.5" value="9">
+      </div>
+      <div style="align-self:end"><button type="button" id="reset2">Reset to the example</button></div>
+    </div>
+    <div class="cards" aria-live="polite">
+      <div class="card a"><div class="k">Nelson-Aalen cumulative hazard</div><div class="v" id="o-na-h"></div></div>
+      <div class="card a"><div class="k">Average hazard, Nelson-Aalen (per year)</div><div class="v" id="o-na"></div></div>
+      <div class="card w"><div class="k">Average hazard, Kaplan-Meier (per year)</div><div class="v" id="o-km"></div></div>
+      <div class="card"><div class="k">Kaplan-Meier is higher by</div><div class="v" id="o-diff"></div></div>
+    </div>
+    <p class="sentence">Try making the risk sets larger (for example 130, 90 and 50). The gap nearly disappears. It matters mostly when few people remain at risk.</p>
+  </div>
+
+  <h3>The same thing in R</h3>
+<pre>library(survival)
+
+fit_km <- survfit(Surv(time, status) ~ 1, data = d)
+fit_na <- survfit(Surv(time, status) ~ 1, data = d,
+                  stype = 2, ctype = 1)
+
+avg_haz <- function(fit, a, b) {
+  s <- summary(fit, times = c(a, b), extend = TRUE)$surv
+  -log(s[2] / s[1]) / (b - a)
+}
+
+avg_haz(fit_na, 1, 10)
+avg_haz(fit_km, 1, 10)</pre>
+  <ul>
+    <li><code>library(survival)</code> loads the standard survival package.</li>
+    <li><code>fit_km</code> fits the Kaplan-Meier curve. <code>Surv(time, status)</code> bundles follow-up time with the event flag, and <code>~ 1</code> means one curve for everyone.</li>
+    <li><code>fit_na</code> asks for a curve built from the Nelson-Aalen cumulative hazard: <code>ctype = 1</code> picks that estimator and <code>stype = 2</code> sets survival to \(e^{-H}\).</li>
+    <li><code>avg_haz</code> reads survival at the window start and end, then applies \(-\ln\!\left[S(b)/S(a)\right]/(b-a)\). <code>extend = TRUE</code> keeps the call from failing if \(b\) is past the last follow-up time.</li>
+    <li>The last two lines give the Nelson-Aalen and Kaplan-Meier versions for years 1 to 10.</li>
+  </ul>
+  <p style="color:var(--muted)">I could not run R while preparing this page, so test the snippet on your own data and compare it with a hand calculation.</p>
+</section>
+
+<!-- 5 -->
+<section id="reading">
+  <h2><span class="num">5</span>Reading the number</h2>
+  <p>Take the average hazard of 0.043 per year over years 1 to 10. Here is how to say it correctly and what to avoid.</p>
+  <ul>
+    <li><strong>Say this:</strong> <em>"Over years 1 to 10, the hazard behaved on average like a constant 0.043 per year."</em> It collected the same total risk as the real, changing hazard.</li>
+    <li><strong>It is a rate, not a risk.</strong> 0.043 per year does not mean a 4.3% chance of the event. For people still event-free at year 1, the chance of an event by year 10 is
+      \[ 1-e^{-0.043\times 9}=1-e^{-0.388}\approx 0.32 \]
+      which is about 32%.</li>
+    <li><strong>It hides the shape.</strong> A hazard that spikes then fades and a hazard that rises slowly can share the same average. Plot the hazard too.</li>
+    <li><strong>Windows give a story.</strong> In the same paper, the average hazard in the first year was 0.237, against 0.043 for years 1 to 10. Two windows show a steep early fall that one overall average would bury.</li>
+  </ul>
+</section>
+
+<!-- 6 -->
+<section id="lookalikes">
+  <h2><span class="num">6</span>Two averages that look alike</h2>
+  <p>"Average hazard" can mean two slightly different things. Both are valid. They answer different questions, so they should not be swapped without saying so.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th></th><th>Time average</th><th>Person-time weighted average</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Idea</strong></td><td>Every moment counts equally</td><td>Moments count more when more people are still at risk</td></tr>
+      <tr><td><strong>Formula</strong></td><td>\(H(b)-H(a)\), divided by window length</td><td>Events in the window divided by person-time in the window</td></tr>
+      <tr><td><strong>Also known as</strong></td><td>Average hazard (Bull and Spiegelhalter)</td><td>Incidence rate; average hazard with survival weight, AHSW (Uno and Horiguchi)</td></tr>
+      <tr><td><strong>From the start, up to \(\tau\)</strong></td><td>\(\dfrac{-\ln S(\tau)}{\tau}\)</td><td>\(\dfrac{1-S(\tau)}{\mathrm{RMST}(\tau)}\)</td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>RMST</strong> is the restricted mean survival time, the area under the survival curve up to \(\tau\):</p>
+  <div class="formula">\[ \mathrm{RMST}(\tau)=\int_0^{\tau} S(t)\,dt \]</div>
+  <p>It is the expected number of event-free person-years per person in that window.</p>
+  <ul>
+    <li>With a <em>constant</em> hazard, both give the same number.</li>
+    <li>With a <em>falling</em> hazard, the person-time weighted version is higher, because the high early hazard happens while most people are still at risk. With a <em>rising</em> hazard it is lower. You can see this in the tool in section 3.</li>
+    <li>The weighted version can be estimated from a Kaplan-Meier curve with censored data, and Uno and Horiguchi built tests and a regression model on it. It is available in the R package <code>survAH</code>.</li>
+  </ul>
+  <div class="callout warm"><p><strong>Do not confuse either with the "average hazard ratio".</strong> That is a different object: a single hazard ratio that summarises a ratio changing over time, estimated for example by weighted Cox regression (Kalbfleisch and Prentice 1981; Schemper, Wakounig and Heinze 2009).</p></div>
+</section>
+
+<!-- 7 -->
+<section id="uses">
+  <h2><span class="num">7</span>Where it is used</h2>
+
+  <h3>In biostatistics</h3>
+  <ul>
+    <li><strong>Describing change over time.</strong> Report the average hazard in separate windows, as in the first year versus years 1 to 10 above.</li>
+    <li><strong>Comparing groups.</strong> Divide one group's average hazard by the other's over the same window. In Bull and Spiegelhalter's example the ratio was 3.59 in the first year and 1.49 over years 1 to 10, so the relative difference shrank over time.</li>
+    <li><strong>When hazards are not proportional.</strong> A Cox hazard ratio assumes a constant ratio. If curves cross or an effect is delayed, the ratio and difference of weighted average hazards, or a weighted Cox model, give a summary that stays meaningful.</li>
+  </ul>
+
+  <h3>In health economics (HEOR)</h3>
+  <ul>
+    <li><strong>Turning data into model inputs.</strong> A cycle length in a Markov model rarely matches the follow-up of a study, so a probability must be converted to a rate and back.</li>
+    <li><strong>Checking extrapolations.</strong> Compare the average hazard in the observed window with the average hazard the fitted curve implies beyond it. A sudden jump or fall is a warning sign to investigate.</li>
+    <li><strong>Exponential models.</strong> A constant hazard is simply events divided by total person-time.</li>
+    <li><strong>Summarising waning or delayed effects</strong> in a way that decision makers can read.</li>
+  </ul>
+
+  <div class="widget">
+    <h3>Worked example: from a 5-year risk to a cycle probability</h3>
+    <p>A study reports that 40% of patients had the event within 5 years, so \(S(5)=0.60\). Your model runs in 1-year and 3-month cycles.</p>
+    <ol>
+      <li><strong>Average hazard:</strong> \(-\ln(0.60)/5=0.5108/5=0.1022\) per year.</li>
+      <li><strong>1-year probability:</strong> \(1-e^{-0.1022\times 1}=0.0971\), about 9.7%.</li>
+      <li><strong>3-month probability:</strong> \(1-e^{-0.1022\times 0.25}=0.0252\), about 2.5%.</li>
+    </ol>
+    <p>The general rule behind steps 2 and 3, for a cycle of length \(c\) years:</p>
+    <div class="formula">\[ r=\frac{-\ln(1-p)}{t} \qquad\text{and}\qquad p_c=1-e^{-r\,c} \]</div>
+    <p>The tempting shortcut, 40% divided by 5 years, gives 8% per year. That is too low, because risk is collected on a shrinking group of people who are still event-free. All of these steps assume the hazard is roughly constant inside the window, so check that before you trust them.</p>
+  </div>
+</section>
+
+<!-- 8 -->
+<section id="mistakes">
+  <h2><span class="num">8</span>Common mistakes</h2>
+  <ol>
+    <li><strong>Treating a rate as a probability.</strong> A hazard of 0.1 per year is not a 10% risk.</li>
+    <li><strong>Dividing a probability by time.</strong> Use \(-\ln(1-p)/t\) to get the rate.</li>
+    <li><strong>Forgetting the window.</strong> The same data give different averages for different windows.</li>
+    <li><strong>Averaging yearly hazards without weights.</strong> If windows differ in length, weight each by its length, or add the cumulative hazards and divide by total time.</li>
+    <li><strong>Using \(-\ln S(t)/t\) for a window that does not start at zero.</strong> Use the ratio \(S(b)/S(a)\).</li>
+    <li><strong>Mixing up the two averages</strong> or confusing either with the average hazard ratio.</li>
+    <li><strong>Assuming the hazard really is constant</strong> because you reported one average.</li>
+  </ol>
+</section>
+
+<!-- 9 -->
+<section id="check">
+  <h2><span class="num">9</span>Quick check</h2>
+  <p>Three short questions. Pick an answer to see why.</p>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<!-- 10 -->
+<section id="refs">
+  <h2><span class="num">10</span>References</h2>
+  <h3>Checked against the sources while preparing this page</h3>
+  <ol class="refs">
+    <li>Bull K, Spiegelhalter DJ. Tutorial in biostatistics: survival analysis in observational studies. <em>Stat Med</em> 1997;16:1041-1074. (Section 6.2, p. 1057 and Table VI.)</li>
+    <li>Uno H, Horiguchi M. Ratio and difference of average hazard with survival weight: new measures to quantify survival benefit of new therapy. <em>Stat Med</em> 2023;42(7):936-952. doi:10.1002/sim.9651</li>
+    <li>Uno H, Tian L, Horiguchi M, Hattori S, Kehl KL. Regression models for average hazard. <em>Biometrics</em> 2024;80(2):ujae037.</li>
+    <li>Horiguchi M, Tian L, Kehl KL, Uno H. Assessing delayed treatment benefits of immunotherapy using long-term average hazard. <em>Lifetime Data Anal</em> 2025;31(4):784-809.</li>
+    <li>Kalbfleisch JD, Prentice RL. Estimation of the average hazard ratio. <em>Biometrika</em> 1981;68:105-112.</li>
+    <li>Schemper M, Wakounig S, Heinze G. The estimation of average hazard ratios by weighted Cox regression. <em>Stat Med</em> 2009;28:2473-2489.</li>
+    <li>R packages: <code>survAH</code> (average hazard with survival weight) and <code>coxphw</code> (weighted Cox regression).</li>
+  </ol>
+  <h3>From general knowledge, please verify before citing</h3>
+  <ul>
+    <li>Miller DK, Homan SM. Determining transition probabilities: confusion and suggestions. <em>Med Decis Making</em> 1994;14:52-58.</li>
+    <li>Fleurence RL, Hollenbeak CS. Rates and probabilities in economic modelling. <em>Pharmacoeconomics</em> 2007;25:3-6.</li>
+    <li>Hern&aacute;n MA. The hazards of hazard ratios. <em>Epidemiology</em> 2010;21:13-15.</li>
+    <li>Royston P, Parmar MKB. Restricted mean survival time: an alternative to the hazard ratio. <em>BMC Med Res Methodol</em> 2013;13:152.</li>
+    <li>NICE Decision Support Unit Technical Support Documents 14 and 21 on survival analysis and extrapolation.</li>
+  </ul>
+</section>
+
+<footer>This page is a teaching aid. The worked numbers were recomputed independently. The Bull and Spiegelhalter risk-set sizes in section 4 are inferred and used only for illustration.</footer>
+</div>
+
+<script>
+(function(){
+  var fmt = function(x, d){ return Number(x).toFixed(d); };
+
+  /* ---------- Widget 1: hazard shapes and window average ---------- */
+  var SHAPES = {
+    "const": function(t){ return 0.10; },
+    "rise":  function(t){ return 0.02 + 0.02 * t; },
+    "fall":  function(t){ return 0.30 * Math.exp(-0.35 * t) + 0.03; },
+    "hump":  function(t){ return 0.03 + 0.25 * t * Math.exp(-t / 1.2); }
+  };
+  var DT = 0.005, N = 2000;
+  var Hs, Ss, hmax;
+
+  function precompute(key){
+    var h = SHAPES[key];
+    Hs = new Array(N + 1); Ss = new Array(N + 1);
+    Hs[0] = 0; Ss[0] = 1; hmax = 0;
+    for (var i = 0; i < N; i++){
+      var h0 = h(i * DT), h1 = h((i + 1) * DT);
+      hmax = Math.max(hmax, h0, h1);
+      Hs[i + 1] = Hs[i] + (h0 + h1) / 2 * DT;
+      Ss[i + 1] = Math.exp(-Hs[i + 1]);
+    }
+  }
+
+  var shapeEl = document.getElementById("shape");
+  var aEl = document.getElementById("wa");
+  var bEl = document.getElementById("wb");
+  var svg = document.getElementById("plot1");
+
+  function draw1(){
+    var key = shapeEl.value, h = SHAPES[key];
+    var a = parseFloat(aEl.value), b = parseFloat(bEl.value);
+    if (b <= a){ b = a + 0.5; bEl.value = b; }
+    document.getElementById("wa-v").textContent = a;
+    document.getElementById("wb-v").textContent = b;
+    precompute(key);
+
+    var ia = Math.round(a / DT), ib = Math.round(b / DT);
+    var dH = Hs[ib] - Hs[ia];
+    var ta = dH / (b - a);
+    var area = 0;
+    for (var i = ia; i < ib; i++) area += (Ss[i] + Ss[i + 1]) / 2 * DT;
+    var pw = (Ss[ia] - Ss[ib]) / area;
+    var surv = Ss[ib] / Ss[ia];
+
+    document.getElementById("r-dh").textContent = fmt(dH, 3);
+    document.getElementById("r-ta").textContent = fmt(ta, 4);
+    document.getElementById("r-pw").textContent = fmt(pw, 4);
+    document.getElementById("r-sv").textContent = fmt(surv * 100, 1) + "%";
+    document.getElementById("r-text").textContent =
+      "Between year " + a + " and year " + b + " the hazard collected " + fmt(dH, 3) +
+      " of cumulative hazard over " + (b - a) + " years, so it averaged " + fmt(ta, 4) +
+      " per year. People still event-free at year " + a + " had a " + fmt(surv * 100, 1) +
+      "% chance of staying event-free to year " + b + ".";
+
+    var ymax = Math.ceil(hmax * 1.15 / 0.05) * 0.05;
+    var X0 = 60, X1 = 620, Y0 = 250, Y1 = 20;
+    var sx = function(t){ return X0 + (X1 - X0) * t / 10; };
+    var sy = function(v){ return Y0 - (Y0 - Y1) * v / ymax; };
+    var out = "";
+
+    var step = ymax > 0.2 ? 0.1 : 0.05;
+    for (var v = 0; v <= ymax + 1e-9; v += step){
+      out += '<line x1="' + X0 + '" x2="' + X1 + '" y1="' + sy(v) + '" y2="' + sy(v) + '" stroke="var(--line)" stroke-width="1"/>';
+      out += '<text x="' + (X0 - 8) + '" y="' + (sy(v) + 4) + '" text-anchor="end" font-size="12" fill="var(--muted)">' + fmt(v, 2) + '</text>';
+    }
+    for (var t = 0; t <= 10; t += 2){
+      out += '<text x="' + sx(t) + '" y="' + (Y0 + 18) + '" text-anchor="middle" font-size="12" fill="var(--muted)">' + t + '</text>';
+    }
+    out += '<text x="' + ((X0 + X1) / 2) + '" y="292" text-anchor="middle" font-size="12" fill="var(--muted)">Years since start</text>';
+    out += '<text transform="translate(14,' + ((Y0 + Y1) / 2) + ') rotate(-90)" text-anchor="middle" font-size="12" fill="var(--muted)">Hazard (events per person-year)</text>';
+
+    var area_d = "M" + sx(a) + "," + sy(0);
+    for (var u = a; u <= b + 1e-9; u += 0.05) area_d += " L" + sx(u) + "," + sy(h(u));
+    area_d += " L" + sx(b) + "," + sy(0) + " Z";
+    out += '<path d="' + area_d + '" fill="var(--accent)" fill-opacity="0.3"/>';
+
+    out += '<rect x="' + sx(a) + '" y="' + sy(ta) + '" width="' + (sx(b) - sx(a)) + '" height="' + (sy(0) - sy(ta)) + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 4"/>';
+    out += '<line x1="' + sx(a) + '" x2="' + sx(b) + '" y1="' + sy(pw) + '" y2="' + sy(pw) + '" stroke="var(--warm)" stroke-width="3" stroke-dasharray="1 5" stroke-linecap="round"/>';
+
+    var curve = "";
+    for (var w = 0; w <= 10 + 1e-9; w += 0.05) curve += (w === 0 ? "M" : " L") + sx(w) + "," + sy(h(w));
+    out += '<path d="' + curve + '" fill="none" stroke="var(--accent)" stroke-width="2.5"/>';
+
+    out += '<line x1="' + X0 + '" x2="' + X1 + '" y1="' + Y0 + '" y2="' + Y0 + '" stroke="var(--muted)" stroke-width="1.5"/>';
+    svg.innerHTML = out;
+  }
+  shapeEl.addEventListener("change", draw1);
+  aEl.addEventListener("input", function(){
+    if (parseFloat(aEl.value) >= parseFloat(bEl.value)) bEl.value = parseFloat(aEl.value) + 0.5;
+    draw1();
+  });
+  bEl.addEventListener("input", function(){
+    if (parseFloat(bEl.value) <= parseFloat(aEl.value)) aEl.value = parseFloat(bEl.value) - 0.5;
+    draw1();
+  });
+  draw1();
+
+  /* ---------- Widget 2: Nelson-Aalen versus Kaplan-Meier ---------- */
+  var DEFAULTS = [[1,13],[1,9],[1,5],[0,3]];
+  var tbody = document.getElementById("steps");
+  function buildRows(){
+    var html = "";
+    for (var i = 0; i < DEFAULTS.length; i++){
+      html += '<tr><td>Step ' + (i + 1) + '</td>' +
+        '<td><input type="number" min="0" step="1" id="d' + i + '" value="' + DEFAULTS[i][0] + '" style="width:5rem" aria-label="Events at step ' + (i + 1) + '"></td>' +
+        '<td><input type="number" min="1" step="1" id="n' + i + '" value="' + DEFAULTS[i][1] + '" style="width:5rem" aria-label="At risk at step ' + (i + 1) + '"></td>' +
+        '<td class="tnum" id="s' + i + '"></td></tr>';
+    }
+    tbody.innerHTML = html;
+    var inputs = tbody.querySelectorAll("input");
+    for (var j = 0; j < inputs.length; j++) inputs[j].addEventListener("input", calc2);
+  }
+  function calc2(){
+    var T = parseFloat(document.getElementById("T").value);
+    var na = 0, km = 0, kmOk = true;
+    for (var i = 0; i < DEFAULTS.length; i++){
+      var d = parseFloat(document.getElementById("d" + i).value) || 0;
+      var n = parseFloat(document.getElementById("n" + i).value) || 0;
+      var cell = document.getElementById("s" + i);
+      if (d <= 0 || n <= 0){ cell.textContent = "ignored"; continue; }
+      if (d > n){ cell.textContent = "d is larger than n"; kmOk = false; continue; }
+      cell.textContent = fmt(d / n, 3);
+      na += d / n;
+      if (d >= n) kmOk = false; else km += -Math.log(1 - d / n);
+    }
+    var okT = isFinite(T) && T > 0;
+    document.getElementById("o-na-h").textContent = fmt(na, 3);
+    document.getElementById("o-na").textContent = okT ? fmt(na / T, 4) : "check length";
+    if (okT && kmOk){
+      document.getElementById("o-km").textContent = fmt(km / T, 4);
+      document.getElementById("o-diff").textContent = na > 0 ? fmt((km / na - 1) * 100, 1) + "%" : "n/a";
+    } else {
+      document.getElementById("o-km").textContent = okT ? "undefined" : "check length";
+      document.getElementById("o-diff").textContent = "n/a";
+    }
+  }
+  buildRows();
+  document.getElementById("T").addEventListener("input", calc2);
+  document.getElementById("reset2").addEventListener("click", function(){
+    for (var i = 0; i < DEFAULTS.length; i++){
+      document.getElementById("d" + i).value = DEFAULTS[i][0];
+      document.getElementById("n" + i).value = DEFAULTS[i][1];
+    }
+    document.getElementById("T").value = 9;
+    calc2();
+  });
+  calc2();
+
+  /* ---------- Quiz (explanations use LaTeX, typeset after each answer) ---------- */
+  var QUIZ = [
+    { q: "Survival at 5 years is 0.50. What is the average hazard over the first 5 years?",
+      o: ["0.100 per year", "0.139 per year", "0.200 per year", "0.500 per year"], c: 1,
+      why: "Cumulative hazard is \\(-\\ln(0.50)=0.693\\). Divide by 5 years: \\(0.693/5=0.139\\) per year." },
+    { q: "A group has an average hazard of 0.05 per year, held for 2 years. What is the risk of an event for someone event-free at the start?",
+      o: ["Exactly 10%", "About 9.5%", "About 5%", "About 0.1%"], c: 1,
+      why: "Cumulative hazard is \\(0.05\\times 2=0.10\\). Risk is \\(1-e^{-0.10}=0.095\\). A rate multiplied by time is not a risk until you convert it." },
+    { q: "The hazard falls steadily over the window. Which average is larger?",
+      o: ["The time average", "The person-time weighted average", "They are always equal", "You cannot tell"], c: 1,
+      why: "The weighted version gives more influence to the early period, when many people are still at risk and the hazard is highest. With a falling hazard it comes out higher." }
+  ];
+  var quiz = document.getElementById("quiz");
+  QUIZ.forEach(function(item, qi){
+    var box = document.createElement("div"); box.className = "q";
+    var p = document.createElement("p"); p.innerHTML = "<strong>" + (qi + 1) + ". </strong>"; p.appendChild(document.createTextNode(item.q));
+    var opts = document.createElement("div"); opts.className = "opts";
+    var fb = document.createElement("div"); fb.className = "fb"; fb.setAttribute("aria-live", "polite");
+    item.o.forEach(function(text, oi){
+      var btn = document.createElement("button"); btn.type = "button"; btn.textContent = text;
+      btn.addEventListener("click", function(){
+        var all = opts.querySelectorAll("button");
+        for (var k = 0; k < all.length; k++) all[k].removeAttribute("data-state");
+        var right = oi === item.c;
+        btn.setAttribute("data-state", right ? "right" : "wrong");
+        fb.innerHTML = "";
+        var s = document.createElement("strong"); s.className = right ? "right" : "wrong";
+        s.textContent = right ? "Correct. " : "Not quite. ";
+        fb.appendChild(s); fb.appendChild(document.createTextNode(item.why));
+        if (window.MathJax && window.MathJax.typesetPromise){ window.MathJax.typesetPromise([fb]).catch(function(){}); }
+      });
+      opts.appendChild(btn);
+    });
+    box.appendChild(p); box.appendChild(opts); box.appendChild(fb); quiz.appendChild(box);
+  });
+})();
+</script>
+</body>
+</html>

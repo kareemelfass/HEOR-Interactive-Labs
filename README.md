@@ -34,6 +34,23 @@ A comprehensive 36-chapter tutorial for biostatistics and HEOR, with numerical e
 
 ---
 
+## Featured: Average Hazard, A Plain-Language Tutorial
+
+**[Open the Average Hazard interactive tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/average-hazard-lab/)**
+
+A short, easy-language tutorial that builds average hazard from a speedometer and odometer analogy. It covers hazard, cumulative hazard and survival, the time-average hazard over any window, and the person-time weighted average (events per person-year, as in the average hazard with survival weight). It shows how to calculate the average from event data with the Nelson-Aalen estimator, why a Kaplan-Meier based version comes out slightly higher in small samples, how to read the number, and how to convert a study risk into model cycle probabilities.
+
+- Explore a hazard curve with an adjustable window and see the four readouts: cumulative hazard, time-average hazard, person-time weighted average and event-free chance
+- Edit event and at-risk counts to compare Nelson-Aalen and Kaplan-Meier averages
+- Follow a worked example from a 5-year risk to 1-year and 3-month cycle probabilities
+- Review common mistakes, an R snippet and a three-question quick check
+- MathJax equations, with references to Bull and Spiegelhalter (1997), Uno and Horiguchi (2023) and others
+- All interactive data are illustrative, and the risk-set sizes in the Bull and Spiegelhalter style example are inferred from published step sizes
+
+**[Browse the source](https://github.com/kareemelfass/HEOR-Interactive-Labs/tree/main/average-hazard-lab)**
+
+---
+
 ## Featured: QALYs, DALYs, HALYs and PALYs Interactive Tutorial
 
 **[Open the QALY, DALY, HALY and PALY interactive tutorial](https://kareemelfass.github.io/HEOR-Interactive-Labs/adjusted-life-years-lab/)**
