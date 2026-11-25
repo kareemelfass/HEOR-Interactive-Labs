@@ -155,15 +155,15 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
       <tr><td>Average speed</td><td><strong>Average hazard</strong></td><td>Cumulative hazard divided by the time it took</td></tr>
     </tbody>
   </table></div>
-  <div class="callout"><p>Keep this picture in mind. Every formula below is just the car trip written in symbols.</p></div>
+  <div class="callout"><p>Keep this picture in mind. The car analogy explains the <strong>time-average</strong> hazard. A second average weights each moment by the number of people still event-free; it answers a different question (section 6).</p></div>
 </section>
 
 <!-- 2 -->
 <section id="curves">
   <h2><span class="num">2</span>Three linked curves</h2>
-  <p>Before averaging anything, we need the three curves that describe a survival experience, and how they connect.</p>
+  <p>Before averaging anything, we need three curves and how they connect. Throughout sections 1 to 6, assume continuous time to a single first event, with right censoring where relevant. Competing causes of failure require a different probability calculation (section 7).</p>
   <ul>
-    <li><strong>Hazard \(h(t)\)</strong> is the event rate at time \(t\), counted only among people who are still event-free. Its unit is events per unit of time, such as <em>per person-year</em>. It is a rate, so it is <em>not</em> a probability.</li>
+    <li><strong>Hazard \(h(t)\)</strong> is the event rate at time \(t\), counted only among people who are still event-free. Its unit is events per unit of time, such as <em>per person-year</em>. It is a rate, so it is <em>not</em> a probability. For a sufficiently short interval of length \(\Delta t\), the conditional event probability is approximately \(h(t)\Delta t\).</li>
     <li><strong>Cumulative hazard \(H(t)\)</strong> is the area under the hazard curve from 0 to \(t\):
       \[ H(t)=\int_0^t h(u)\,du \]
       It never decreases. It is dimensionless, can exceed 1, and is not a probability.</li>
@@ -177,7 +177,7 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
 <!-- 3 -->
 <section id="meaning">
   <h2><span class="num">3</span>What average hazard means</h2>
-  <p>The hazard usually changes over time. A single average gives you one number to report, to compare, or to feed into a model. Just like average speed, you take the total collected (the cumulative hazard) and divide by the length of the window.</p>
+  <p>The hazard usually changes over time. There are two useful ways to summarise it over a specified window:</p><ul><li><strong>Time-average hazard:</strong> What constant rate would reproduce the survival at the end of this window?</li><li><strong>Survival-weighted average hazard (AH-SW):</strong> How many first events occur per expected event-free person-year in this window, without censoring?</li></ul><p>Start with the first question. Just like average speed, divide the cumulative hazard by the window length.</p>
   <div class="formula">\[ \text{average hazard over }[a,b]=\frac{H(b)-H(a)}{b-a} \]</div>
   <ul>
     <li>When the window starts at zero, it becomes \(H(t)/t\), which equals \(-\ln S(t)/t\).</li>
@@ -186,7 +186,7 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
   </ul>
 
   <h3>The four numbers the tool reports</h3>
-  <p>The tool below shows four readouts for the window you choose. Here is what each one means, using one small story: <strong>100 people are event-free at the start of a 5-year window. By the end, 40 have had the event and 60 have not. For a constant-hazard population with this survival, the expected total event-free time for 100 people is about 391 person-years, with no censoring before year 5.</strong></p>
+  <p>The tool below shows four readouts for the window you choose. Here is what each one means, using one small story: <strong>Consider a hypothetical population of 100 event-free people with a constant hazard over 5 years and 60% survival at year 5. We expect 40 events, 60 survivors and about 391.5 event-free person-years in total. These are expected values, not observed patient counts.</strong></p>
   <div class="readouts">
     <div class="ro">
       <h4>1. Cumulative hazard in window</h4>
@@ -204,7 +204,7 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
       <h4>3. Person-time weighted (per year)</h4>
       <p class="eq">\( \dfrac{\text{events in window}}{\text{person-years at risk in window}} \)</p>
       <p><strong>Meaning:</strong> the population incidence rate in the absence of censoring before the horizon. Moments with more event-free people receive more weight. With right censoring, the crude observed events/person-time rate need not estimate this quantity; see section 6.</p>
-      <p><strong>In the story:</strong> \(40/391=0.102\) per year.</p>
+      <p><strong>In the story:</strong> \(40/391.5=0.102\) per year.</p>
     </div>
     <div class="ro">
       <h4>4. Chance of staying event-free through the window</h4>
@@ -259,7 +259,7 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
   <ul>
     <li>With <em>steady risk</em>, both averages equal the hazard itself. Nothing is hidden.</li>
     <li>With <em>early spike, then falls</em>, the average sits well above the late-year hazard and well below the early peak. One number cannot tell you the shape.</li>
-    <li>Move the window start from 0 to 1 or later. The average drops sharply, because the spike now sits outside the window. <strong>The window changes the answer, so always report it.</strong></li>
+    <li>Move the window start from 0 to 1 or later. The average decreases because the highest early hazards receive no weight once the window starts later. <strong>The window changes the answer, so always report it.</strong></li>
   </ul>
 </section>
 
@@ -272,18 +272,20 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
     <li><strong>List each event time</strong> in the window. At each one, note \(d\) (events) and \(n\) (people still at risk just before).</li>
     <li><strong>Add the steps</strong>: each event time contributes \(d/n\) to the cumulative hazard.</li>
     <li><strong>Divide the sum by the window length</strong> \(b-a\).</li>
-    <li><strong>Standard error</strong>: divide the standard error of the summed cumulative hazard by the same length. The length is a fixed number, so it scales the estimate and its error equally.</li>
+    <li><strong>Standard error</strong>: divide the standard error of the cumulative hazard increment by the window length.</li>
   </ol>
   <div class="formula">\[ \text{average hazard}=\frac{1}{b-a}\sum_{a\lt t_i\le b}\frac{d_i}{n_i} \]</div>
+  <div class="formula">\[\widehat{\mathrm{SE}}(\bar h)=\frac{1}{b-a}\sqrt{\sum_{a\lt t_i\le b}\frac{d_i}{n_i^2}}\]</div>
+  <p>This common Nelson-Aalen variance estimator gives 0.0268 per year for the three event rows below. Bull and Spiegelhalter use a Greenwood-type variance expression with terms \(d_i/[n_i(n_i-d_i)]\), giving 0.0295 per year, consistent with their reported 0.029. Do not subtract endpoint standard errors: the endpoint estimates are correlated. Avoid horizons with very few patients at risk; use suitable confidence intervals or a patient-level bootstrap, especially with sparse events.</p>
   <p>This is the method in Bull and Spiegelhalter (1997, Section 6.2, p. 1057). Their Table VI reports an average hazard of 0.043 per year for years 1 to 10 in one group, built from steps of 0.077, 0.111 and 0.200 over a 9-year window:</p>
   <div class="formula">\[ \frac{0.077+0.111+0.200}{9}=0.0431 \]</div>
   <p>If you already have a survival curve, use the matching version:</p>
   <div class="formula">\[ \text{average hazard}=\frac{-\ln\!\left[\dfrac{S(b)}{S(a)}\right]}{b-a} \]</div>
-  <p>For continuous event times, both routes estimate the same population quantity, but their finite-sample estimates differ: \(-\ln(1-d/n)\ge d/n\), with strict inequality when events occur and \(d&lt;n\). If all remaining patients experience the event, the Kaplan-Meier survival reaches zero and its negative log is infinite. The tool below shows the gap.</p>
+  <p>For continuous event times, both routes estimate the same population quantity, but their finite-sample estimates differ: \(-\ln(1-d/n)\ge d/n\), with strict inequality when events occur and \(d&lt;n\). If all remaining patients experience the event, the Kaplan-Meier survival reaches zero and its negative log is infinite. The tool below shows the gap. In the published example, the Nelson-Aalen average is 0.0431 per year and the Kaplan-Meier-based average is 0.0468. The corresponding conditional event probabilities are 32.16% and 34.36%, respectively (using unrounded risk-set fractions). Neither is an exact observed event proportion under censoring.</p>
 
   <div class="widget" id="w2">
     <h3>Try it: Nelson-Aalen versus Kaplan-Meier</h3>
-    <p style="margin-bottom:.6rem">Edit the numbers (a fixed cohort without late entry; later risk sets cannot exceed the preceding survivors). The starting values give the steps 1/13, 1/9 and 1/5, which match the three step sizes in the paper's table. The three risk-set sizes and event counts are explicitly reported in Table VI (p. 1056). The fourth, zero-event row is an optional illustrative input.</p>
+    <p style="margin-bottom:.6rem">Edit the numbers (a fixed cohort without late entry; later risk sets cannot exceed the preceding survivors). The starting values give the steps 1/13, 1/9 and 1/5, which match the three step sizes in the paper's table. The three risk-set sizes and event counts are explicitly reported in Table VI (p. 1056). The fourth, zero-event row is an optional illustrative input. The published event days are 393, 1791 and 3098.</p>
     <div class="tablewrap"><table>
       <thead><tr><th>Event time</th><th>Events \(d\)</th><th>At risk \(n\)</th><th class="tnum">Step \(d/n\)</th></tr></thead>
       <tbody id="steps"></tbody>
@@ -301,7 +303,7 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
       <div class="card w"><div class="k">Average hazard, Kaplan-Meier (per year)</div><div class="v" id="o-km"></div></div>
       <div class="card"><div class="k">Kaplan-Meier is higher by</div><div class="v" id="o-diff"></div></div>
     </div>
-    <p class="sentence">Try making the risk sets larger (for example 130, 90 and 50). The gap nearly disappears. It matters mostly when few people remain at risk.</p>
+    <p class="sentence">Try making the risk sets larger (for example 130, 90 and 50). The gap decreases when the fraction experiencing events at each time is small. Keep all rows consistent with the preceding risk set.</p>
   </div>
 
   <h3>The same thing in R</h3>
@@ -338,8 +340,8 @@ avg_haz(fit_km, 1, 10)</pre>
   <p>Take the average hazard of 0.043 per year over years 1 to 10. Here is how to say it correctly and what to avoid.</p>
   <ul>
     <li><strong>Say this:</strong> <em>"Over years 1 to 10, the hazard behaved on average like a constant 0.043 per year."</em> It reproduces the same estimated cumulative hazard over that window, not necessarily the same survival at intermediate times.</li>
-    <li><strong>It is a rate, not a risk.</strong> 0.043 per year does not mean a 4.3% chance of the event. For people still event-free at year 1, the chance of an event by year 10 is
-      \[ 1-e^{-0.043\times 9}=1-e^{-0.388}\approx 0.32 \]
+    <li><strong>It is a rate, not a risk.</strong> 0.043 per year does not mean a 4.3% chance of the event. For people still event-free at year 1, the Nelson-Aalen-based estimate of the chance of an event by year 10 is
+      \[ 1-e^{-0.3880}\approx 0.322 \]
       which is about 32%.</li>
     <li><strong>It hides the shape.</strong> A hazard that spikes then fades and a hazard that rises slowly can share the same average. Plot the hazard too.</li>
     <li><strong>Windows give a story.</strong> In the same paper, the average hazard in the first year was 0.237, against 0.043 for years 1 to 10. Two windows show a steep early fall that one overall average would bury.</li>
@@ -364,14 +366,24 @@ avg_haz(fit_km, 1, 10)</pre>
   <p>It is the expected number of event-free person-years per person from time 0 to the specified horizon.</p>
   <div class="formula">\[ \eta(a,b)=\frac{S(a)-S(b)}{\int_a^b S(u)\,du}=\frac{\int_a^b h(u)S(u)\,du}{\int_a^b S(u)\,du} \]</div>
   <p>The numerator is the expected number of first events per original patient in the window; the denominator is expected event-free person-time per original patient. Both may also be divided by \(S(a)\) to express them per person event-free at the window start.</p>
+  <h3>Same endpoint survival, different averages</h3>
+  <p>Compare three hypothetical two-year survival patterns. Each accumulates 0.40 of cumulative hazard and ends at 67.03% survival, but their event timing differs. Rates are constant within each year.</p>
+  <div class="tablewrap"><table><thead><tr><th>Hazards (year 1, year 2)</th><th>Time-average (/year)</th><th>RMST (years)</th><th>AH-SW (/year)</th></tr></thead><tbody>
+  <tr><td>0.30, 0.10</td><td>0.2000</td><td>1.5689</td><td>0.2101</td></tr>
+  <tr><td>0.20, 0.20</td><td>0.2000</td><td>1.6484</td><td>0.2000</td></tr>
+  <tr><td>0.10, 0.30</td><td>0.2000</td><td>1.7334</td><td>0.1902</td></tr>
+  </tbody></table></div>
+  <p>In every row, 32.97 events are expected per 100 starting patients. When events happen earlier, fewer event-free years are accumulated, so AH-SW is higher. The time-average cannot distinguish these patterns because it only uses endpoint survival. This is why the two averages are not interchangeable.</p>
   <h3>Why censoring matters</h3>
   <p>With independent right censoring, let \(G(t)\) be the probability of still being under observation. The crude observed incidence rate generally targets \(\int h(t)S(t)G(t)dt/\int S(t)G(t)dt\), with the same integration window. Early censoring changes the weights even when it is independent of event time. AH-SW instead uses \(S(t)\) alone, estimated from Kaplan-Meier under appropriate independent censoring and adequate follow-up. This is the distinction made by Uno and Horiguchi (2023).</p>
   <ul>
     <li>With a <em>constant</em> hazard, both give the same number.</li>
     <li>With a <em>falling</em> hazard, the person-time weighted version is higher, because the high early hazard happens while most people are still at risk. With a <em>rising</em> hazard it is lower. You can see this in the tool in section 3.</li>
-    <li>The weighted version can be estimated from a Kaplan-Meier curve with censored data, and Uno and Horiguchi built tests and a regression model on it. It is available in the R package <code>survAH</code>.</li>
+    <li>The weighted version can be estimated from a Kaplan-Meier curve with censored data. Uno and Horiguchi (2023) developed two-group tests and estimation; Uno et al. (2024) developed regression models. Horiguchi et al. (2025) extended the approach to a later time window to assess delayed treatment effects. It is available in the R package <code>survAH</code>.</li>
   </ul>
-  <div class="callout warm"><p><strong>Do not confuse either with the "average hazard ratio".</strong> That is a different object: a single hazard ratio that summarises a ratio changing over time, estimated for example by weighted Cox regression (Kalbfleisch and Prentice 1981; Schemper, Wakounig and Heinze 2009).</p></div>
+  <h3>Ratios of averages are not all the same</h3>
+  <p>Suppose the control hazards are 0.30 and 0.10 in years 1 and 2, and treatment halves them to 0.15 and 0.05. The instantaneous HR is exactly 0.50 throughout. The ratio of time-average hazards is also 0.50, because the same calendar-time weights apply to both arms. The ratio of AH-SW is 0.1025/0.2101, or approximately 0.488, not exactly 0.50, because treatment changes survival and therefore its own person-time weights.</p>
+  <div class="callout warm"><p><strong>Distinguish three quantities:</strong> the ratio of time-average hazards, the ratio of AH-SW, and an average of time-varying hazard ratios (for example, a weighted Cox estimand). The first can be written as an average of instantaneous HRs weighted by the comparator hazard where the ratio is defined. The second uses different survival weights in each arm. The third depends on the specified weighting method (Kalbfleisch and Prentice 1981; Schemper et al. 2009). None should be assumed to represent the same treatment effect under non-proportional hazards.</p></div>
 </section>
 
 <!-- 7 -->
@@ -381,13 +393,13 @@ avg_haz(fit_km, 1, 10)</pre>
   <h3>In biostatistics</h3>
   <ul>
     <li><strong>Describing change over time.</strong> Report the average hazard in separate windows, as in the first year versus years 1 to 10 above.</li>
-    <li><strong>Comparing groups.</strong> Divide one group's average hazard by the other's over the same window. In Bull and Spiegelhalter's example the ratio was 3.59 in the first year and 1.49 over years 1 to 10, so the relative difference shrank over time.</li>
+    <li><strong>Comparing groups.</strong> Divide one group's average hazard by the other's over the same window. In Bull and Spiegelhalter's section 6.2, the reported ratios were 3.59 in the first year and 1.49 over years 1 to 10. Recomputing from the exact risk-set fractions in Table VI gives approximately 3.57 and 1.50, respectively; the source text and table differ slightly. The relative difference shrank over time.</li>
     <li><strong>When hazards are not proportional.</strong> The proportional hazards Cox model assumes a constant hazard ratio. Under non-proportional hazards, pre-specified ratios or differences of AH-SW are alternative estimands. A weighted Cox model targets a different summary and its interpretation depends on the weighting scheme. Report the window, survival curves and uncertainty; a single summary can still hide crossing curves or delayed effects.</li>
   </ul>
 
   <h3>In health economics (HEOR)</h3>
   <ul>
-    <li><strong>Turning data into model inputs.</strong> A cycle length in a Markov model rarely matches the follow-up of a study, so a probability must be converted to a rate and back.</li>
+    <li><strong>Turning data into model inputs.</strong> A cycle length in a Markov model rarely matches the follow-up of a study, so an interval-specific probability may be derived from a survival curve, or an equivalent constant rate may be used as an explicit approximation when only one risk estimate is available.</li>
     <li><strong>Checking extrapolations.</strong> Compare the average hazard in the observed window with the average hazard the fitted curve implies beyond it. A sudden jump or fall is a warning sign to investigate.</li>
     <li><strong>Exponential models.</strong> Under an exponential survival model with independent right censoring, the maximum likelihood estimate of the constant hazard is events divided by total observed time at risk.</li>
     <li><strong>Summarising waning or delayed effects</strong> in a way that decision makers can read.</li>
@@ -408,7 +420,7 @@ avg_haz(fit_km, 1, 10)</pre>
   <h3>When survival varies by cycle</h3>
   <p>If a fitted survival curve is available, do not flatten the whole follow-up into one rate. For a single exit event, compute each cycle directly:</p>
   <div class="formula">\[p(t,t+c)=1-\frac{S(t+c)}{S(t)}=1-\exp\left[-\{H(t+c)-H(t)\}\right]\]</div>
-  <p>This is exact for the modelled conditional survival, without assuming a constant hazard within the cycle, provided \(S(t)>0\). For example, suppose year 1 has hazard 0.30 and year 2 has hazard 0.10 per year. The two-year time average is 0.20. The correct annual probabilities are 25.9% and 9.5%, rather than 18.1% in both years. Both approaches produce the same two-year survival (67.0%), but different time spent alive, costs and QALYs.</p>
+  <p>This is exact for the modelled conditional survival, without assuming a constant hazard within the cycle, provided \(S(t)>0\). For example, suppose year 1 has hazard 0.30 and year 2 has hazard 0.10 per year. The two-year time average is 0.20. The correct annual probabilities are 25.9% and 9.5%, rather than 18.1% in both years. Both approaches produce the same two-year survival (67.0%), but different time spent event-free. If the endpoint is death, the exact two-year restricted life-years are 1.5689 versus 1.6484 per patient, a difference of 0.0795 years. With utility 0.8 throughout life and no discounting, the constant-rate approximation overestimates QALYs by 0.0636 per patient. Other endpoints require appropriate state utilities and occupancy.</p>
   <h3>When more than one transition is possible</h3>
   <p>Suppose a patient can progress at rate 0.20 or die before progression at rate 0.10 per year. These are competing exits. With constant cause-specific hazards and absorbing destinations, the one-year probability of any exit is \(1-e^{-0.30}\). Allocate it by the rate fractions:</p>
   <div class="formula">\[p_{\mathrm{prog}}=\frac{0.20}{0.30}(1-e^{-0.30})\approx0.1728,\quad p_{\mathrm{death}}=\frac{0.10}{0.30}(1-e^{-0.30})\approx0.0864\]</div>
@@ -420,7 +432,7 @@ avg_haz(fit_km, 1, 10)</pre>
   <h2><span class="num">8</span>Common mistakes</h2>
   <ol>
     <li><strong>Treating a rate as a probability.</strong> A hazard of 0.1 per year is not a 10% risk.</li>
-    <li><strong>Dividing a probability by time.</strong> Use \(-\ln(1-p)/t\) to get the rate.</li>
+    <li><strong>Dividing a probability by time.</strong> For a single first-event risk over a window, use \(-\ln(1-p)/t\) to get the equivalent time-average rate. Do not apply this directly to a cause-specific cumulative incidence in competing risks.</li>
     <li><strong>Forgetting the window.</strong> The same data give different averages for different windows.</li>
     <li><strong>Averaging yearly hazards without weights.</strong> If windows differ in length, weight each by its length, or add the cumulative hazards and divide by total time.</li>
     <li><strong>Using \(-\ln S(t)/t\) for a window that does not start at zero.</strong> Use the ratio \(S(b)/S(a)\).</li>
@@ -432,36 +444,33 @@ avg_haz(fit_km, 1, 10)</pre>
 <!-- 9 -->
 <section id="check">
   <h2><span class="num">9</span>Quick check</h2>
-  <p>Three short questions. Pick an answer to see why.</p>
+  <p>Five short questions. Pick an answer to see why.</p>
   <div class="quiz" id="quiz"></div>
 </section>
 
 <!-- 10 -->
 <section id="refs">
   <h2><span class="num">10</span>References</h2>
-  <h3>Checked against the sources while preparing this page</h3>
   <ol class="refs">
-    <li>Bull K, Spiegelhalter DJ. Tutorial in biostatistics: survival analysis in observational studies. <em>Stat Med</em> 1997;16:1041-1074. (Section 6.2, p. 1057 and Table VI.)</li>
+    <li>Bull K, Spiegelhalter DJ. <a href="https://pubmed.ncbi.nlm.nih.gov/9160498/">Survival analysis in observational studies</a>. <em>Stat Med</em> 1997;16:1041-1074. (Section 6.2, p. 1057 and Table VI.)</li>
     <li>Uno H, Horiguchi M. Ratio and difference of average hazard with survival weight: new measures to quantify survival benefit of new therapy. <em>Stat Med</em> 2023;42(7):936-952. doi:10.1002/sim.9651</li>
-    <li>Uno H, Tian L, Horiguchi M, Hattori S, Kehl KL. Regression models for average hazard. <em>Biometrics</em> 2024;80(2):ujae037.</li>
-    <li>Horiguchi M, Tian L, Kehl KL, Uno H. Assessing delayed treatment benefits of immunotherapy using long-term average hazard. <em>Lifetime Data Anal</em> 2025;31(4):784-809.</li>
+    <li>Uno H, Tian L, Horiguchi M, Hattori S, Kehl KL. <a href="https://doi.org/10.1093/biomtc/ujae037">Regression models for average hazard</a>. <em>Biometrics</em> 2024;80(2):ujae037.</li>
+    <li>Horiguchi M, Tian L, Kehl KL, Uno H. <a href="https://doi.org/10.1007/s10985-025-09671-0">Assessing delayed treatment benefits of immunotherapy using long-term average hazard: a novel test/estimation approach</a>. <em>Lifetime Data Anal</em> 2025;31(4):784-809.</li>
     <li>Kalbfleisch JD, Prentice RL. Estimation of the average hazard ratio. <em>Biometrika</em> 1981;68:105-112.</li>
     <li>Schemper M, Wakounig S, Heinze G. The estimation of average hazard ratios by weighted Cox regression. <em>Stat Med</em> 2009;28:2473-2489.</li>
     <li>R packages: <code>survAH</code> (average hazard with survival weight) and <code>coxphw</code> (weighted Cox regression).</li>
-  </ol>
-  <h3>Additional methodological references</h3>
-  <ul>
+
     <li>Miller DK, Homan SM. Determining transition probabilities: confusion and suggestions. <em>Med Decis Making</em> 1994;14:52-58.</li>
-    <li>Fleurence RL, Hollenbeak CS. Rates and probabilities in economic modelling. <em>Pharmacoeconomics</em> 2007;25:3-6. <a href="https://pubmed.ncbi.nlm.nih.gov/17192114/">PubMed</a>.</li>
+    <li>Fleurence RL, Hollenbeak CS. Rates and probabilities in economic modelling: transformation, translation and appropriate application. <em>Pharmacoeconomics</em> 2007;25:3-6. <a href="https://pubmed.ncbi.nlm.nih.gov/17192114/">PubMed</a>.</li>
     <li>Hern&aacute;n MA. The hazards of hazard ratios. <em>Epidemiology</em> 2010;21:13-15.</li>
     <li>Royston P, Parmar MKB. Restricted mean survival time: an alternative to the hazard ratio. <em>BMC Med Res Methodol</em> 2013;13:152.</li>
     <li>NICE Decision Support Unit <a href="https://sheffield.ac.uk/nice-dsu/tsds/survival-analysis">TSD 14</a> and <a href="https://sheffield.ac.uk/nice-dsu/tsds/flexible-methods-survival-analysis">TSD 21</a> on survival analysis and extrapolation.</li>
-    <li><a href="https://doi.org/10.1177/0272989X17696997">A procedure for deriving formulas to convert transition rates to probabilities for multistate Markov models</a>. <em>Medical Decision Making</em>, 2017.</li>
+    <li>Jones E, Epstein D, García-Mochón L. <a href="https://doi.org/10.1177/0272989X17696997">A procedure for deriving formulas to convert transition rates to probabilities for multistate Markov models</a>. <em>Medical Decision Making</em> 2017;37(7):779-789.</li>
     <li><a href="https://stat.ethz.ch/R-manual/R-devel/library/survival/html/summary.survfit.html">R survival package documentation: summary.survfit</a>.</li>
-  </ul>
+  </ol>
 </section>
 
-<footer>This page is a teaching aid. The worked numbers were recomputed independently. The three event-bearing risk sets in section 4 were verified against Table VI of Bull and Spiegelhalter (1997). Numerical examples elsewhere are illustrative.</footer>
+<footer>This page is a teaching aid. The worked numbers were recomputed independently. The R snippet and live deployment still require runtime verification. The three event-bearing risk sets in section 4 were verified against Table VI of Bull and Spiegelhalter (1997). Numerical examples elsewhere are illustrative.</footer>
 </div>
 
 <script>
@@ -628,7 +637,13 @@ avg_haz(fit_km, 1, 10)</pre>
       why: "Cumulative hazard is \\(0.05\\times 2=0.10\\). Risk is \\(1-e^{-0.10}=0.095\\). A rate multiplied by time is not a risk until you convert it." },
     { q: "The hazard falls steadily over the window. Which average is larger?",
       o: ["The time average", "The person-time weighted average", "They are always equal", "You cannot tell"], c: 1,
-      why: "The weighted version gives more influence to the early period, when many people are still at risk and the hazard is highest. With a falling hazard it comes out higher." }
+      why: "The weighted version gives more influence to the early period, when many people are still at risk and the hazard is highest. With a falling hazard it comes out higher." },
+    { q: "Two survival curves have the same survival at year 2. Must they have the same AH-SW?",
+      o: ["Yes, always", "No, their event-free person-time can differ", "Only if there is censoring"], c: 1,
+      why: "Same endpoint survival gives the same numerator, but the area under survival can differ." },
+    { q: "Can the two-year time-average hazard reproduce all shorter-cycle probabilities?",
+      o: ["Yes, by definition", "Not in general; use cycle-specific survival ratios", "Only if the endpoint is death"], c: 1,
+      why: "The time-average preserves the endpoint survival, not the path taken to reach it." }
   ];
   var quiz = document.getElementById("quiz");
   QUIZ.forEach(function(item, qi){
