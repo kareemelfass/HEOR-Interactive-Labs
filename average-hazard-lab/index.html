@@ -146,12 +146,12 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
 <section id="speedometer">
   <h2><span class="num">1</span>The speedometer idea</h2>
   <p>Picture a car trip. The <strong>speedometer</strong> shows how fast you are going <em>right now</em>. The <strong>odometer</strong> shows how far you have gone <em>in total</em>. If someone asks for your <strong>average speed</strong>, you divide the distance on the odometer by the time on the clock.</p>
-  <p>Survival data works the same way. Instead of kilometres, you collect <em>risk</em>.</p>
+  <p>Survival data works the same way. Instead of kilometres, you accumulate <em>hazard</em>. This is not accumulated event probability.</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Car trip</th><th>Survival analysis</th><th>Plain meaning</th></tr></thead>
     <tbody>
       <tr><td>Speedometer</td><td><strong>Hazard</strong>, \(h(t)\)</td><td>How risky this moment is for someone still event-free</td></tr>
-      <tr><td>Odometer</td><td><strong>Cumulative hazard</strong>, \(H(t)\)</td><td>All the risk collected from the start up to time \(t\)</td></tr>
+      <tr><td>Odometer</td><td><strong>Cumulative hazard</strong>, \(H(t)\)</td><td>The area under the hazard curve from the start up to time \(t\)</td></tr>
       <tr><td>Average speed</td><td><strong>Average hazard</strong></td><td>Cumulative hazard divided by the time it took</td></tr>
     </tbody>
   </table></div>
@@ -166,7 +166,7 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
     <li><strong>Hazard \(h(t)\)</strong> is the event rate at time \(t\), counted only among people who are still event-free. Its unit is events per unit of time, such as <em>per person-year</em>. It is a rate, so it is <em>not</em> a probability.</li>
     <li><strong>Cumulative hazard \(H(t)\)</strong> is the area under the hazard curve from 0 to \(t\):
       \[ H(t)=\int_0^t h(u)\,du \]
-      It only ever goes up.</li>
+      It never decreases. It is dimensionless, can exceed 1, and is not a probability.</li>
     <li><strong>Survival \(S(t)\)</strong> is the chance of still being event-free at time \(t\).</li>
   </ul>
   <p>The link between them is the key identity of this whole tutorial:</p>
@@ -181,29 +181,29 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
   <div class="formula">\[ \text{average hazard over }[a,b]=\frac{H(b)-H(a)}{b-a} \]</div>
   <ul>
     <li>When the window starts at zero, it becomes \(H(t)/t\), which equals \(-\ln S(t)/t\).</li>
-    <li>In words: <em>it is the constant hazard that would collect the same total risk over the same window.</em></li>
+    <li>In words: <em>it is the constant hazard that would produce the same cumulative hazard and the same end-of-window conditional survival, regardless of the actual hazard shape.</em></li>
     <li>On a picture, the area under the real curve equals the area of a flat rectangle at the average height. That is the dashed box in the tool below.</li>
   </ul>
 
   <h3>The four numbers the tool reports</h3>
-  <p>The tool below shows four readouts for the window you choose. Here is what each one means, using one small story: <strong>100 people are event-free at the start of a 5-year window. By the end, 40 have had the event and 60 have not. Together they spend about 391 years at risk.</strong></p>
+  <p>The tool below shows four readouts for the window you choose. Here is what each one means, using one small story: <strong>100 people are event-free at the start of a 5-year window. By the end, 40 have had the event and 60 have not. For a constant-hazard population with this survival, the expected total event-free time for 100 people is about 391 person-years, with no censoring before year 5.</strong></p>
   <div class="readouts">
     <div class="ro">
       <h4>1. Cumulative hazard in window</h4>
       <p class="eq">\( H(b)-H(a)=\text{area under the hazard curve between } a \text{ and } b \)</p>
-      <p><strong>Meaning:</strong> the total risk collected during the window. It is the odometer reading for just that stretch of the trip. It has no unit of its own, because it is a rate multiplied by time.</p>
+      <p><strong>Meaning:</strong> the integrated hazard during the window, not the cumulative event probability. It is the odometer reading for just that stretch of the trip. It has no unit of its own, because it is a rate multiplied by time.</p>
       <p><strong>In the story:</strong> \(-\ln(60/100)=0.511\).</p>
     </div>
     <div class="ro a">
       <h4>2. Time-average hazard (per year)</h4>
       <p class="eq">\( \dfrac{\text{cumulative hazard in window}}{\text{window length}}=\dfrac{H(b)-H(a)}{b-a} \)</p>
-      <p><strong>Meaning:</strong> the single steady hazard that would collect the same total risk in the same time. This is the average speed. Every moment of the window counts equally.</p>
+      <p><strong>Meaning:</strong> the single steady hazard that would yield the same conditional survival at the end of the window. This is the average speed. Every moment of the window counts equally.</p>
       <p><strong>In the story:</strong> \(0.511/5=0.102\) per year.</p>
     </div>
     <div class="ro w">
       <h4>3. Person-time weighted (per year)</h4>
       <p class="eq">\( \dfrac{\text{events in window}}{\text{person-years at risk in window}} \)</p>
-      <p><strong>Meaning:</strong> the ordinary incidence rate. Moments count more when more people are still at risk, because those moments contribute more person-years. It is the version used in the survival-weighted average hazard of section 6.</p>
+      <p><strong>Meaning:</strong> the population incidence rate in the absence of censoring before the horizon. Moments with more event-free people receive more weight. With right censoring, the crude observed events/person-time rate need not estimate this quantity; see section 6.</p>
       <p><strong>In the story:</strong> \(40/391=0.102\) per year.</p>
     </div>
     <div class="ro">
@@ -215,11 +215,11 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
   </div>
   <ul>
     <li><strong>How they connect.</strong> Number 2 is number 1 divided by the window length. Number 4 is number 1 turned into a probability with \(e^{-x}\). Number 3 needs the survival curve, because it counts person-years.</li>
-    <li><strong>Why 2 and 3 match in the story.</strong> The hazard in this story is steady. When the hazard changes over time, the two split apart, and the tool shows by how much.</li>
+    <li><strong>Why 2 and 3 match in the story.</strong> The story assumes a constant hazard. With changing hazards the averages can differ; the direction depends on the shape.</li>
   </ul>
 
   <div class="widget" id="w1">
-    <h3>Try it: see the average on a real curve</h3>
+    <h3>Try it: see the average on an illustrative curve</h3>
     <div class="controls">
       <div>
         <label for="shape">Shape of the hazard</label>
@@ -259,7 +259,7 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
   <ul>
     <li>With <em>steady risk</em>, both averages equal the hazard itself. Nothing is hidden.</li>
     <li>With <em>early spike, then falls</em>, the average sits well above the late-year hazard and well below the early peak. One number cannot tell you the shape.</li>
-    <li>Move the window start to 1. The average drops sharply, because the spike now sits outside the window. <strong>The window changes the answer, so always report it.</strong></li>
+    <li>Move the window start from 0 to 1 or later. The average drops sharply, because the spike now sits outside the window. <strong>The window changes the answer, so always report it.</strong></li>
   </ul>
 </section>
 
@@ -279,11 +279,11 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem}
   <div class="formula">\[ \frac{0.077+0.111+0.200}{9}=0.0431 \]</div>
   <p>If you already have a survival curve, use the matching version:</p>
   <div class="formula">\[ \text{average hazard}=\frac{-\ln\!\left[\dfrac{S(b)}{S(a)}\right]}{b-a} \]</div>
-  <p>The two routes estimate the same thing but are not identical in small samples, because \(-\ln\) of a Kaplan-Meier estimate is always a little larger than the Nelson-Aalen sum. The tool below shows the gap.</p>
+  <p>For continuous event times, both routes estimate the same population quantity, but their finite-sample estimates differ: \(-\ln(1-d/n)\ge d/n\), with strict inequality when events occur and \(d&lt;n\). If all remaining patients experience the event, the Kaplan-Meier survival reaches zero and its negative log is infinite. The tool below shows the gap.</p>
 
   <div class="widget" id="w2">
     <h3>Try it: Nelson-Aalen versus Kaplan-Meier</h3>
-    <p style="margin-bottom:.6rem">Edit the numbers. The starting values give the steps 1/13, 1/9 and 1/5, which match the three step sizes in the paper's table. The risk-set sizes are my reading of those fractions, so treat the example as an illustration.</p>
+    <p style="margin-bottom:.6rem">Edit the numbers (a fixed cohort without late entry; later risk sets cannot exceed the preceding survivors). The starting values give the steps 1/13, 1/9 and 1/5, which match the three step sizes in the paper's table. The three risk-set sizes and event counts are explicitly reported in Table VI (p. 1056). The fourth, zero-event row is an optional illustrative input.</p>
     <div class="tablewrap"><table>
       <thead><tr><th>Event time</th><th>Events \(d\)</th><th>At risk \(n\)</th><th class="tnum">Step \(d/n\)</th></tr></thead>
       <tbody id="steps"></tbody>
@@ -312,7 +312,11 @@ fit_na <- survfit(Surv(time, status) ~ 1, data = d,
                   stype = 2, ctype = 1)
 
 avg_haz <- function(fit, a, b) {
-  s <- summary(fit, times = c(a, b), extend = TRUE)$surv
+  stopifnot(length(a) == 1, length(b) == 1,
+            is.finite(a), is.finite(b), a >= 0, b > a,
+            is.null(fit$strata), b <= max(fit$time))
+  s <- summary(fit, times = c(a, b), extend = FALSE)$surv
+  stopifnot(length(s) == 2, s[1] > 0)
   -log(s[2] / s[1]) / (b - a)
 }
 
@@ -322,10 +326,10 @@ avg_haz(fit_km, 1, 10)</pre>
     <li><code>library(survival)</code> loads the standard survival package.</li>
     <li><code>fit_km</code> fits the Kaplan-Meier curve. <code>Surv(time, status)</code> bundles follow-up time with the event flag, and <code>~ 1</code> means one curve for everyone.</li>
     <li><code>fit_na</code> asks for a curve built from the Nelson-Aalen cumulative hazard: <code>ctype = 1</code> picks that estimator and <code>stype = 2</code> sets survival to \(e^{-H}\).</li>
-    <li><code>avg_haz</code> reads survival at the window start and end, then applies \(-\ln\!\left[S(b)/S(a)\right]/(b-a)\). <code>extend = TRUE</code> keeps the call from failing if \(b\) is past the last follow-up time.</li>
+    <li><code>avg_haz</code> reads survival at the window start and end, then applies \(-\ln\!\left[S(b)/S(a)\right]/(b-a)\). The checks reject windows beyond observed follow-up and windows with no survivors at their start. <code>extend = FALSE</code> prevents unsupported extension of the final survival step. A zero survival at the end gives an infinite Kaplan-Meier-based estimate. Use data in years with a single right-censored endpoint.</li>
     <li>The last two lines give the Nelson-Aalen and Kaplan-Meier versions for years 1 to 10.</li>
   </ul>
-  <p style="color:var(--muted)">I could not run R while preparing this page, so test the snippet on your own data and compare it with a hand calculation.</p>
+  <p style="color:var(--muted)">R example reviewed against the survival package documentation; not executed in R here. Check the number at risk near the chosen horizon before interpreting results.</p>
 </section>
 
 <!-- 5 -->
@@ -333,7 +337,7 @@ avg_haz(fit_km, 1, 10)</pre>
   <h2><span class="num">5</span>Reading the number</h2>
   <p>Take the average hazard of 0.043 per year over years 1 to 10. Here is how to say it correctly and what to avoid.</p>
   <ul>
-    <li><strong>Say this:</strong> <em>"Over years 1 to 10, the hazard behaved on average like a constant 0.043 per year."</em> It collected the same total risk as the real, changing hazard.</li>
+    <li><strong>Say this:</strong> <em>"Over years 1 to 10, the hazard behaved on average like a constant 0.043 per year."</em> It reproduces the same estimated cumulative hazard over that window, not necessarily the same survival at intermediate times.</li>
     <li><strong>It is a rate, not a risk.</strong> 0.043 per year does not mean a 4.3% chance of the event. For people still event-free at year 1, the chance of an event by year 10 is
       \[ 1-e^{-0.043\times 9}=1-e^{-0.388}\approx 0.32 \]
       which is about 32%.</li>
@@ -351,13 +355,17 @@ avg_haz(fit_km, 1, 10)</pre>
     <tbody>
       <tr><td><strong>Idea</strong></td><td>Every moment counts equally</td><td>Moments count more when more people are still at risk</td></tr>
       <tr><td><strong>Formula</strong></td><td>\(H(b)-H(a)\), divided by window length</td><td>Events in the window divided by person-time in the window</td></tr>
-      <tr><td><strong>Also known as</strong></td><td>Average hazard (Bull and Spiegelhalter)</td><td>Incidence rate; average hazard with survival weight, AHSW (Uno and Horiguchi)</td></tr>
+      <tr><td><strong>Also known as</strong></td><td>Average hazard (Bull and Spiegelhalter)</td><td>Average hazard with survival weight, AH-SW (Uno and Horiguchi); population incidence rate without censoring</td></tr>
       <tr><td><strong>From the start, up to \(\tau\)</strong></td><td>\(\dfrac{-\ln S(\tau)}{\tau}\)</td><td>\(\dfrac{1-S(\tau)}{\mathrm{RMST}(\tau)}\)</td></tr>
     </tbody>
   </table></div>
   <p><strong>RMST</strong> is the restricted mean survival time, the area under the survival curve up to \(\tau\):</p>
   <div class="formula">\[ \mathrm{RMST}(\tau)=\int_0^{\tau} S(t)\,dt \]</div>
-  <p>It is the expected number of event-free person-years per person in that window.</p>
+  <p>It is the expected number of event-free person-years per person from time 0 to the specified horizon.</p>
+  <div class="formula">\[ \eta(a,b)=\frac{S(a)-S(b)}{\int_a^b S(u)\,du}=\frac{\int_a^b h(u)S(u)\,du}{\int_a^b S(u)\,du} \]</div>
+  <p>The numerator is the expected number of first events per original patient in the window; the denominator is expected event-free person-time per original patient. Both may also be divided by \(S(a)\) to express them per person event-free at the window start.</p>
+  <h3>Why censoring matters</h3>
+  <p>With independent right censoring, let \(G(t)\) be the probability of still being under observation. The crude observed incidence rate generally targets \(\int h(t)S(t)G(t)dt/\int S(t)G(t)dt\), with the same integration window. Early censoring changes the weights even when it is independent of event time. AH-SW instead uses \(S(t)\) alone, estimated from Kaplan-Meier under appropriate independent censoring and adequate follow-up. This is the distinction made by Uno and Horiguchi (2023).</p>
   <ul>
     <li>With a <em>constant</em> hazard, both give the same number.</li>
     <li>With a <em>falling</em> hazard, the person-time weighted version is higher, because the high early hazard happens while most people are still at risk. With a <em>rising</em> hazard it is lower. You can see this in the tool in section 3.</li>
@@ -374,14 +382,14 @@ avg_haz(fit_km, 1, 10)</pre>
   <ul>
     <li><strong>Describing change over time.</strong> Report the average hazard in separate windows, as in the first year versus years 1 to 10 above.</li>
     <li><strong>Comparing groups.</strong> Divide one group's average hazard by the other's over the same window. In Bull and Spiegelhalter's example the ratio was 3.59 in the first year and 1.49 over years 1 to 10, so the relative difference shrank over time.</li>
-    <li><strong>When hazards are not proportional.</strong> A Cox hazard ratio assumes a constant ratio. If curves cross or an effect is delayed, the ratio and difference of weighted average hazards, or a weighted Cox model, give a summary that stays meaningful.</li>
+    <li><strong>When hazards are not proportional.</strong> The proportional hazards Cox model assumes a constant hazard ratio. Under non-proportional hazards, pre-specified ratios or differences of AH-SW are alternative estimands. A weighted Cox model targets a different summary and its interpretation depends on the weighting scheme. Report the window, survival curves and uncertainty; a single summary can still hide crossing curves or delayed effects.</li>
   </ul>
 
   <h3>In health economics (HEOR)</h3>
   <ul>
     <li><strong>Turning data into model inputs.</strong> A cycle length in a Markov model rarely matches the follow-up of a study, so a probability must be converted to a rate and back.</li>
     <li><strong>Checking extrapolations.</strong> Compare the average hazard in the observed window with the average hazard the fitted curve implies beyond it. A sudden jump or fall is a warning sign to investigate.</li>
-    <li><strong>Exponential models.</strong> A constant hazard is simply events divided by total person-time.</li>
+    <li><strong>Exponential models.</strong> Under an exponential survival model with independent right censoring, the maximum likelihood estimate of the constant hazard is events divided by total observed time at risk.</li>
     <li><strong>Summarising waning or delayed effects</strong> in a way that decision makers can read.</li>
   </ul>
 
@@ -395,8 +403,16 @@ avg_haz(fit_km, 1, 10)</pre>
     </ol>
     <p>The general rule behind steps 2 and 3, for a cycle of length \(c\) years:</p>
     <div class="formula">\[ r=\frac{-\ln(1-p)}{t} \qquad\text{and}\qquad p_c=1-e^{-r\,c} \]</div>
-    <p>The tempting shortcut, 40% divided by 5 years, gives 8% per year. That is too low, because risk is collected on a shrinking group of people who are still event-free. All of these steps assume the hazard is roughly constant inside the window, so check that before you trust them.</p>
+    <p>The tempting shortcut, 40% divided by 5 years, gives 8% per year. That is too low, because risk is collected on a shrinking group of people who are still event-free. The 5-year time-average is exact given the reported survival, even if the hazard varies. Reusing it for every shorter cycle imposes a constant-hazard approximation. The 8% shortcut is too low compared with the equivalent constant annual probability, not necessarily compared with every actual annual probability.</p>
   </div>
+  <h3>When survival varies by cycle</h3>
+  <p>If a fitted survival curve is available, do not flatten the whole follow-up into one rate. For a single exit event, compute each cycle directly:</p>
+  <div class="formula">\[p(t,t+c)=1-\frac{S(t+c)}{S(t)}=1-\exp\left[-\{H(t+c)-H(t)\}\right]\]</div>
+  <p>This is exact for the modelled conditional survival, without assuming a constant hazard within the cycle, provided \(S(t)>0\). For example, suppose year 1 has hazard 0.30 and year 2 has hazard 0.10 per year. The two-year time average is 0.20. The correct annual probabilities are 25.9% and 9.5%, rather than 18.1% in both years. Both approaches produce the same two-year survival (67.0%), but different time spent alive, costs and QALYs.</p>
+  <h3>When more than one transition is possible</h3>
+  <p>Suppose a patient can progress at rate 0.20 or die before progression at rate 0.10 per year. These are competing exits. With constant cause-specific hazards and absorbing destinations, the one-year probability of any exit is \(1-e^{-0.30}\). Allocate it by the rate fractions:</p>
+  <div class="formula">\[p_{\mathrm{prog}}=\frac{0.20}{0.30}(1-e^{-0.30})\approx0.1728,\quad p_{\mathrm{death}}=\frac{0.10}{0.30}(1-e^{-0.30})\approx0.0864\]</div>
+  <p>Remaining event-free has probability 0.7408. Converting each rate separately would ignore competition. For a general continuous-time Markov model with constant transition intensity matrix \(Q\) during a cycle, use \(P(c)=\exp(cQ)\) (a matrix exponential). For varying intensities, use appropriate numerical integration or a multi-state model. Do not directly substitute an AH-SW or a pooled average HR for an interval-specific transition hazard.</p>
 </section>
 
 <!-- 8 -->
@@ -433,17 +449,19 @@ avg_haz(fit_km, 1, 10)</pre>
     <li>Schemper M, Wakounig S, Heinze G. The estimation of average hazard ratios by weighted Cox regression. <em>Stat Med</em> 2009;28:2473-2489.</li>
     <li>R packages: <code>survAH</code> (average hazard with survival weight) and <code>coxphw</code> (weighted Cox regression).</li>
   </ol>
-  <h3>From general knowledge, please verify before citing</h3>
+  <h3>Additional methodological references</h3>
   <ul>
     <li>Miller DK, Homan SM. Determining transition probabilities: confusion and suggestions. <em>Med Decis Making</em> 1994;14:52-58.</li>
-    <li>Fleurence RL, Hollenbeak CS. Rates and probabilities in economic modelling. <em>Pharmacoeconomics</em> 2007;25:3-6.</li>
+    <li>Fleurence RL, Hollenbeak CS. Rates and probabilities in economic modelling. <em>Pharmacoeconomics</em> 2007;25:3-6. <a href="https://pubmed.ncbi.nlm.nih.gov/17192114/">PubMed</a>.</li>
     <li>Hern&aacute;n MA. The hazards of hazard ratios. <em>Epidemiology</em> 2010;21:13-15.</li>
     <li>Royston P, Parmar MKB. Restricted mean survival time: an alternative to the hazard ratio. <em>BMC Med Res Methodol</em> 2013;13:152.</li>
-    <li>NICE Decision Support Unit Technical Support Documents 14 and 21 on survival analysis and extrapolation.</li>
+    <li>NICE Decision Support Unit <a href="https://sheffield.ac.uk/nice-dsu/tsds/survival-analysis">TSD 14</a> and <a href="https://sheffield.ac.uk/nice-dsu/tsds/flexible-methods-survival-analysis">TSD 21</a> on survival analysis and extrapolation.</li>
+    <li><a href="https://doi.org/10.1177/0272989X17696997">A procedure for deriving formulas to convert transition rates to probabilities for multistate Markov models</a>. <em>Medical Decision Making</em>, 2017.</li>
+    <li><a href="https://stat.ethz.ch/R-manual/R-devel/library/survival/html/summary.survfit.html">R survival package documentation: summary.survfit</a>.</li>
   </ul>
 </section>
 
-<footer>This page is a teaching aid. The worked numbers were recomputed independently. The Bull and Spiegelhalter risk-set sizes in section 4 are inferred and used only for illustration.</footer>
+<footer>This page is a teaching aid. The worked numbers were recomputed independently. The three event-bearing risk sets in section 4 were verified against Table VI of Bull and Spiegelhalter (1997). Numerical examples elsewhere are illustrative.</footer>
 </div>
 
 <script>
@@ -554,7 +572,7 @@ avg_haz(fit_km, 1, 10)</pre>
     for (var i = 0; i < DEFAULTS.length; i++){
       html += '<tr><td>Step ' + (i + 1) + '</td>' +
         '<td><input type="number" min="0" step="1" id="d' + i + '" value="' + DEFAULTS[i][0] + '" style="width:5rem" aria-label="Events at step ' + (i + 1) + '"></td>' +
-        '<td><input type="number" min="1" step="1" id="n' + i + '" value="' + DEFAULTS[i][1] + '" style="width:5rem" aria-label="At risk at step ' + (i + 1) + '"></td>' +
+        '<td><input type="number" min="0" step="1" id="n' + i + '" value="' + DEFAULTS[i][1] + '" style="width:5rem" aria-label="At risk at step ' + (i + 1) + '"></td>' +
         '<td class="tnum" id="s' + i + '"></td></tr>';
     }
     tbody.innerHTML = html;
@@ -563,25 +581,28 @@ avg_haz(fit_km, 1, 10)</pre>
   }
   function calc2(){
     var T = parseFloat(document.getElementById("T").value);
-    var na = 0, km = 0, kmOk = true;
+    var na = 0, km = 0, invalid = false, kmInfinite = false, prevRemaining = Infinity;
     for (var i = 0; i < DEFAULTS.length; i++){
-      var d = parseFloat(document.getElementById("d" + i).value) || 0;
-      var n = parseFloat(document.getElementById("n" + i).value) || 0;
+      var d = parseFloat(document.getElementById("d" + i).value);
+      var n = parseFloat(document.getElementById("n" + i).value);
       var cell = document.getElementById("s" + i);
-      if (d <= 0 || n <= 0){ cell.textContent = "ignored"; continue; }
-      if (d > n){ cell.textContent = "d is larger than n"; kmOk = false; continue; }
+      if (!Number.isInteger(d) || !Number.isInteger(n) || d < 0 || n < 0 || d > n || n > prevRemaining){
+        cell.textContent = "Invalid risk set"; invalid = true; continue;
+      }
+      prevRemaining = n - d;
+      if (n === 0){ cell.textContent = "No one at risk"; continue; }
       cell.textContent = fmt(d / n, 3);
       na += d / n;
-      if (d >= n) kmOk = false; else km += -Math.log(1 - d / n);
+      if (d === n) kmInfinite = true; else km += -Math.log1p(-d / n);
     }
     var okT = isFinite(T) && T > 0;
-    document.getElementById("o-na-h").textContent = fmt(na, 3);
-    document.getElementById("o-na").textContent = okT ? fmt(na / T, 4) : "check length";
-    if (okT && kmOk){
+    document.getElementById("o-na-h").textContent = invalid ? "Invalid inputs" : fmt(na, 3);
+    document.getElementById("o-na").textContent = invalid ? "Invalid inputs" : okT ? fmt(na / T, 4) : "check length";
+    if (okT && !invalid && !kmInfinite){
       document.getElementById("o-km").textContent = fmt(km / T, 4);
       document.getElementById("o-diff").textContent = na > 0 ? fmt((km / na - 1) * 100, 1) + "%" : "n/a";
     } else {
-      document.getElementById("o-km").textContent = okT ? "undefined" : "check length";
+      document.getElementById("o-km").textContent = invalid ? "Invalid inputs" : !okT ? "check length" : "Infinity";
       document.getElementById("o-diff").textContent = "n/a";
     }
   }
